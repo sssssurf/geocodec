@@ -1,0 +1,188 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "sssssurf/geocodec"
+
+// Values
+pub const DEGREE : String = "°"
+
+pub const DOUBLE_PRIME : String = "″"
+
+pub const GEOHASH_ALPHABET : String = "0123456789bcdefghjkmnpqrstuvwxyz"
+
+pub const GEOHASH_MAX_PRECISION : Int = 12
+
+pub const PLUSCODE_ALPHABET : String = "23456789CFGHJMPQRVWX"
+
+pub const PLUSCODE_PADDING : Char = '0'
+
+pub const PLUSCODE_SEPARATOR : Char = '+'
+
+pub const PRIME : String = "′"
+
+pub fn ascii_lower(String) -> String
+
+pub fn ascii_upper(String) -> String
+
+pub fn ascii_upper_char(Char) -> Char
+
+pub fn char_str(Char) -> String
+
+pub fn chars_of(String) -> Array[Char]
+
+pub fn clamp_lat(Double) -> Double
+
+pub fn describe_code(String) -> CodeInfo?
+
+pub fn digit_value(Char) -> Int?
+
+pub fn format_dms(Double, Bool) -> String
+
+pub fn format_fixed(Double, Int) -> String
+
+pub fn format_latlng(Double, Double, Int) -> String
+
+pub fn geohash_adjacent(String, Int, Int) -> String?
+
+pub fn geohash_bounds(String) -> BoundingBox?
+
+pub fn geohash_cover(BoundingBox, Int, max_cells? : Int) -> Array[String]?
+
+pub fn geohash_decode(String) -> LatLng?
+
+pub fn geohash_encode(LatLng, Int) -> String?
+
+pub fn geohash_neighbors(String) -> Array[String]?
+
+pub fn geohash_precision_for_meters(Double) -> Int?
+
+pub fn geouri_format(GeoUri) -> String
+
+pub fn geouri_parse(String) -> GeoUri?
+
+pub fn hemisphere_suffix(Double, Bool) -> String
+
+pub fn index_of(Array[Char], Char) -> Int
+
+pub fn is_ascii(String) -> Bool
+
+pub fn is_finite(Double) -> Bool
+
+pub fn lng_delta(Double, Double) -> Double
+
+pub fn maidenhead_bounds(String) -> BoundingBox?
+
+pub fn maidenhead_decode(String) -> LatLng?
+
+pub fn maidenhead_encode(LatLng, precision? : Int) -> String?
+
+pub fn normalize_lng(Double) -> Double
+
+pub fn parse_codes(String, max_results? : Int) -> Array[ParsedLocation]
+
+pub fn parse_decimal(String) -> Double?
+
+pub fn parse_dms(String, Bool) -> Double?
+
+pub fn parse_location(String) -> ParsedLocation?
+
+pub fn pluscode_adjacent(String, Int, Int) -> String?
+
+pub fn pluscode_bounds(String) -> BoundingBox?
+
+pub fn pluscode_code_length(String) -> Int
+
+pub fn pluscode_decode(String) -> LatLng?
+
+pub fn pluscode_encode(LatLng, code_length? : Int) -> String?
+
+pub fn pluscode_is_full(String) -> Bool
+
+pub fn pluscode_is_short(String) -> Bool
+
+pub fn pluscode_is_valid(String) -> Bool
+
+pub fn pluscode_neighbors(String) -> Array[String]?
+
+pub fn pluscode_recover(String, LatLng) -> String?
+
+pub fn pluscode_shorten(String, LatLng) -> String?
+
+pub fn round_to(Double, Int) -> Double
+
+pub fn split_text(String, Char) -> Array[String]
+
+pub fn split_whitespace(String) -> Array[String]
+
+pub fn string_of(Array[Char]) -> String
+
+pub fn to_radians(Double) -> Double
+
+pub fn trim_ascii(String) -> String
+
+pub fn trim_fraction(String) -> String
+
+// Errors
+
+// Types and methods
+pub struct BoundingBox {
+  south : Double
+  west : Double
+  north : Double
+  east : Double
+} derive(Eq)
+pub fn BoundingBox::center(Self) -> LatLng?
+pub fn BoundingBox::contains(Self, LatLng) -> Bool
+pub fn BoundingBox::crosses_antimeridian(Self) -> Bool
+pub fn BoundingBox::east(Self) -> Double
+pub fn BoundingBox::height(Self) -> Double
+pub fn BoundingBox::intersects(Self, Self) -> Bool
+pub fn BoundingBox::new(Double, Double, Double, Double) -> Self?
+pub fn BoundingBox::north(Self) -> Double
+pub fn BoundingBox::south(Self) -> Double
+pub fn BoundingBox::to_text(Self, digits? : Int) -> String
+pub fn BoundingBox::west(Self) -> Double
+pub fn BoundingBox::width(Self) -> Double
+
+pub(all) struct CodeInfo {
+  format : LocationFormat
+  point : LatLng
+  bounds : BoundingBox
+  precision_m : Double
+  area_m2 : Double
+} derive(Eq)
+
+pub(all) struct GeoUri {
+  point : LatLng
+  altitude : Double?
+  uncertainty : Double?
+  crs : String?
+} derive(Eq)
+
+pub struct LatLng {
+  lat : Double
+  lng : Double
+} derive(Eq)
+pub fn LatLng::lat(Self) -> Double
+pub fn LatLng::lng(Self) -> Double
+pub fn LatLng::new(Double, Double) -> Self?
+pub fn LatLng::to_text(Self, digits? : Int) -> String
+
+pub(all) enum LocationFormat {
+  GeoUri
+  PlusCode
+  Maidenhead
+  GeoHash
+  Decimal
+  Dms
+} derive(Eq)
+pub fn LocationFormat::name(Self) -> String
+pub impl Show for LocationFormat
+
+pub(all) struct ParsedLocation {
+  format : LocationFormat
+  point : LatLng
+} derive(Eq)
+
+// Type aliases
+
+// Traits
+

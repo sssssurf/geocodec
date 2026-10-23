@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install MoonBit
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Toolchain
+        run: moon version --all
+
+      - name: Formatting
+        run: moon fmt --check
+
+      - name: Check
+        run: moon check
+
+      - name: Test (js)
+        run: moon test --target js
+
+      - name: Test (wasm-gc)
+        run: moon test --target wasm-gc
+
+      # The CLI is the reviewer's entry point. Exercise the subcommand lookup
+      # and a real conversion, not just the library tests.
+      - name: CLI smoke test
+        run: |
+          moon run --target js cmd/main -- parse "8FVC9G8F+6X" | grep -q "format: plus-code"
+          moon run --target js cmd/main -- scan "8FVC9G8F+6X and IO91WM" | grep -q "found: 2"
+          moon run --target js cmd/main -- info "8FVC9G8F+6X" | grep -q "precision_m"
+          moon run --target js cmd/main -- demo | grep -q "geohash: wx4g0bm6c"
+
+  build-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [wasm, wasm-gc, native]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install MoonBit
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Build (${{ matrix.target }})
+        run: moon build --target ${{ matrix.target }}
+
+      - name: Test (${{ matrix.target }})
+        run: moon test --target ${{ matrix.target }}
