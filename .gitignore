@@ -1,0 +1,7 @@
+_build/
+.mooncakes/
+.DS_Store
+*.wasm
+*.wasm.map
+*.o
+*.exe

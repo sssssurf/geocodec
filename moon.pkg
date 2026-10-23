@@ -1,0 +1,7 @@
+// The library itself is dependency-free; `math` is part of the MoonBit core
+// distribution and supplies the trigonometric and rounding functions.
+import {
+  "moonbitlang/core/math",
+}
+
+warnings = "-deprecated_syntax"
