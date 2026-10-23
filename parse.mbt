@@ -10,7 +10,7 @@ pub(all) enum LocationFormat {
   GeoHash
   Decimal
   Dms
-} derive(Eq)
+} derive(Eq, Debug)
 
 ///|
 pub impl Show for LocationFormat with fn to_string(self : LocationFormat) -> String {
