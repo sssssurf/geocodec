@@ -1,5 +1,7 @@
 # geocodec
 
+[![CI](https://github.com/sssssurf/geocodec/actions/workflows/ci.yml/badge.svg)](https://github.com/ssssurf/geocodec/actions/workflows/ci.yml)
+
 Location codes for MoonBit: Geohash, Plus Codes, Maidenhead locators, `geo:`
 URIs and degrees/minutes/seconds.
 
@@ -50,7 +52,7 @@ library deliberately does not duplicate it.
 
 ## Tests
 
-47 test blocks: published vectors, round-trips at every precision, deterministic
+48 test blocks: published vectors, round-trips at every precision, deterministic
 property tests, cover checks and a robustness pass over malformed input.
 `moon test` passes on `js` and `wasm-gc`; CI also builds `wasm` and `native`.
 

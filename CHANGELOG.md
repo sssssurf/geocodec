@@ -32,7 +32,7 @@ First release. The whole module is new in this round.
   approximate area for a cell.
 - `cmd/main`: 11 subcommands (`parse`, `geohash`, `plus`, `maidenhead`, `bbox`,
   `geouri`, `dms`, `scan`, `cover`, `info`, `demo`).
-- 47 test blocks: published vectors, per-precision round-trips, deterministic
+- 48 test blocks: published vectors, per-precision round-trips, deterministic
   property tests, cover checks and a robustness pass. `js` and `wasm-gc` targets
   pass locally; CI adds `wasm` and `native`.
 - Documentation: `README.md`, `README.mbt.md`,

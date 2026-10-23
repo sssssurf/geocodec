@@ -1,5 +1,7 @@
 # geocodec
 
+[![CI](https://github.com/sssssurf/geocodec/actions/workflows/ci.yml/badge.svg)](https://github.com/sssssurf/geocodec/actions/workflows/ci.yml)
+
 Location codes for MoonBit: Geohash, Plus Codes, Maidenhead locators, `geo:`
 URIs and degrees/minutes/seconds.
 
@@ -249,10 +251,10 @@ and test vectors are listed below.
 
 ```text
 $ moon test --target js
-Total tests: 47, passed: 47, failed: 0.
+Total tests: 48, passed: 48, failed: 0.
 
 $ moon test --target wasm-gc
-Total tests: 47, passed: 47, failed: 0.
+Total tests: 48, passed: 48, failed: 0.
 ```
 
 The suite is in four layers:

@@ -28,10 +28,10 @@ $ moon check --target js
 Finished.
 
 $ moon test --target js
-Total tests: 47, passed: 47, failed: 0.
+Total tests: 48, passed: 48, failed: 0.
 
 $ moon test --target wasm-gc
-Total tests: 47, passed: 47, failed: 0.
+Total tests: 48, passed: 48, failed: 0.
 ```
 
 The `Finished.` lines also carry a task count that depends on the build cache,
@@ -215,7 +215,7 @@ bbox: not a recognised code
 
 ## 6. What to check
 
-1. `moon test` reports 47 passing tests.
+1. `moon test` reports 48 passing tests.
 2. `moon run --target js cmd/main -- demo` prints three blocks, and the codes
    match section 3.
 3. `moon run --target js cmd/main -- parse "8FVC9G8F+6X"` reports
