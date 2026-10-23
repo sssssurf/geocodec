@@ -130,7 +130,7 @@ pub fn parse_codes(
     match parse_location(token) {
       None => ()
       Some(found) => {
-        if found.format == GeoHash && token.length() < 5 {
+        if found.format == GeoHash && (token.length() < 5 || !has_letter(token)) {
           continue
         }
         let key = found.format.name() +
@@ -172,6 +172,16 @@ fn strip_code_punctuation(text : String) -> String {
 fn has_digit(text : String) -> Bool {
   for ch in text {
     if ch >= '0' && ch <= '9' {
+      return true
+    }
+  }
+  false
+}
+
+///|
+fn has_letter(text : String) -> Bool {
+  for ch in text {
+    if (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') {
       return true
     }
   }

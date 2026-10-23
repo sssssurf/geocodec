@@ -58,3 +58,9 @@ test "scan does not repeat a code and respects the limit" {
   assert_eq(parse_codes(text).length(), 2)
   assert_eq(parse_codes(text, max_results=1).length(), 1)
 }
+
+///|
+test "scan ignores bare numbers and all-letter words" {
+  assert_eq(parse_codes("postcode 12345 and the word meet").length(), 0)
+  assert_eq(parse_codes("zip 12345 and wx4g0b").length(), 1)
+}
