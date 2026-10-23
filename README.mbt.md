@@ -47,8 +47,7 @@ repository for recorded output.
 
 This is the notation layer only. It does not implement UTM/MGRS, ellipsoidal
 geodesics, datum transformations (GCJ-02/BD-09), address lookup or polygon
-operations. For geodesy and grid references, use `ChrisTu117/moongeodesy`; this
-library deliberately does not duplicate it.
+operations; those belong to separate projection/geodesy layers.
 
 ## Tests
 

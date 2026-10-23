@@ -44,8 +44,8 @@ First release. The whole module is new in this round.
 - No code was ported. Formulas come from OLC, RFC 5870, the geohash description
   and the IARU locator scheme; see the references in `README.md`.
 - Scope is the notation layer only. UTM/MGRS, ellipsoidal geodesics and datum
-  conversions are deliberately excluded because `ChrisTu117/moongeodesy`
-  already covers them; see the duplicate check in the README.
+  conversions are deliberately excluded because they belong to a separate
+  projection/geodesy layer; see the scope section in the README.
 - Short all-letter or all-digit geohashes are not recognised by `parse_codes`
   (which needs both a digit and a letter); direct calls to `parse_location`
   accept them.

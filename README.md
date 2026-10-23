@@ -26,8 +26,8 @@ let p = @geocodec.LatLng::new(39.9042, 116.4074).unwrap()
 （Open Location Code）、Maidenhead 网格、RFC 5870 `geo:` URI 和度分秒，提供
 单元边界、相邻单元、geohash 区域覆盖、自由文本中的代码扫描、单元地面尺寸报告。
 它不依赖第三方包，不联网、不读文件，所有对外函数都是全函数。它**不**做
-UTM/MGRS 投影、椭球测地线或坐标系转换——那是 `moongeodesy` 的领域，本项目
-刻意不重复。
+UTM/MGRS 投影、椭球测地线或坐标系转换——这些属于投影/测地线层，不在本库的
+范围里。
 
 ## What it covers
 
@@ -221,31 +221,9 @@ This library stops at the notation layer:
 - **No polygon operations.** `BoundingBox` answers containment, intersection and
   centre; point-in-polygon, buffering and tiling are other libraries' work.
 
-These are deliberate exclusions, not missing features. MoonBit already has a
-strong geodesy project for the first three: `ChrisTu117/moongeodesy` (created
-2026-10-09) implements Karney geodesics, UTM/UPS, MGRS and WGS84/GCJ-02/BD-09.
-`geocodec` used to carry a UTM/MGRS/geodesy layer during development; it was
-removed after the duplicate check so that the two projects do not overlap. If
-you need distances or grid references, use `moongeodesy`; use `geocodec` when
-you need the short codes people read, print and text.
-
-## Why this is not a duplicate
-
-At the time of writing:
-
-- The mooncakes.io index used by the toolchain (1,371 modules, 9,976 versions)
-  has no module whose name, keywords or description mention geohash, Plus Codes
-  / Open Location Code or Maidenhead.
-- GitHub repository search for `moonbit geohash`, `moonbit "plus code"`,
-  `moonbit "open location code"` and `moonbit maidenhead` returns no repository.
-- The nearest MoonBit projects are different layers: `totto2727/geo-mbt` is a
-  port of `georust/geo` for planar geometry, `CMoonBack/computational-geometry`
-  and `bobzhang/loop_invariants_geometry` are computational geometry, and
-  `moongeodesy` is geodesy/projection. None implements these notation codecs.
-
-This is an independent implementation from the published specifications. No
-source code was ported from another language. The references used for formulas
-and test vectors are listed below.
+These are deliberate exclusions, not missing features. The library is an
+independent implementation of the notation layer: no source code was ported, and
+the formulas come from the public specifications listed below.
 
 ## Tests
 
