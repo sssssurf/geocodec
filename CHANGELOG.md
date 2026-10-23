@@ -32,7 +32,7 @@ First release. The whole module is new in this round.
   approximate area for a cell.
 - `cmd/main`: 11 subcommands (`parse`, `geohash`, `plus`, `maidenhead`, `bbox`,
   `geouri`, `dms`, `scan`, `cover`, `info`, `demo`).
-- 46 test blocks: published vectors, per-precision round-trips, deterministic
+- 47 test blocks: published vectors, per-precision round-trips, deterministic
   property tests, cover checks and a robustness pass. `js` and `wasm-gc` targets
   pass locally; CI adds `wasm` and `native`.
 - Documentation: `README.md`, `README.mbt.md`,
@@ -46,5 +46,6 @@ First release. The whole module is new in this round.
 - Scope is the notation layer only. UTM/MGRS, ellipsoidal geodesics and datum
   conversions are deliberately excluded because `ChrisTu117/moongeodesy`
   already covers them; see the duplicate check in the README.
-- Short all-letter geohashes are not recognised by `parse_codes` (which needs a
-  digit); direct calls to `parse_location` accept them.
+- Short all-letter or all-digit geohashes are not recognised by `parse_codes`
+  (which needs both a digit and a letter); direct calls to `parse_location`
+  accept them.

@@ -50,7 +50,7 @@ library deliberately does not duplicate it.
 
 ## Tests
 
-46 test blocks: published vectors, round-trips at every precision, deterministic
+47 test blocks: published vectors, round-trips at every precision, deterministic
 property tests, cover checks and a robustness pass over malformed input.
 `moon test` passes on `js` and `wasm-gc`; CI also builds `wasm` and `native`.
 

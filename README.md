@@ -120,10 +120,11 @@ let found = @geocodec.parse_codes(text)
 // 4 results: plus-code, maidenhead, geo-uri, geohash
 ```
 
-Short English words such as "meet" and "send" are legal geohash strings. The
-scanner therefore requires a digit in a token before treating it as a code, and
-requires at least five characters for a geohash. This rule is in the API docs
-and covered by a test; it trades a few exotic all-letter geohashes for a much
+Short English words such as "meet" and "send" are legal geohash strings, and a
+bare number such as "12345" can also decode as one. The scanner therefore
+requires a digit and a letter in a token before treating it as a geohash, and
+requires at least five characters. This rule is in the API docs and covered by
+a test; it trades a few exotic all-letter or all-digit geohashes for a much
 lower false-positive rate in prose.
 
 ### Describing a cell
@@ -248,10 +249,10 @@ and test vectors are listed below.
 
 ```text
 $ moon test --target js
-Total tests: 46, passed: 46, failed: 0.
+Total tests: 47, passed: 47, failed: 0.
 
 $ moon test --target wasm-gc
-Total tests: 46, passed: 46, failed: 0.
+Total tests: 47, passed: 47, failed: 0.
 ```
 
 The suite is in four layers:
