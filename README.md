@@ -269,8 +269,10 @@ The suite is in four layers:
 4. **Robustness.** Garbage strings, non-ASCII text, 10,000-character input and
    extreme numbers go through every parser without a panic.
 
-`moon fmt --check` is clean. CI runs the tests on `js`, `wasm-gc` and `native`,
-and builds `wasm` as well.
+`moon fmt --check` is clean on the local `moonc 0.10.0` toolchain. CI does not
+gate on the formatter, because newer `moon fmt` releases rewrite `Int` to
+`Int32` and `options` to `pkgtype`; the test and build matrix is the gate that
+matters for compatibility.
 
 ## Repository layout
 
