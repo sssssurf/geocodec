@@ -1,0 +1,8 @@
+import {
+  "sssssurf/geocodec",
+  "moonbitlang/core/env",
+}
+
+options(
+  "is-main": true,
+)
