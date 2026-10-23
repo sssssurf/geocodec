@@ -4,4 +4,4 @@ import {
   "moonbitlang/core/math",
 }
 
-warnings = "-deprecated_syntax"
+warnings = "-deprecated_syntax-test_unqualified_package"

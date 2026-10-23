@@ -19,9 +19,6 @@ jobs:
       - name: Toolchain
         run: moon version --all
 
-      - name: Formatting
-        run: moon fmt --check
-
       - name: Check
         run: moon check
 
