@@ -72,3 +72,27 @@ test "covers reject invalid sizes and precision" {
     1,
   )
 }
+
+///|
+test "random ASCII tokens never panic" {
+  let alphabet = chars_of("abcdefghijklmnopqrstuvwxyz0123456789+-. ,;:°′″")
+  let mut seed = 20261023L
+  for _ in 0..<200 {
+    seed = seed * 48271L % 2147483647L
+    let length = (seed % 41L).to_int()
+    let token : Array[Char] = []
+    for _ in 0..<length {
+      seed = seed * 48271L % 2147483647L
+      token.push(alphabet[(seed % alphabet.length().to_int64()).to_int()])
+    }
+    let text = string_of(token)
+    let _ = parse_location(text)
+    let _ = parse_codes(text)
+    let _ = describe_code(text)
+    let _ = geohash_bounds(text)
+    let _ = pluscode_bounds(text)
+    let _ = maidenhead_bounds(text)
+    let _ = geouri_parse(text)
+    let _ = parse_dms(text, true)
+  }
+}
