@@ -36,7 +36,16 @@ jobs:
           moon run --target js cmd/main -- parse "8FVC9G8F+6X" | grep -q "as_geouri: geo:"
           moon run --target js cmd/main -- scan "8FVC9G8F+6X and IO91WM" | grep -q "found: 2"
           moon run --target js cmd/main -- info "8FVC9G8F+6X" | grep -q "resolution_m"
+          moon run --target js cmd/main -- json "8FVC9G8F+6X" | grep -q '"kind":"cell"'
+          moon run --target js cmd/main -- convert "geo:48.198634,16.371648;u=40" plus 10 | grep -q "converted:"
           moon run --target js cmd/main -- demo | grep -q "geohash: wx4g0bm6c"
+
+      - name: Example
+        run: moon run --target js examples/basic
+
+      - name: Benchmarks
+        working-directory: benchmarks
+        run: moon bench
 
   build-matrix:
     runs-on: ubuntu-latest
