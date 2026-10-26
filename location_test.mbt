@@ -108,6 +108,36 @@ test "cell to cell changes precision without pretending the old shape" {
 }
 
 ///|
+test "a point with u= contains nearby points and excludes far ones" {
+  let envelope = parse_location("geo:48.198634,16.371648;u=40").unwrap()
+  assert_true(envelope.contains_point(LatLng::new(48.1987, 16.3717).unwrap()))
+  assert_false(envelope.contains_point(LatLng::new(48.1995, 16.3717).unwrap()))
+}
+
+///|
+test "u=0 is an exact point and disappears from the rendered uri" {
+  let loc = parse_location("geo:1,2;u=0").unwrap()
+  assert_eq(loc.uncertainty_m, 0.0)
+  assert_eq(loc.to_geouri(), "geo:1,2")
+}
+
+///|
+test "a non-wgs84 crs is preserved but not interpreted" {
+  let loc = parse_location("geo:1,2;crs=EPSG:4326").unwrap()
+  assert_eq(loc.crs.unwrap(), "EPSG:4326")
+  assert_eq(loc.to_geouri(), "geo:1,2;crs=EPSG:4326")
+}
+
+///|
+test "point to cell rejects non-cell formats and invalid precision" {
+  let point = parse_location("39.9042,116.4074").unwrap()
+  assert_true(point.to_cell(@geocodec.GeoHash, 0) is None)
+  assert_true(point.to_cell(@geocodec.PlusCode, 9) is None)
+  assert_true(point.to_cell(@geocodec.Maidenhead, 3) is None)
+  assert_true(point.to_cell(@geocodec.Dms, 10) is None)
+}
+
+///|
 test "describe_code uses the same model as parse_location" {
   let by_parse = parse_location("IO91WM").unwrap()
   let by_describe = describe_code("IO91WM").unwrap()
