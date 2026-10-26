@@ -33,8 +33,9 @@ jobs:
       - name: CLI smoke test
         run: |
           moon run --target js cmd/main -- parse "8FVC9G8F+6X" | grep -q "format: plus-code"
+          moon run --target js cmd/main -- parse "8FVC9G8F+6X" | grep -q "as_geouri: geo:"
           moon run --target js cmd/main -- scan "8FVC9G8F+6X and IO91WM" | grep -q "found: 2"
-          moon run --target js cmd/main -- info "8FVC9G8F+6X" | grep -q "precision_m"
+          moon run --target js cmd/main -- info "8FVC9G8F+6X" | grep -q "resolution_m"
           moon run --target js cmd/main -- demo | grep -q "geohash: wx4g0bm6c"
 
   build-matrix:
