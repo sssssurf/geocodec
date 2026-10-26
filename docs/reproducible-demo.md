@@ -28,10 +28,10 @@ $ moon check --target js
 Finished.
 
 $ moon test --target js
-Total tests: 48, passed: 48, failed: 0.
+Total tests: 53, passed: 53, failed: 0.
 
 $ moon test --target wasm-gc
-Total tests: 48, passed: 48, failed: 0.
+Total tests: 53, passed: 53, failed: 0.
 ```
 
 The `Finished.` lines also carry a task count that depends on the build cache,
@@ -78,14 +78,23 @@ random source.
 ```text
 $ moon run --target js cmd/main -- parse "8FVC9G8F+6X"
 format: plus-code
+kind: cell
 point: 47.365562, 8.524938
 dms: 47°21′56.02″N 8°31′29.78″E
-
-$ moon run --target js cmd/main -- parse "IO91WM"
-format: maidenhead
-point: 51.520833, -0.125000
-dms: 51°31′15.00″N 0°07′30.00″W
+region: 47.365500,8.524875,47.365625,8.525000
+resolution_m: 13.822
+uncertainty_m: 8.365
+area_m2: 130.268
+altitude_m: (none)
+crs: wgs84
+raw: 8FVC9G8F+6X
+as_geouri: geo:47.365562,8.524938;u=8.365
 ```
+
+`8FVC9G8F+6X` is a cell: the region is exact, the longer side is 13.822 m, and
+reducing it to its centre costs up to 8.365 m (half the diagonal). `as_geouri`
+writes that radius as `;u=`, so a `geo:`-only consumer still gets a covering
+circle; the rectangle shape is kept in `region`.
 
 ### 4.2 Encode the three cell codecs
 
@@ -117,10 +126,10 @@ center: 51.520833, -0.125000
 ```text
 $ moon run --target js cmd/main -- scan "Meet at 8FVC9G8F+6X near IO91WM, or send geo:48.198634,16.371648;u=40 and wx4g0b."
 found: 4
-plus-code: 47.365562, 8.524938
-maidenhead: 51.520833, -0.125000
-geo-uri: 48.198634, 16.371648
-geohash: 39.905090, 116.405640
+plus-code: 47.365562, 8.524938 [cell, 13.8 m]
+maidenhead: 51.520833, -0.125000 [cell, 5772.2 m]
+geo-uri: 48.198634, 16.371648 [point, 80.0 m]
+geohash: 39.905090, 116.405640 [cell, 938.2 m]
 ```
 
 The words "Meet", "at", "near", "or", "send" and "and" are not reported. Some of
@@ -164,28 +173,39 @@ the optional `max` argument; exceeding the cap is an error, not a truncation.
 ```text
 $ moon run --target js cmd/main -- info "8FVC9G8F+6X"
 format: plus-code
+kind: cell
 point: 47.365562, 8.524938
 dms: 47°21′56.02″N 8°31′29.78″E
-bounds: 47.365500,8.524875,47.365625,8.525000
-center: 47.365562, 8.524938
-precision_m: 13.822
+region: 47.365500,8.524875,47.365625,8.525000
+resolution_m: 13.822
+uncertainty_m: 8.365
 area_m2: 130.268
+altitude_m: (none)
+crs: wgs84
+raw: 8FVC9G8F+6X
+as_geouri: geo:47.365562,8.524938;u=8.365
 ```
 
 The 10-digit Plus Code cell is 0.000125° on a side; at 47.4°N that is about
-13.8 m of latitude and 9.4 m of longitude, so the reported longer side is 13.8 m
-and the area about 130 m².
+13.8 m of latitude and 9.4 m of longitude, so the reported longer side is 13.8 m,
+the half-diagonal is 8.365 m and the area is about 130 m².
 
 ### 4.6 Geo URI and DMS
 
 ```text
 $ moon run --target js cmd/main -- geouri "geo:48.198634,16.371648;u=40"
+format: geo-uri
+kind: point
 point: 48.198634, 16.371648
 dms: 48°11′55.08″N 16°22′17.93″E
-altitude: (none)
-uncertainty: 40.000
+region: 48.198272,16.371109,48.198996,16.372187
+resolution_m: 80.000
+uncertainty_m: 40.000
+area_m2: 6400.000
+altitude_m: (none)
 crs: wgs84
-formatted: geo:48.198634,16.371648;u=40
+raw: geo:48.198634,16.371648;u=40
+as_geouri: geo:48.198634,16.371648;u=40
 
 $ moon run --target js cmd/main -- dms 51.5074 lat
 51°30′26.64″N
@@ -215,7 +235,7 @@ bbox: not a recognised code
 
 ## 6. What to check
 
-1. `moon test` reports 48 passing tests.
+1. `moon test` reports 53 passing tests.
 2. `moon run --target js cmd/main -- demo` prints three blocks, and the codes
    match section 3.
 3. `moon run --target js cmd/main -- parse "8FVC9G8F+6X"` reports

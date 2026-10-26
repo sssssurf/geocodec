@@ -42,13 +42,57 @@ UTM/MGRS 投影、椭球测地线或坐标系转换——这些属于投影/测�
 On top of the codecs:
 
 - `LatLng` and `BoundingBox`, both validated; boxes may cross the antimeridian.
+- `Location`: the unified value. It keeps the notation, whether it is a cell or
+  a point, the representative point, the exact region, the resolution, the
+  uncertainty, the altitude/CRS and the original text.
 - `parse_location`, which recognises any of the notations above from one string.
 - `parse_codes`, which scans free text and returns every code it finds.
-- `describe_code`, which reports the notation, the centre, the bounds, the
-  ground size in metres and the approximate area in square metres.
+- `describe_code`, which reports the notation, the region, the ground size in
+  metres and the approximate area in square metres.
+- `Location::to_geouri`, which converts a cell to a point plus `;u=<half
+  diagonal>` instead of silently dropping the cell.
 - `geohash_cover`, which enumerates the geohash cells covering a bounding box,
   with a cell budget.
 - A CLI that exposes every operation for a reviewer or a shell script.
+
+## One model, two families
+
+The notations are not interchangeable. Geohash, Plus Codes and Maidenhead denote
+a **cell**: a rectangle at a resolution. A decimal pair, a DMS pair and a `geo:`
+URI denote a **point**; `geo:` may also carry an explicit `u=` uncertainty.
+`parse_location` returns a `Location`, never a bare `LatLng`:
+
+| Field | Meaning |
+| --- | --- |
+| `format` | which notation produced the value |
+| `kind` | `Cell` or `Point` |
+| `point` | cell centre, or the coordinate itself |
+| `region` | exact cell, `u=` envelope, or degenerate point |
+| `resolution_m` | longer side of the region; 0 when the notation has no extent |
+| `uncertainty_m` | max distance from `point` to the region boundary |
+| `area_m2` | approximate ground area of the region |
+| `altitude_m`, `crs` | only from `geo:` URIs |
+| `raw` | the original text, never discarded |
+
+Converting a cell to a point keeps the centre and the `region` but loses the
+shape; the point is only accurate to `uncertainty_m`. Converting a point to a
+cell quantises it; the cell contains the point and the error is at most the
+cell's half-diagonal. `to_geouri` on a cell writes the centre plus
+`;u=<half diagonal>`, so a `geo:`-only consumer gets a covering circle, at the
+cost of the rectangle shape. A point with `u=` larger than the target cell
+should stay a point: the code would pretend to more accuracy than the source.
+
+```moonbit
+let cell = @geocodec.parse_location("8FVC9G8F+6X").unwrap()
+// cell.kind == Cell, cell.resolution_m ~ 13.8, cell.uncertainty_m ~ 8.4
+let uri = cell.to_geouri()
+// "geo:47.365562,8.524938;u=8.365"
+let back = @geocodec.parse_location(uri).unwrap()
+// back.kind == Point, back.uncertainty_m == 8.365
+```
+
+The full semantics, including the conversion-loss table and the no-invented-
+precision rule, are in [docs/location-model.md](docs/location-model.md).
 
 ## Install
 
@@ -132,10 +176,12 @@ lower false-positive rate in prose.
 ### Describing a cell
 
 ```moonbit
-let info = @geocodec.describe_code("8FVC9G8F+6X").unwrap()
-// info.format == PlusCode
-// info.precision_m ~ 13.8
-// info.area_m2 ~ 130
+let loc = @geocodec.describe_code("8FVC9G8F+6X").unwrap()
+// loc.kind == Cell
+// loc.resolution_m ~ 13.8
+// loc.uncertainty_m ~ 8.4
+// loc.area_m2 ~ 130
+// loc.to_geouri() == "geo:47.365562,8.524938;u=8.365"
 ```
 
 ## Command line
@@ -143,24 +189,24 @@ let info = @geocodec.describe_code("8FVC9G8F+6X").unwrap()
 ```text
 $ moon run --target js cmd/main -- parse "8FVC9G8F+6X"
 format: plus-code
+kind: cell
 point: 47.365562, 8.524938
 dms: 47°21′56.02″N 8°31′29.78″E
-
-$ moon run --target js cmd/main -- info "8FVC9G8F+6X"
-format: plus-code
-point: 47.365562, 8.524938
-dms: 47°21′56.02″N 8°31′29.78″E
-bounds: 47.365500,8.524875,47.365625,8.525000
-center: 47.365562, 8.524938
-precision_m: 13.822
+region: 47.365500,8.524875,47.365625,8.525000
+resolution_m: 13.822
+uncertainty_m: 8.365
 area_m2: 130.268
+altitude_m: (none)
+crs: wgs84
+raw: 8FVC9G8F+6X
+as_geouri: geo:47.365562,8.524938;u=8.365
 
 $ moon run --target js cmd/main -- scan "Meet at 8FVC9G8F+6X near IO91WM, or send geo:48.198634,16.371648;u=40 and wx4g0b."
 found: 4
-plus-code: 47.365562, 8.524938
-maidenhead: 51.520833, -0.125000
-geo-uri: 48.198634, 16.371648
-geohash: 39.905090, 116.405640
+plus-code: 47.365562, 8.524938 [cell, 13.8 m]
+maidenhead: 51.520833, -0.125000 [cell, 5772.2 m]
+geo-uri: 48.198634, 16.371648 [point, 80.0 m]
+geohash: 39.905090, 116.405640 [cell, 938.2 m]
 ```
 
 The full command list:
@@ -229,13 +275,13 @@ the formulas come from the public specifications listed below.
 
 ```text
 $ moon test --target js
-Total tests: 48, passed: 48, failed: 0.
+Total tests: 53, passed: 53, failed: 0.
 
 $ moon test --target wasm-gc
-Total tests: 48, passed: 48, failed: 0.
+Total tests: 53, passed: 53, failed: 0.
 ```
 
-The suite is in four layers:
+The suite is in five layers:
 
 1. **Published vectors.** `u4pruydqqvj` and `ezs42` for geohash,
    `849VCWC8+R9` and `8FVC9G8F+6X` for Plus Codes, `IO91WM` for Maidenhead,
@@ -244,7 +290,10 @@ The suite is in four layers:
    line and the poles.
 3. **Property tests.** Forty deterministic pseudo-random points run through
    all three cell codecs; covers of ten random boxes are checked cell by cell.
-4. **Robustness.** Garbage strings, non-ASCII text, 10,000-character input and
+4. **Unified model.** Cell vs point kinds, region containment, the `u=` envelope,
+   `to_geouri`'s half-diagonal radius, and the no-invented-precision rule for
+   decimal/DMS.
+5. **Robustness.** Garbage strings, non-ASCII text, 10,000-character input and
    extreme numbers go through every parser without a panic.
 
 `moon fmt --check` is clean on the local `moonc 0.10.0` toolchain. CI does not
@@ -264,15 +313,15 @@ pluscode.mbt      Open Location Code encode/decode/shorten/recover/neighbours
 maidenhead.mbt    Maidenhead locators
 geouri.mbt        RFC 5870 parser and formatter
 parse.mbt         one-string detection and free-text scanning
-code_info.mbt     cell size and area reports
+location.mbt      the unified Location model and its conversions
 location_format.mbt  notation names
 cmd/main/         the CLI
-docs/             reproducible demo and development retrospective
+docs/             model notes, reproducible demo and development retrospective
 ```
 
 ## Status
 
-Version 0.1.0. The public API is intentionally small and may still change before
+Version 0.2.0. The public API is intentionally small and may still change before
 1.0. Issues and pull requests are welcome; please include a failing code string
 and the notation you expected.
 

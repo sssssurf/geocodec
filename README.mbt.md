@@ -5,11 +5,12 @@
 Location codes for MoonBit: Geohash, Plus Codes, Maidenhead locators, `geo:`
 URIs and degrees/minutes/seconds.
 
-`geocodec` converts between the short codes people read, print and text, and
-returns a validated `LatLng`, the bounds of the cell, its neighbours, the cells
-covering a box, and the codes found inside a sentence. It is dependency-free,
-does no I/O, and every public function is total: invalid input becomes `None` or
-`false`, never an exception.
+`geocodec` converts between the short codes people read, print and text. A
+Geohash/Plus Code/Maidenhead string denotes a cell with an extent; a decimal
+pair, DMS pair or `geo:` URI denotes a point, optionally with `u=`. The parser
+returns a `Location` that keeps the notation, the representative point, the
+exact region, the resolution, the uncertainty and the original text, so a
+conversion can say what it lost instead of silently returning a centre.
 
 ```moonbit nocheck
 let p = @geocodec.LatLng::new(39.9042, 116.4074).unwrap()
@@ -28,8 +29,10 @@ let p = @geocodec.LatLng::new(39.9042, 116.4074).unwrap()
 | Geo URI | RFC 5870 | RFC 5870 | — | altitude, uncertainty, CRS |
 | DMS | format | parse | — | symbols, `d/m/s`, colons, hemispheres |
 
-Plus `LatLng`, `BoundingBox` (antimeridian aware), `parse_location`,
-`parse_codes` for free text, `describe_code` for cell size and `geohash_cover`
+Plus `LatLng`, `BoundingBox` (antimeridian aware), the `Location` model
+(`kind`, `region`, `resolution_m`, `uncertainty_m`, `area_m2`, `raw`),
+`parse_location`, `parse_codes` for free text, `describe_code` for cell codes,
+`Location::to_geouri` for a bounded cell→point conversion, and `geohash_cover`
 for box coverage.
 
 ## Install and run
@@ -51,9 +54,10 @@ operations; those belong to separate projection/geodesy layers.
 
 ## Tests
 
-48 test blocks: published vectors, round-trips at every precision, deterministic
-property tests, cover checks and a robustness pass over malformed input.
-`moon test` passes on `js` and `wasm-gc`; CI also builds `wasm` and `native`.
+53 test blocks: published vectors, round-trips at every precision, deterministic
+property tests, cover checks, unified-model conversion checks and a robustness
+pass over malformed input. `moon test` passes on `js` and `wasm-gc`; CI also
+builds `wasm` and `native`.
 
 ## License
 

@@ -118,6 +118,27 @@ Geohash、Plus Code、Maidenhead 的单元都可能跨 180° 经线。`BoundingB
 逐字符、显式返回 `Option`。这样 `parse_dms("1e999")`、`geo:0,0;u=1e999` 都是
 `None`，而不是依赖异常路径。所有编解码入口先检查长度、字符集和数值范围。
 
+### 5.6 统一模型：区域、精度、不确定度
+
+初版的 `parse_location` 把所有记法都压成一个 `LatLng`。这个抽象是错的：
+Geohash 这类网格编码和 `geo:` 这类坐标文本不是一类东西，压成点会丢掉区域、
+精度和不确定度。于是补了 `Location`：
+
+- `kind` 区分 `Cell`（Geohash、Plus Code、Maidenhead）和 `Point`（十进制、
+  度分秒、`geo:` URI）；
+- `region` 保留精确单元、`u=` 包络或退化点；
+- `resolution_m` 是区域长边，`uncertainty_m` 是代表点到边界的最大距离，
+  `area_m2` 是区域面积；
+- `raw` 保留原始文本，转换不会把「它原来是什么记法」弄丢。
+
+转换损失变成显式的：单元取中心只保留 `region` 和 `uncertainty_m`；点编码成
+单元是量化，误差不超过单元半对角线；单元转 `geo:` 用 `to_geouri` 写出
+`;u=<半对角线>`，用圆覆盖矩形，形状损失由 `region` 保留。十进制和度分秒不
+根据小数位数猜精度，`u=` 是唯一由记法本身携带的不确定度。
+
+这个模型也解释了「转换是否会丢信息」：会，丢的是形状；模型把丢掉的量和原文
+一起留下，而不是返回一个看起来精确的中心点。
+
 ## 6. 测试策略：标准向量、闭环、属性、健壮性
 
 四层测试抓不同的问题：
@@ -129,7 +150,10 @@ Geohash、Plus Code、Maidenhead 的单元都可能跨 180° 经线。`BoundingB
    「自己前后一致」。
 3. **属性测试。** 40 个确定性伪随机点过三种格网编解码；10 个随机盒子的 cover
    逐单元检查。它抓到过 Plus Code 的 grid place value 错误（见下）。
-4. **健壮性。** 垃圾输入、超长输入、极值。它保证「坏输入不会变成崩溃」。
+4. **统一模型。** 单元/点的 `kind`、`region` 包含关系、`u=` 包络、
+   `to_geouri` 的半对角线、decimal/DMS 不伪造精度。它们保证「转换损失是
+   说清楚的，不是静默的」。
+5. **健壮性。** 垃圾输入、超长输入、极值。它保证「坏输入不会变成崩溃」。
 
 测试里也踩过「测试本身写错」的坑：最初把 Googleplex 的期望码写成
 `849VCWC8+R9`，但输入用的是 `-122.0840`；实际规范示例用的是 `-122.08408`，
@@ -187,8 +211,8 @@ Geohash、Plus Code、Maidenhead 的单元都可能跨 180° 经线。`BoundingB
 
 ## 11. 规模
 
-- 库源码 1,947 行（不含测试），CLI 359 行，测试 581 行。
-- 68 个公开函数，5 类记法，48 个测试块。
+- 库源码 2,154 行（不含测试），CLI 376 行，测试 645 行。
+- 75 个公开函数，5 类记法，53 个测试块。
 - 没有为了行数堆功能：每个记法只做「编码、解码、边界、校验」四件事，Geohash
   多一个 cover，Plus Code 多一个 shorten/recover 和 neighbors，三个记法共用
   `LatLng`/`BoundingBox`。
@@ -199,7 +223,7 @@ Geohash、Plus Code、Maidenhead 的单元都可能跨 180° 经线。`BoundingB
 | --- | --- | --- | --- |
 | MoonBit 为主 | 以 MoonBit 作为主要实现语言 | 全部源码为 `.mbt`，零第三方依赖 | `moon.mod`、`*.mbt` |
 | 仓库公开 | 连续、可追踪的提交与开发记录 | 按「基础类型 → 各记法 → 检索 → CLI → 文档」顺序提交，历史线性；推送到 GitHub 后即为公开仓库 | `git log` |
-| 能够运行 | README、可运行示例、必要测试 | README + CLI `demo`/`scan`/`cover`/`info` + 48 个测试 | `docs/reproducible-demo.md` |
+| 能够运行 | README、可运行示例、必要测试 | README + CLI `demo`/`scan`/`cover`/`info` + 53 个测试 | `docs/reproducible-demo.md` |
 | 工作有效 | 须包含本期完成的实质新增工作 | 0.1.0 全为新代码：5 类记法、覆盖、扫描、尺寸报告、CLI、测试、文档 | `CHANGELOG.md` |
 | 开源合规 | 认可许可证，说明移植/参考来源 | Apache-2.0；README 与本文列出 OLC、RFC 5870、geohash、IARU 来源；明确未移植代码 | `LICENSE`、`README.md` |
 | AI 可解释 | 可用 AI 辅助，但目标/路径/质量由参赛者掌握 | 本文记录选题、范围取舍、三个 bug 与修正、AI 分工 | 本文 |

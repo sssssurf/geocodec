@@ -4,6 +4,38 @@ All notable changes to this project are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-10-26
+
+### Added
+
+- **Unified `Location` model.** Parsing now distinguishes a cell (Geohash, Plus
+  Code, Maidenhead) from a point (decimal, DMS, `geo:` URI) and keeps the
+  notation, representative point, exact region, resolution, uncertainty, area,
+  altitude/CRS and original text. `LocationKind` is `Cell` or `Point`.
+- `Location::center`, `bounds`, `is_cell`, `contains_point`, `contains`,
+  `intersects` and `to_geouri`.
+- `Location::to_geouri` converts a cell to a centre plus `;u=<half diagonal>`,
+  making the rectangle→circle loss explicit instead of dropping the cell.
+- `docs/location-model.md`: the model, its invariants, the conversion-loss table
+  and worked examples.
+
+### Changed
+
+- **Breaking:** `parse_location`, `parse_codes` and `describe_code` now return
+  `Location` instead of a bare point or `CodeInfo`; `CodeInfo` is removed.
+  Callers that only need a point use `Location::center`.
+- The CLI `parse`, `info` and `scan` commands print the kind, region, resolution,
+  uncertainty, area and `as_geouri`.
+- 53 test blocks (was 48).
+- Version bumped to 0.2.0.
+
+### Notes
+
+- The model does not invent precision from decimal digits: a decimal or DMS pair
+  is a point with resolution 0, and `u=` is the only uncertainty `geo:` defines.
+- A point with `u=` larger than the target cell should stay a point; encoding it
+  as a cell would pretend to more accuracy than the source had.
+
 ## [0.1.0] - 2026-10-23
 
 First release. The whole module is new in this round.
