@@ -177,6 +177,36 @@ pub fn Location::is_cell(self : Location) -> Bool {
 }
 
 ///|
+/// True when the source notation denotes a point.
+pub fn Location::is_point(self : Location) -> Bool {
+  self.kind == Point
+}
+
+///|
+/// Quantise the representative point to a cell of `format` at `precision`.
+/// This is the explicit point→cell conversion: the result is a new `Location`
+/// whose `region` is the cell that contains `point`, so the caller can compare
+/// the new `resolution_m`/`uncertainty_m` with the source's and see the loss.
+/// `precision` means characters for Geohash, significant digits for Plus Code
+/// and characters for Maidenhead.
+pub fn Location::to_cell(
+  self : Location,
+  format : LocationFormat,
+  precision : Int,
+) -> Location? {
+  let code = match format {
+    GeoHash => geohash_encode(self.point, precision)
+    PlusCode => pluscode_encode(self.point, code_length=precision)
+    Maidenhead => maidenhead_encode(self.point, precision~)
+    _ => None
+  }
+  match code {
+    None => None
+    Some(text) => describe_code(text)
+  }
+}
+
+///|
 /// True when the point lies inside the region.
 pub fn Location::contains_point(self : Location, point : LatLng) -> Bool {
   self.region.contains(point)

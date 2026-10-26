@@ -35,6 +35,7 @@ fn main {
     "scan" => run_scan(join_from(shifted, 2))
     "cover" => run_cover(shifted)
     "info" => run_info(arg_at(shifted, 2))
+    "convert" => run_convert(shifted)
     "demo" => run_demo()
     _ => print_usage()
   }
@@ -53,6 +54,7 @@ fn is_command(text : String) -> Bool {
     | "scan"
     | "cover"
     | "info"
+    | "convert"
     | "demo" => true
     _ => false
   }
@@ -73,6 +75,8 @@ fn print_usage() -> Unit {
     "  cover <south> <west> <north> <east> <precision> [max]\n" +
     "                                         geohash cells covering a box\n" +
     "  info <code>                            format, point, bounds, ground size\n" +
+    "  convert <code> <geohash|plus|maidenhead> <precision>\n" +
+    "                                         explicit point/cell quantisation\n" +
     "  demo                                   a fixed tour of the codecs",
   )
 }
@@ -358,6 +362,42 @@ fn run_info(code : String) -> Unit {
   match @geocodec.describe_code(code) {
     None => println("info: not a geohash, Plus Code or locator")
     Some(loc) => show_location(loc)
+  }
+}
+
+///|
+fn run_convert(args : Array[String]) -> Unit {
+  let code = arg_at(args, 2)
+  let format = @geocodec.ascii_lower(arg_at(args, 3))
+  let precision = integer_arg(arg_at(args, 4), -1)
+  if code == "" || format == "" || precision < 0 {
+    println("convert: need a code, a target format and a precision")
+    return
+  }
+  let target = match format {
+    "geohash" => @geocodec.GeoHash
+    "plus" | "plus-code" => @geocodec.PlusCode
+    "maidenhead" => @geocodec.Maidenhead
+    _ => {
+      println("convert: target must be geohash, plus or maidenhead")
+      return
+    }
+  }
+  let source = match @geocodec.parse_location(code) {
+    None => {
+      println("convert: source is not a recognised location")
+      return
+    }
+    Some(loc) => loc
+  }
+  println("source:")
+  show_location(source)
+  match source.to_cell(target, precision) {
+    None => println("convert: cannot encode at this precision")
+    Some(cell) => {
+      println("converted:")
+      show_location(cell)
+    }
   }
 }
 

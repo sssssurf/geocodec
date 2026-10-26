@@ -180,6 +180,8 @@ pub fn Location::contains(Self, Self) -> Bool
 pub fn Location::contains_point(Self, LatLng) -> Bool
 pub fn Location::intersects(Self, Self) -> Bool
 pub fn Location::is_cell(Self) -> Bool
+pub fn Location::is_point(Self) -> Bool
+pub fn Location::to_cell(Self, LocationFormat, Int) -> Self?
 pub fn Location::to_geouri(Self) -> String
 
 pub(all) enum LocationFormat {

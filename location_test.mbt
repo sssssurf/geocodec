@@ -85,6 +85,29 @@ test "the model distinguishes containment of a cell and a point" {
 }
 
 ///|
+test "point to cell quantises and reports the new resolution" {
+  let point = parse_location("geo:48.198634,16.371648;u=40").unwrap()
+  assert_true(point.is_point())
+  assert_false(point.is_cell())
+  let plus = point.to_cell(@geocodec.PlusCode, 10).unwrap()
+  assert_true(plus.is_cell())
+  assert_true(plus.region.contains(point.point))
+  assert_true(plus.resolution_m < point.uncertainty_m)
+  let coarse = point.to_cell(@geocodec.GeoHash, 5).unwrap()
+  assert_true(coarse.resolution_m > plus.resolution_m)
+  assert_true(point.to_cell(@geocodec.Decimal, 10) is None)
+}
+
+///|
+test "cell to cell changes precision without pretending the old shape" {
+  let cell = parse_location("8FVC9G8F+6X").unwrap()
+  let coarse = cell.to_cell(@geocodec.GeoHash, 6).unwrap()
+  assert_true(coarse.is_cell())
+  assert_true(coarse.resolution_m > cell.resolution_m)
+  assert_true(coarse.region.intersects(cell.region))
+}
+
+///|
 test "describe_code uses the same model as parse_location" {
   let by_parse = parse_location("IO91WM").unwrap()
   let by_describe = describe_code("IO91WM").unwrap()
