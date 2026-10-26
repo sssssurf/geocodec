@@ -28,10 +28,10 @@ $ moon check --target js
 Finished.
 
 $ moon test --target js
-Total tests: 55, passed: 55, failed: 0.
+Total tests: 59, passed: 59, failed: 0.
 
 $ moon test --target wasm-gc
-Total tests: 55, passed: 55, failed: 0.
+Total tests: 59, passed: 59, failed: 0.
 ```
 
 The `Finished.` lines also carry a task count that depends on the build cache,
@@ -250,6 +250,53 @@ The source had `u=40`; the converted cell is finer than that (13.822 m). The
 cell is a valid "cell containing the point", but its 8.323 m uncertainty does
 not restore the source's 40 m bound. This is exactly the loss the model exposes.
 
+### 4.8 Machine-readable output
+
+`json` emits one line with the same model, for scripts and AI agents:
+
+```text
+$ moon run --target js cmd/main -- json "8FVC9G8F+6X"
+{"format":"plus-code","kind":"cell","lat":47.365562,"lng":8.524938,"south":47.365500,"west":8.524875,"north":47.365625,"east":8.525000,"resolution_m":13.822,"uncertainty_m":8.365,"area_m2":130.268,"altitude_m":null,"crs":null,"raw":"8FVC9G8F+6X","as_geouri":"geo:47.365562,8.524938;u=8.365"}
+```
+
+### 4.9 Runnable example and benchmarks
+
+The library example is a separate main package, so it exercises the public API
+the way a user would:
+
+```text
+$ moon run --target js examples/basic
+format: plus-code
+kind: cell
+point: 47.365562, 8.524938
+region: 47.365500,8.524875,47.365625,8.525000
+resolution_m: 13.822
+uncertainty_m: 8.365
+as_geouri: geo:47.365562,8.524938;u=8.365
+as_geohash6: u0qj3y (828.4 m)
+scanned: 3
+  plus-code 47.365562, 8.524938
+  maidenhead 51.520833, -0.125000
+  geo-uri 48.198634, 16.371648
+```
+
+```text
+$ cd benchmarks && moon bench
+bench: geohash encode       278.08 ns
+bench: plus code encode     241.58 ns
+bench: maidenhead encode     91.72 ns
+bench: parse a plus code      2.67 µs
+bench: parse a geo uri        2.38 µs
+bench: cell to geo uri      758.74 ns
+bench: point to plus cell     3.10 µs
+bench: geohash cover         22.92 µs
+bench: scan a sentence       14.79 µs
+bench: region containment    15.18 ns
+```
+
+These are the means from the local run; they are regression indicators, not a
+machine-independent guarantee. CI runs `moon bench` so the package cannot rot.
+
 ## 5. Error paths are part of the demo
 
 These inputs are wrong on purpose; the point is that the program reports them
@@ -274,7 +321,7 @@ bbox: not a recognised code
 
 ## 6. What to check
 
-1. `moon test` reports 55 passing tests.
+1. `moon test` reports 59 passing tests.
 2. `moon run --target js cmd/main -- demo` prints three blocks, and the codes
    match section 3.
 3. `moon run --target js cmd/main -- parse "8FVC9G8F+6X"` reports
@@ -292,6 +339,6 @@ bbox: not a recognised code
 | MoonBit is the main language | all source files are `.mbt`; `moon.mod` lists no third-party dependency |
 | Public repository with traceable history | `git log` contains the feature/test/docs commits in development order |
 | Buildable, runnable, reproducible | sections 1–5 above; `moon test`, `moon run` |
-| Substantial work in this round | the whole module is new; `CHANGELOG.md` records 0.2.1 |
+| Substantial work in this round | the whole module is new; `CHANGELOG.md` records 0.3.0 |
 | Open-source compliance | `LICENSE` (Apache-2.0); `README.md` lists standards and states that no code was ported |
 | Explainable AI use | `docs/development-retrospective.md` records the decisions, the rejected alternatives and the role of the AI assistant |

@@ -53,7 +53,8 @@ On top of the codecs:
   diagonal>` instead of silently dropping the cell.
 - `geohash_cover`, which enumerates the geohash cells covering a bounding box,
   with a cell budget.
-- A CLI that exposes every operation for a reviewer or a shell script.
+- A CLI that exposes every operation for a reviewer or a shell script, plus a
+  one-line JSON form for scripts and AI agents.
 
 ## One model, two families
 
@@ -220,11 +221,59 @@ The full command list:
 
 ```text
 parse, geohash, plus, maidenhead, bbox, geouri, dms,
-scan, cover, info, convert, demo
+scan, cover, info, convert, json, demo
 ```
 
 The CLI finds its subcommand after any runtime/script path a backend inserts, so
 the same invocation works for `js`, `wasm-gc` and `native` targets.
+
+For scripts and AI agents, `json` emits one line with the same model:
+
+```text
+$ moon run --target js cmd/main -- json "8FVC9G8F+6X"
+{"format":"plus-code","kind":"cell","lat":47.365562,"lng":8.524938,"south":47.365500,"west":8.524875,"north":47.365625,"east":8.525000,"resolution_m":13.822,"uncertainty_m":8.365,"area_m2":130.268,"altitude_m":null,"crs":null,"raw":"8FVC9G8F+6X","as_geouri":"geo:47.365562,8.524938;u=8.365"}
+```
+
+## Examples and benchmarks
+
+A runnable library example (not just the CLI):
+
+```text
+$ moon run --target js examples/basic
+format: plus-code
+kind: cell
+point: 47.365562, 8.524938
+region: 47.365500,8.524875,47.365625,8.525000
+resolution_m: 13.822
+uncertainty_m: 8.365
+as_geouri: geo:47.365562,8.524938;u=8.365
+as_geohash6: u0qj3y (828.4 m)
+scanned: 3
+  plus-code 47.365562, 8.524938
+  maidenhead 51.520833, -0.125000
+  geo-uri 48.198634, 16.371648
+```
+
+The benchmark package covers the hot paths (encoding, parsing, conversion,
+covering, scanning). Run it from its directory:
+
+```text
+$ cd benchmarks && moon bench
+bench: geohash encode        ~278 ns
+bench: plus code encode      ~242 ns
+bench: maidenhead encode     ~92 ns
+bench: parse a plus code     ~2.7 µs
+bench: parse a geo uri       ~2.4 µs
+bench: cell to geo uri       ~759 ns
+bench: point to plus cell    ~3.1 µs
+bench: geohash cover         ~22.9 µs
+bench: scan a sentence       ~14.8 µs
+bench: region containment    ~15 ns
+```
+
+The numbers are from the local `moonc 0.10.0` run recorded in
+`docs/reproducible-demo.md`; they are regression indicators, not a promise about
+another machine.
 
 ## Design notes
 
@@ -282,10 +331,10 @@ the formulas come from the public specifications listed below.
 
 ```text
 $ moon test --target js
-Total tests: 55, passed: 55, failed: 0.
+Total tests: 59, passed: 59, failed: 0.
 
 $ moon test --target wasm-gc
-Total tests: 55, passed: 55, failed: 0.
+Total tests: 59, passed: 59, failed: 0.
 ```
 
 The suite is in five layers:
@@ -323,12 +372,14 @@ parse.mbt         one-string detection and free-text scanning
 location.mbt      the unified Location model and its conversions
 location_format.mbt  notation names
 cmd/main/         the CLI
+benchmarks/       moon bench hot paths
+examples/basic/   runnable library example
 docs/             model notes, reproducible demo and development retrospective
 ```
 
 ## Status
 
-Version 0.2.1. The public API is intentionally small and may still change before
+Version 0.3.0. The public API is intentionally small and may still change before
 1.0. Issues and pull requests are welcome; please include a failing code string
 and the notation you expected.
 

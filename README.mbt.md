@@ -44,8 +44,10 @@ moon run --target js cmd/main -- demo
 ```
 
 The CLI has the subcommands `parse`, `geohash`, `plus`, `maidenhead`, `bbox`,
-`geouri`, `dms`, `scan`, `cover`, `info` and `demo`. See `README.md` in the
-repository for recorded output.
+`geouri`, `dms`, `scan`, `cover`, `info`, `convert`, `json` and `demo`; `json`
+emits one line for scripts and AI agents. See `README.md` in the repository for
+recorded output, the runnable `examples/basic` package and the `benchmarks`
+package.
 
 ## Boundaries
 
@@ -55,10 +57,11 @@ operations; those belong to separate projection/geodesy layers.
 
 ## Tests
 
-55 test blocks: published vectors, round-trips at every precision, deterministic
+59 test blocks: published vectors, round-trips at every precision, deterministic
 property tests, cover checks, unified-model conversion checks and a robustness
 pass over malformed input. `moon test` passes on `js` and `wasm-gc`; CI also
-builds `wasm` and `native`.
+builds `wasm` and `native`, runs `examples/basic`, the CLI smoke tests and
+`moon bench`.
 
 ## License
 

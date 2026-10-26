@@ -212,8 +212,8 @@ Geohash 这类网格编码和 `geo:` 这类坐标文本不是一类东西，压�
 
 ## 11. 规模
 
-- 库源码 2,182 行（不含测试），CLI 415 行，测试 666 行。
-- 77 个公开函数，5 类记法，55 个测试块。
+- 库源码 2,182 行（不含测试），CLI 486 行，测试 692 行；另有 benchmarks 66 行、examples 30 行。
+- 77 个公开函数，5 类记法，59 个测试块。
 - 没有为了行数堆功能：每个记法只做「编码、解码、边界、校验」四件事，Geohash
   多一个 cover，Plus Code 多一个 shorten/recover 和 neighbors，三个记法共用
   `LatLng`/`BoundingBox`。
@@ -224,8 +224,8 @@ Geohash 这类网格编码和 `geo:` 这类坐标文本不是一类东西，压�
 | --- | --- | --- | --- |
 | MoonBit 为主 | 以 MoonBit 作为主要实现语言 | 全部源码为 `.mbt`，零第三方依赖 | `moon.mod`、`*.mbt` |
 | 仓库公开 | 连续、可追踪的提交与开发记录 | 按「基础类型 → 各记法 → 检索 → CLI → 文档」顺序提交，历史线性；推送到 GitHub 后即为公开仓库 | `git log` |
-| 能够运行 | README、可运行示例、必要测试 | README + CLI `demo`/`scan`/`cover`/`info` + 55 个测试 | `docs/reproducible-demo.md` |
-| 工作有效 | 须包含本期完成的实质新增工作 | 0.1.0 全为新代码：5 类记法、覆盖、扫描、尺寸报告、CLI、测试、文档 | `CHANGELOG.md` |
+| 能够运行 | README、可运行示例、必要测试 | README + CLI `demo`/`scan`/`cover`/`info` + `examples/basic` + 59 个测试 | `docs/reproducible-demo.md` |
+| 工作有效 | 须包含本期完成的实质新增工作 | 0.3.0：5 类记法、统一模型、覆盖、扫描、JSON、示例、基准、测试、文档 | `CHANGELOG.md` |
 | 开源合规 | 认可许可证，说明移植/参考来源 | Apache-2.0；README 与本文列出 OLC、RFC 5870、geohash、IARU 来源；明确未移植代码 | `LICENSE`、`README.md` |
 | AI 可解释 | 可用 AI 辅助，但目标/路径/质量由参赛者掌握 | 本文记录选题、范围取舍、三个 bug 与修正、AI 分工 | 本文 |
 

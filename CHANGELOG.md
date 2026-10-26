@@ -4,6 +4,26 @@ All notable changes to this project are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-10-26
+
+### Added
+
+- CLI `json <code>`: one-line JSON with `format`, `kind`, `lat`, `lng`,
+  `south`, `west`, `north`, `east`, `resolution_m`, `uncertainty_m`, `area_m2`,
+  `altitude_m`, `crs`, `raw` and `as_geouri`, for scripts and AI agents.
+- `examples/basic`: a runnable library example (parse, inspect, convert, scan).
+- `benchmarks/`: ten `moon bench` cases covering encode, parse, cell conversions,
+  covering, scanning and containment.
+- CI now runs the example and the benchmark package in addition to the four
+  target test matrix.
+
+### Changed
+
+- 59 test blocks (was 55).
+- README/demo/application updated with the JSON output, example output and
+  benchmark table.
+- Version bumped to 0.3.0.
+
 ## [0.2.1] - 2026-10-26
 
 ### Added
