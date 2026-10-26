@@ -46,13 +46,15 @@ Invariants:
 - `uncertainty_m` is the radius that bounds the region around `point`: for a
   cell it is the distance to a corner; for `u=` it is `u`.
 - `area_m2` is the rectangle's ground area; for a point it is 0.
+- `crs` is preserved and written back by `to_geouri`, but the library does not
+  reproject: coordinates are interpreted as WGS84 regardless of the label.
 
 ## What conversion loses
 
 | Conversion | What is kept | What is lost | API |
 | --- | --- | --- | --- |
 | cell → point | centre; `region` and `uncertainty_m` remain on the `Location` | the shape; the point alone is only accurate to `uncertainty_m` | `center()` |
-| point → cell | the cell that contains the point, with its bounds | the exact point; error ≤ cell half-diagonal | codec `encode(point, precision)` |
+| point → cell | the cell that contains the point, with its bounds | the exact point; error ≤ cell half-diagonal | `Location::to_cell(format, precision)` |
 | cell → `geo:` URI | centre plus `;u=<half diagonal>` | rectangle → circle; the circle covers the cell but also points outside it | `to_geouri()` |
 | point + `u=` → cell | the cell containing the point | the uncertainty: a cell at finer resolution than `u` pretends to more accuracy than the source had | check `u` against cell size first |
 | any notation → `raw` | original text | nothing | field `raw` |
@@ -103,6 +105,31 @@ silently discard the 40 m uncertainty. The model makes that visible: `u=` is
 larger than the target cell, so the caller should keep the point form or choose
 a coarser code.
 
+### A point converted to a cell
+
+`Location::to_cell` makes the quantisation step explicit and returns a new
+`Location`:
+
+```text
+$ geocodec convert "geo:48.198634,16.371648;u=40" plus 10
+source:
+kind: point
+resolution_m: 80.000
+uncertainty_m: 40.000
+converted:
+kind: cell
+raw: 8FWR59XC+FM
+region: 48.198625,16.371625,48.198750,16.371750
+resolution_m: 13.822
+uncertainty_m: 8.323
+```
+
+The cell is finer than the source's 40 m uncertainty. The conversion is valid
+as "a cell containing the point", but it must not be read as "the point is
+accurate to 8.3 m"; the 40 m uncertainty was not representable and is lost.
+Callers that need it should keep the source `Location` or choose a cell coarser
+than `u`.
+
 ### A plain point
 
 ```text
@@ -123,9 +150,12 @@ caller needs a bound, it should carry one explicitly (`u=` or a cell code).
 - `parse_location(text) -> Location?` — one notation, full model.
 - `parse_codes(text) -> Array[Location]` — free-text scan, full model per hit.
 - `describe_code(text) -> Location?` — cell codecs only.
-- `Location::center()`, `bounds()`, `is_cell()`.
+- `Location::center()`, `bounds()`, `is_cell()`, `is_point()`.
 - `Location::contains_point(p)`, `contains(other)`, `intersects(other)`.
-- `Location::to_geouri()` — the only lossy conversion in the API, and it writes
+- `Location::to_cell(format, precision)` — explicit point→cell quantisation,
+  returning a new `Location` with the new region/resolution; the new cell is
+  finer or coarser than the source, so compare the two uncertainties.
+- `Location::to_geouri()` — a lossy cell→point conversion; it writes
   `u=` so the loss is bounded.
 - `Location::raw` — original notation text.
 

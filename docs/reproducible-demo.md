@@ -28,10 +28,10 @@ $ moon check --target js
 Finished.
 
 $ moon test --target js
-Total tests: 53, passed: 53, failed: 0.
+Total tests: 55, passed: 55, failed: 0.
 
 $ moon test --target wasm-gc
-Total tests: 53, passed: 53, failed: 0.
+Total tests: 55, passed: 55, failed: 0.
 ```
 
 The `Finished.` lines also carry a task count that depends on the build cache,
@@ -211,6 +211,45 @@ $ moon run --target js cmd/main -- dms 51.5074 lat
 51°30′26.64″N
 ```
 
+### 4.7 Explicit point-to-cell conversion
+
+`convert` calls `Location::to_cell` and prints the source and the quantised cell,
+so the loss is visible in the numbers:
+
+```text
+$ moon run --target js cmd/main -- convert "geo:48.198634,16.371648;u=40" plus 10
+source:
+format: geo-uri
+kind: point
+point: 48.198634, 16.371648
+dms: 48°11′55.08″N 16°22′17.93″E
+region: 48.198272,16.371109,48.198996,16.372187
+resolution_m: 80.000
+uncertainty_m: 40.000
+area_m2: 6400.000
+altitude_m: (none)
+crs: wgs84
+raw: geo:48.198634,16.371648;u=40
+as_geouri: geo:48.198634,16.371648;u=40
+converted:
+format: plus-code
+kind: cell
+point: 48.198688, 16.371688
+dms: 48°11′55.27″N 16°22′18.08″E
+region: 48.198625,16.371625,48.198750,16.371750
+resolution_m: 13.822
+uncertainty_m: 8.323
+area_m2: 128.197
+altitude_m: (none)
+crs: wgs84
+raw: 8FWR59XC+FM
+as_geouri: geo:48.198688,16.371688;u=8.323
+```
+
+The source had `u=40`; the converted cell is finer than that (13.822 m). The
+cell is a valid "cell containing the point", but its 8.323 m uncertainty does
+not restore the source's 40 m bound. This is exactly the loss the model exposes.
+
 ## 5. Error paths are part of the demo
 
 These inputs are wrong on purpose; the point is that the program reports them
@@ -235,14 +274,16 @@ bbox: not a recognised code
 
 ## 6. What to check
 
-1. `moon test` reports 53 passing tests.
+1. `moon test` reports 55 passing tests.
 2. `moon run --target js cmd/main -- demo` prints three blocks, and the codes
    match section 3.
 3. `moon run --target js cmd/main -- parse "8FVC9G8F+6X"` reports
    `format: plus-code`, not `geohash`.
 4. `moon run --target js cmd/main -- scan ...` reports exactly four results and
    does not return "Meet" or "send".
-5. Bad input in section 5 returns a message, not a stack trace.
+5. `moon run --target js cmd/main -- convert "geo:48.198634,16.371648;u=40" plus 10`
+   shows source `uncertainty_m: 40.000` and converted `uncertainty_m: 8.323`.
+6. Bad input in section 5 returns a message, not a stack trace.
 
 ## 7. Acceptance evidence
 
@@ -251,6 +292,6 @@ bbox: not a recognised code
 | MoonBit is the main language | all source files are `.mbt`; `moon.mod` lists no third-party dependency |
 | Public repository with traceable history | `git log` contains the feature/test/docs commits in development order |
 | Buildable, runnable, reproducible | sections 1–5 above; `moon test`, `moon run` |
-| Substantial work in this round | the whole module is new; `CHANGELOG.md` records 0.1.0 |
+| Substantial work in this round | the whole module is new; `CHANGELOG.md` records 0.2.1 |
 | Open-source compliance | `LICENSE` (Apache-2.0); `README.md` lists standards and states that no code was ported |
 | Explainable AI use | `docs/development-retrospective.md` records the decisions, the rejected alternatives and the role of the AI assistant |

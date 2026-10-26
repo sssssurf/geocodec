@@ -32,7 +32,8 @@ let p = @geocodec.LatLng::new(39.9042, 116.4074).unwrap()
 Plus `LatLng`, `BoundingBox` (antimeridian aware), the `Location` model
 (`kind`, `region`, `resolution_m`, `uncertainty_m`, `area_m2`, `raw`),
 `parse_location`, `parse_codes` for free text, `describe_code` for cell codes,
-`Location::to_geouri` for a bounded cell→point conversion, and `geohash_cover`
+`Location::to_geouri` for a bounded cell→point conversion,
+`Location::to_cell` for explicit point→cell quantisation, and `geohash_cover`
 for box coverage.
 
 ## Install and run
@@ -54,7 +55,7 @@ operations; those belong to separate projection/geodesy layers.
 
 ## Tests
 
-53 test blocks: published vectors, round-trips at every precision, deterministic
+55 test blocks: published vectors, round-trips at every precision, deterministic
 property tests, cover checks, unified-model conversion checks and a robustness
 pass over malformed input. `moon test` passes on `js` and `wasm-gc`; CI also
 builds `wasm` and `native`.

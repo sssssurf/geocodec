@@ -76,11 +76,13 @@ URI denote a **point**; `geo:` may also carry an explicit `u=` uncertainty.
 
 Converting a cell to a point keeps the centre and the `region` but loses the
 shape; the point is only accurate to `uncertainty_m`. Converting a point to a
-cell quantises it; the cell contains the point and the error is at most the
-cell's half-diagonal. `to_geouri` on a cell writes the centre plus
-`;u=<half diagonal>`, so a `geo:`-only consumer gets a covering circle, at the
-cost of the rectangle shape. A point with `u=` larger than the target cell
-should stay a point: the code would pretend to more accuracy than the source.
+cell is the explicit `Location::to_cell(format, precision)`: it quantises to the
+cell that contains the point and returns a new `Location`, so the caller can
+compare the before/after `resolution_m` and `uncertainty_m`. `to_geouri` on a
+cell writes the centre plus `;u=<half diagonal>`, so a `geo:`-only consumer gets
+a covering circle, at the cost of the rectangle shape. A point with `u=` larger
+than the target cell should stay a point: the code would pretend to more
+accuracy than the source.
 
 ```moonbit
 let cell = @geocodec.parse_location("8FVC9G8F+6X").unwrap()
@@ -89,6 +91,11 @@ let uri = cell.to_geouri()
 // "geo:47.365562,8.524938;u=8.365"
 let back = @geocodec.parse_location(uri).unwrap()
 // back.kind == Point, back.uncertainty_m == 8.365
+
+let source = @geocodec.parse_location("geo:48.198634,16.371648;u=40").unwrap()
+let plus = source.to_cell(@geocodec.PlusCode, 10).unwrap()
+// plus.resolution_m ~ 13.8, plus.uncertainty_m ~ 8.3:
+// the 40 m source uncertainty is not representable by the finer cell
 ```
 
 The full semantics, including the conversion-loss table and the no-invented-
@@ -213,7 +220,7 @@ The full command list:
 
 ```text
 parse, geohash, plus, maidenhead, bbox, geouri, dms,
-scan, cover, info, demo
+scan, cover, info, convert, demo
 ```
 
 The CLI finds its subcommand after any runtime/script path a backend inserts, so
@@ -275,10 +282,10 @@ the formulas come from the public specifications listed below.
 
 ```text
 $ moon test --target js
-Total tests: 53, passed: 53, failed: 0.
+Total tests: 55, passed: 55, failed: 0.
 
 $ moon test --target wasm-gc
-Total tests: 53, passed: 53, failed: 0.
+Total tests: 55, passed: 55, failed: 0.
 ```
 
 The suite is in five layers:
@@ -321,7 +328,7 @@ docs/             model notes, reproducible demo and development retrospective
 
 ## Status
 
-Version 0.2.0. The public API is intentionally small and may still change before
+Version 0.2.1. The public API is intentionally small and may still change before
 1.0. Issues and pull requests are welcome; please include a failing code string
 and the notation you expected.
 

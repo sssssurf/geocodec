@@ -4,6 +4,25 @@ All notable changes to this project are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] - 2026-10-26
+
+### Added
+
+- `Location::to_cell(format, precision)`: explicit point→cell quantisation. It
+  returns a new `Location` for the containing cell, so callers can compare the
+  new `resolution_m`/`uncertainty_m` with the source's.
+- `Location::is_point`.
+- CLI `convert <code> <geohash|plus|maidenhead> <precision>`, which prints the
+  source and the quantised cell side by side.
+- A point→cell example in `docs/location-model.md` showing the 40 m `u=` being
+  replaced by a 13.822 m cell (8.323 m uncertainty).
+
+### Changed
+
+- 55 test blocks (was 53).
+- README, reproducible demo and the application form describe the explicit
+  `to_cell` step and the CLI `convert` command.
+
 ## [0.2.0] - 2026-10-26
 
 ### Added
