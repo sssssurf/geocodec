@@ -131,13 +131,35 @@ fn show_bounds(b : @geocodec.BoundingBox) -> Unit {
 }
 
 ///|
+fn show_location(loc : @geocodec.Location) -> Unit {
+  println("format: " + loc.format.name())
+  if loc.is_cell() {
+    println("kind: cell")
+  } else {
+    println("kind: point")
+  }
+  show_point(loc.point)
+  println("region: " + loc.region.to_text(digits=6))
+  println("resolution_m: " + @geocodec.format_fixed(loc.resolution_m, 3))
+  println("uncertainty_m: " + @geocodec.format_fixed(loc.uncertainty_m, 3))
+  println("area_m2: " + @geocodec.format_fixed(loc.area_m2, 3))
+  match loc.altitude_m {
+    Some(v) => println("altitude_m: " + @geocodec.format_fixed(v, 3))
+    None => println("altitude_m: (none)")
+  }
+  match loc.crs {
+    Some(v) => println("crs: " + v)
+    None => println("crs: wgs84")
+  }
+  println("raw: " + loc.raw)
+  println("as_geouri: " + loc.to_geouri())
+}
+
+///|
 fn run_parse(text : String) -> Unit {
   match @geocodec.parse_location(text) {
     None => println("parse: not recognised")
-    Some(found) => {
-      println("format: " + found.format.name())
-      show_point(found.point)
-    }
+    Some(found) => show_location(found)
   }
 }
 
@@ -247,23 +269,15 @@ fn run_bbox(code : String) -> Unit {
 
 ///|
 fn run_geouri(text : String) -> Unit {
-  match @geocodec.geouri_parse(text) {
+  match @geocodec.parse_location(text) {
     None => println("geouri: not a valid geo: URI")
-    Some(uri) => {
-      show_point(uri.point)
-      match uri.altitude {
-        Some(v) => println("altitude: " + @geocodec.format_fixed(v, 3))
-        None => println("altitude: (none)")
+    Some(loc) => {
+      if loc.format != @geocodec.GeoUri {
+        println("geouri: not a valid geo: URI")
+        return
       }
-      match uri.uncertainty {
-        Some(v) => println("uncertainty: " + @geocodec.format_fixed(v, 3))
-        None => println("uncertainty: (none)")
-      }
-      match uri.crs {
-        Some(v) => println("crs: " + v)
-        None => println("crs: wgs84")
-      }
-      println("formatted: " + @geocodec.geouri_format(uri))
+      show_location(loc)
+      println("formatted: " + loc.to_geouri())
     }
   }
 }
@@ -292,7 +306,17 @@ fn run_scan(text : String) -> Unit {
   let found = @geocodec.parse_codes(text, max_results=20)
   println("found: " + found.length().to_string())
   for item in found {
-    println(item.format.name() + ": " + item.point.to_text(digits=6))
+    let kind = if item.is_cell() { "cell" } else { "point" }
+    println(
+      item.format.name() +
+      ": " +
+      item.point.to_text(digits=6) +
+      " [" +
+      kind +
+      ", " +
+      @geocodec.format_fixed(item.resolution_m, 1) +
+      " m]",
+    )
   }
 }
 
@@ -333,13 +357,7 @@ fn run_cover(args : Array[String]) -> Unit {
 fn run_info(code : String) -> Unit {
   match @geocodec.describe_code(code) {
     None => println("info: not a geohash, Plus Code or locator")
-    Some(info) => {
-      println("format: " + info.format.name())
-      show_point(info.point)
-      show_bounds(info.bounds)
-      println("precision_m: " + @geocodec.format_fixed(info.precision_m, 3))
-      println("area_m2: " + @geocodec.format_fixed(info.area_m2, 3))
-    }
+    Some(loc) => show_location(loc)
   }
 }
 

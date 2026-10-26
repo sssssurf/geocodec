@@ -5,7 +5,7 @@
 
 name = "sssssurf/geocodec"
 
-version = "0.1.0"
+version = "0.2.0"
 
 readme = "README.mbt.md"
 
@@ -25,4 +25,4 @@ keywords = [
   "text-scanning",
 ]
 
-description = "Location codes for MoonBit: Geohash, Open Location Code (Plus Codes), Maidenhead locators, RFC 5870 geo URIs and degrees/minutes/seconds, with cell bounds, neighbourhoods, geohash covering, free-text scanning and ground-size reports; no runtime dependencies"
+description = "Location codes for MoonBit: Geohash, Open Location Code (Plus Codes), Maidenhead locators, RFC 5870 geo URIs and degrees/minutes/seconds, with a unified cell/point model carrying region, resolution and uncertainty, plus bounds, neighbourhoods, geohash covering, free-text scanning and bounded cell-to-geo-URI conversion; no runtime dependencies"

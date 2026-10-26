@@ -1,5 +1,6 @@
-// A permissive front door: one string in, one point and the notation it used
-// out. This is what the CLI's `parse` and `scan` commands expose.
+// A permissive front door: one string in, one `Location` out. The result keeps
+// the notation, the representative point, the region, the resolution and any
+// explicit uncertainty, so callers can see what a conversion would lose.
 
 ///|
 /// The notation a coordinate string was written in.
@@ -25,29 +26,30 @@ pub impl Show for LocationFormat with fn to_string(self : LocationFormat) -> Str
 }
 
 ///|
-/// A point plus the notation it was recognised in.
-pub(all) struct ParsedLocation {
-  format : LocationFormat
-  point : LatLng
-} derive(Eq)
-
-///|
 /// Recognise one coordinate written as a geo URI, Plus Code, Maidenhead
 /// locator, geohash, decimal pair or DMS pair.
-pub fn parse_location(input : String) -> ParsedLocation? {
+pub fn parse_location(input : String) -> Location? {
   let s = trim_ascii(input)
   if s == "" {
     return None
   }
   if s.length() >= 4 && ascii_lower(s[0:4].to_owned()) == "geo:" {
     match geouri_parse(s) {
-      Some(uri) => return Some({ format: GeoUri, point: uri.point })
+      Some(uri) =>
+        return point_location(
+          GeoUri,
+          s,
+          uri.point,
+          uri.altitude,
+          uri.crs,
+          uri.uncertainty,
+        )
       None => return None
     }
   }
   if s.contains("+") {
-    match pluscode_decode(s) {
-      Some(p) => return Some({ format: PlusCode, point: p })
+    match pluscode_bounds(s) {
+      Some(b) => return cell_location(PlusCode, s, b)
       None => ()
     }
   }
@@ -58,7 +60,7 @@ pub fn parse_location(input : String) -> ParsedLocation? {
     let lng = parse_decimal(comma[1])
     if lat is Some(a) && lng is Some(b) {
       match LatLng::new(a, b) {
-        Some(p) => return Some({ format: Decimal, point: p })
+        Some(p) => return point_location(Decimal, s, p, None, None, None)
         None => ()
       }
     }
@@ -66,7 +68,7 @@ pub fn parse_location(input : String) -> ParsedLocation? {
     let lng_dms = parse_dms(comma[1], false)
     if lat_dms is Some(a) && lng_dms is Some(b) {
       match LatLng::new(a, b) {
-        Some(p) => return Some({ format: Dms, point: p })
+        Some(p) => return point_location(Dms, s, p, None, None, None)
         None => ()
       }
     }
@@ -76,7 +78,7 @@ pub fn parse_location(input : String) -> ParsedLocation? {
     let lng = parse_decimal(fields[1])
     if lat is Some(a) && lng is Some(b) {
       match LatLng::new(a, b) {
-        Some(p) => return Some({ format: Decimal, point: p })
+        Some(p) => return point_location(Decimal, s, p, None, None, None)
         None => ()
       }
     }
@@ -84,17 +86,17 @@ pub fn parse_location(input : String) -> ParsedLocation? {
     let lng_dms = parse_dms(fields[1], false)
     if lat_dms is Some(a) && lng_dms is Some(b) {
       match LatLng::new(a, b) {
-        Some(p) => return Some({ format: Dms, point: p })
+        Some(p) => return point_location(Dms, s, p, None, None, None)
         None => ()
       }
     }
   }
-  match maidenhead_decode(s) {
-    Some(p) => return Some({ format: Maidenhead, point: p })
+  match maidenhead_bounds(s) {
+    Some(b) => return cell_location(Maidenhead, s, b)
     None => ()
   }
-  match geohash_decode(s) {
-    Some(p) => return Some({ format: GeoHash, point: p })
+  match geohash_bounds(s) {
+    Some(b) => return cell_location(GeoHash, s, b)
     None => ()
   }
   None
@@ -106,12 +108,9 @@ pub fn parse_location(input : String) -> ParsedLocation? {
 /// is offered to `parse_location`. This is deliberately conservative: a token
 /// that is not a complete code is ignored, and a result already seen at the
 /// same format and point is not repeated.
-pub fn parse_codes(
-  text : String,
-  max_results? : Int = 100,
-) -> Array[ParsedLocation] {
+pub fn parse_codes(text : String, max_results? : Int = 100) -> Array[Location] {
   let limit = if max_results < 1 { 1 } else { max_results }
-  let out : Array[ParsedLocation] = []
+  let out : Array[Location] = []
   let seen : Array[String] = []
   for raw in split_whitespace(text) {
     if out.length() >= limit {
@@ -121,9 +120,9 @@ pub fn parse_codes(
     if token == "" {
       continue
     }
-    // Short English words such as "meet" and "send" are legal geohash strings.
-    // In free text, require a digit before treating a token as a code; every
-    // real code in these notations contains one.
+    // Short English words such as "meet" and "send" are legal geohash strings,
+    // and a bare number such as "12345" can also decode as one. In free text,
+    // require both a digit and a letter before treating a token as a geohash.
     if !has_digit(token) && !token.contains("+") {
       continue
     }

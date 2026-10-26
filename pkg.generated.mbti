@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "sssssurf/geocodec"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub const DEGREE : String = "°"
 
@@ -30,7 +34,7 @@ pub fn chars_of(String) -> Array[Char]
 
 pub fn clamp_lat(Double) -> Double
 
-pub fn describe_code(String) -> CodeInfo?
+pub fn describe_code(String) -> Location?
 
 pub fn digit_value(Char) -> Int?
 
@@ -76,13 +80,13 @@ pub fn maidenhead_encode(LatLng, precision? : Int) -> String?
 
 pub fn normalize_lng(Double) -> Double
 
-pub fn parse_codes(String, max_results? : Int) -> Array[ParsedLocation]
+pub fn parse_codes(String, max_results? : Int) -> Array[Location]
 
 pub fn parse_decimal(String) -> Double?
 
 pub fn parse_dms(String, Bool) -> Double?
 
-pub fn parse_location(String) -> ParsedLocation?
+pub fn parse_location(String) -> Location?
 
 pub fn pluscode_adjacent(String, Int, Int) -> String?
 
@@ -142,14 +146,6 @@ pub fn BoundingBox::to_text(Self, digits? : Int) -> String
 pub fn BoundingBox::west(Self) -> Double
 pub fn BoundingBox::width(Self) -> Double
 
-pub(all) struct CodeInfo {
-  format : LocationFormat
-  point : LatLng
-  bounds : BoundingBox
-  precision_m : Double
-  area_m2 : Double
-} derive(Eq)
-
 pub(all) struct GeoUri {
   point : LatLng
   altitude : Double?
@@ -166,6 +162,26 @@ pub fn LatLng::lng(Self) -> Double
 pub fn LatLng::new(Double, Double) -> Self?
 pub fn LatLng::to_text(Self, digits? : Int) -> String
 
+pub(all) struct Location {
+  format : LocationFormat
+  kind : LocationKind
+  point : LatLng
+  region : BoundingBox
+  resolution_m : Double
+  uncertainty_m : Double
+  area_m2 : Double
+  altitude_m : Double?
+  crs : String?
+  raw : String
+} derive(Eq)
+pub fn Location::bounds(Self) -> BoundingBox
+pub fn Location::center(Self) -> LatLng
+pub fn Location::contains(Self, Self) -> Bool
+pub fn Location::contains_point(Self, LatLng) -> Bool
+pub fn Location::intersects(Self, Self) -> Bool
+pub fn Location::is_cell(Self) -> Bool
+pub fn Location::to_geouri(Self) -> String
+
 pub(all) enum LocationFormat {
   GeoUri
   PlusCode
@@ -173,14 +189,15 @@ pub(all) enum LocationFormat {
   GeoHash
   Decimal
   Dms
-} derive(Eq)
+} derive(Eq, @debug.Debug)
 pub fn LocationFormat::name(Self) -> String
 pub impl Show for LocationFormat
 
-pub(all) struct ParsedLocation {
-  format : LocationFormat
-  point : LatLng
-} derive(Eq)
+pub(all) enum LocationKind {
+  Cell
+  Point
+} derive(Eq, @debug.Debug)
+pub impl Show for LocationKind
 
 // Type aliases
 
