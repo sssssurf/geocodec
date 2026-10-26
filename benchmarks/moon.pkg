@@ -1,0 +1,4 @@
+import {
+  "sssssurf/geocodec",
+  "moonbitlang/core/bench",
+}

@@ -5,7 +5,7 @@
 
 name = "sssssurf/geocodec"
 
-version = "0.2.1"
+version = "0.3.0"
 
 readme = "README.mbt.md"
 

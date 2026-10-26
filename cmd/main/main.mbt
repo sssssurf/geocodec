@@ -36,6 +36,7 @@ fn main {
     "cover" => run_cover(shifted)
     "info" => run_info(arg_at(shifted, 2))
     "convert" => run_convert(shifted)
+    "json" => run_json(arg_at(shifted, 2))
     "demo" => run_demo()
     _ => print_usage()
   }
@@ -55,6 +56,7 @@ fn is_command(text : String) -> Bool {
     | "cover"
     | "info"
     | "convert"
+    | "json"
     | "demo" => true
     _ => false
   }
@@ -77,6 +79,7 @@ fn print_usage() -> Unit {
     "  info <code>                            format, point, bounds, ground size\n" +
     "  convert <code> <geohash|plus|maidenhead> <precision>\n" +
     "                                         explicit point/cell quantisation\n" +
+    "  json <code>                            one-line JSON (for scripts and agents)\n" +
     "  demo                                   a fixed tour of the codecs",
   )
 }
@@ -399,6 +402,76 @@ fn run_convert(args : Array[String]) -> Unit {
       show_location(cell)
     }
   }
+}
+
+///|
+fn run_json(code : String) -> Unit {
+  let loc = match @geocodec.parse_location(code) {
+    None => {
+      println("{\"error\":\"not a recognised location\"}")
+      return
+    }
+    Some(loc) => loc
+  }
+  let kind = if loc.is_cell() { "cell" } else { "point" }
+  let altitude = match loc.altitude_m {
+    Some(v) => @geocodec.format_fixed(v, 3)
+    None => "null"
+  }
+  let crs = match loc.crs {
+    Some(v) => "\"" + json_escape(v) + "\""
+    None => "null"
+  }
+  println(
+    "{\"format\":\"" +
+    loc.format.name() +
+    "\",\"kind\":\"" +
+    kind +
+    "\",\"lat\":" +
+    @geocodec.format_fixed(loc.point.lat(), 6) +
+    ",\"lng\":" +
+    @geocodec.format_fixed(loc.point.lng(), 6) +
+    ",\"south\":" +
+    @geocodec.format_fixed(loc.region.south(), 6) +
+    ",\"west\":" +
+    @geocodec.format_fixed(loc.region.west(), 6) +
+    ",\"north\":" +
+    @geocodec.format_fixed(loc.region.north(), 6) +
+    ",\"east\":" +
+    @geocodec.format_fixed(loc.region.east(), 6) +
+    ",\"resolution_m\":" +
+    @geocodec.format_fixed(loc.resolution_m, 3) +
+    ",\"uncertainty_m\":" +
+    @geocodec.format_fixed(loc.uncertainty_m, 3) +
+    ",\"area_m2\":" +
+    @geocodec.format_fixed(loc.area_m2, 3) +
+    ",\"altitude_m\":" +
+    altitude +
+    ",\"crs\":" +
+    crs +
+    ",\"raw\":\"" +
+    json_escape(loc.raw) +
+    "\",\"as_geouri\":\"" +
+    json_escape(loc.to_geouri()) +
+    "\"}",
+  )
+}
+
+///|
+fn json_escape(text : String) -> String {
+  let out = StringBuilder()
+  for ch in text {
+    if ch == '"' {
+      out.write_stringview("\\\"")
+    } else if ch == '\\' {
+      out.write_stringview("\\\\")
+    } else if ch.to_int() < 32 {
+      out.write_char(' ')
+    } else {
+      out.write_char(ch)
+    }
+  }
+  out.to_string()
 }
 
 ///|

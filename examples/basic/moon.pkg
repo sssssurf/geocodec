@@ -1,0 +1,7 @@
+import {
+  "sssssurf/geocodec",
+}
+
+options(
+  "is-main": true,
+)
