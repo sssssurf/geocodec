@@ -27,6 +27,13 @@ test "geo uri formatting round-trips" {
 
 ///|
 test "geo uri rejects malformed input" {
+  for
+    input in [
+      "geo:1,2;u", "geo:1,2;u=1;U=2", "geo:1,2;crs=wgs84;CRS=other", "geo:1,181",
+      "geo:+1,2", "geo:1,2;u=+1", "geo:1,2;u=1.", "geo:1,2;",
+    ] {
+    assert_true(geouri_parse(input) is None)
+  }
   assert_true(geouri_parse("geo:91,0") is None)
   assert_true(geouri_parse("geo:48.2") is None)
   assert_true(geouri_parse("geo:48.2,16.3;u=-1") is None)

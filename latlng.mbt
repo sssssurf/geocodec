@@ -21,7 +21,7 @@ pub fn LatLng::new(lat : Double, lng : Double) -> LatLng? {
   if lat < -90.0 || lat > 90.0 {
     return None
   }
-  Some({ lat, lng: normalize_lng(lng) })
+  Some({ lat, lng: normalize_lng(lng), })
 }
 
 ///|
@@ -38,7 +38,7 @@ pub fn LatLng::lng(self : LatLng) -> Double {
 
 ///|
 /// `lat, lng` with a fixed number of decimals.
-pub fn LatLng::to_text(self : LatLng, digits? : Int = 6) -> String {
+pub fn LatLng::to_text(self : LatLng, digits~ : Int32 = 6) -> String {
   format_latlng(self.lat, self.lng, digits)
 }
 
@@ -73,7 +73,7 @@ pub fn BoundingBox::new(
   }
   let w = if west == 180.0 { 180.0 } else { normalize_lng(west) }
   let e = if east == 180.0 { 180.0 } else { normalize_lng(east) }
-  Some({ south, west: w, north, east: e })
+  Some({ south, west: w, north, east: e, })
 }
 
 ///|
@@ -174,7 +174,7 @@ fn lng_in_range(lng : Double, box : BoundingBox) -> Bool {
 
 ///|
 /// `south,west,north,east` with a fixed number of decimals.
-pub fn BoundingBox::to_text(self : BoundingBox, digits? : Int = 6) -> String {
+pub fn BoundingBox::to_text(self : BoundingBox, digits~ : Int32 = 6) -> String {
   format_fixed(self.south, digits) +
   "," +
   format_fixed(self.west, digits) +
@@ -183,3 +183,9 @@ pub fn BoundingBox::to_text(self : BoundingBox, digits? : Int = 6) -> String {
   "," +
   format_fixed(self.east, digits)
 }
+
+///|
+pub extend LatLng with Eq::{not_equal, equal}
+
+///|
+pub extend BoundingBox with Eq::{not_equal, equal}

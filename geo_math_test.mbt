@@ -12,4 +12,6 @@ test "longitudes normalise into the half-open range" {
   assert_eq(normalize_lng(-190.0), 170.0)
   assert_eq(normalize_lng(180.0), -180.0)
   assert_eq(normalize_lng(0.0), 0.0)
+  assert_true(normalize_lng(1.0e100) >= -180.0)
+  assert_true(normalize_lng(-1.0e100) < 180.0)
 }

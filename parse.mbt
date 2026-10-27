@@ -35,7 +35,11 @@ pub fn parse_location(input : String) -> Location? {
   }
   if s.length() >= 4 && ascii_lower(s[0:4].to_owned()) == "geo:" {
     match geouri_parse(s) {
-      Some(uri) =>
+      Some(uri) => {
+        match uri.crs {
+          Some(crs) if ascii_lower(crs) != "wgs84" => return None
+          _ => ()
+        }
         return point_location(
           GeoUri,
           s,
@@ -44,6 +48,7 @@ pub fn parse_location(input : String) -> Location? {
           uri.crs,
           uri.uncertainty,
         )
+      }
       None => return None
     }
   }
@@ -108,7 +113,10 @@ pub fn parse_location(input : String) -> Location? {
 /// is offered to `parse_location`. This is deliberately conservative: a token
 /// that is not a complete code is ignored, and a result already seen at the
 /// same format and point is not repeated.
-pub fn parse_codes(text : String, max_results? : Int = 100) -> Array[Location] {
+pub fn parse_codes(
+  text : String,
+  max_results~ : Int32 = 100,
+) -> Array[Location] {
   let limit = if max_results < 1 { 1 } else { max_results }
   let out : Array[Location] = []
   let seen : Array[String] = []
@@ -208,7 +216,7 @@ fn is_code_punctuation(c : Char) -> Bool {
 }
 
 ///|
-fn index_of_string(values : Array[String], needle : String) -> Int {
+fn index_of_string(values : Array[String], needle : String) -> Int32 {
   let mut i = 0
   while i < values.length() {
     if values[i] == needle {
@@ -218,3 +226,12 @@ fn index_of_string(values : Array[String], needle : String) -> Int {
   }
   -1
 }
+
+///|
+pub extend LocationFormat with Eq::{not_equal, equal}
+
+///|
+pub extend LocationFormat with @moonbitlang/core/debug.Debug::{to_repr}
+
+///|
+pub extend LocationFormat with Show::{output, to_string}

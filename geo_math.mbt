@@ -15,11 +15,11 @@ pub fn normalize_lng(lng : Double) -> Double {
   if lng.is_nan() || lng.is_inf() {
     return lng
   }
-  let mut x = lng
-  while x < -180.0 {
+  let mut x = lng % 360.0
+  if x < -180.0 {
     x = x + 360.0
   }
-  while x >= 180.0 {
+  if x >= 180.0 {
     x = x - 360.0
   }
   x
@@ -53,7 +53,7 @@ pub fn is_finite(x : Double) -> Bool {
 
 ///|
 /// Round `x` to `digits` decimal places, half away from zero.
-pub fn round_to(x : Double, digits : Int) -> Double {
+pub fn round_to(x : Double, digits : Int32) -> Double {
   let scale = pow10(digits)
   if x >= 0.0 {
     (x * scale + 0.5).floor() / scale
@@ -64,7 +64,7 @@ pub fn round_to(x : Double, digits : Int) -> Double {
 
 ///|
 /// `10.0 ^ n` for a small non-negative `n`.
-fn pow10(n : Int) -> Double {
+fn pow10(n : Int32) -> Double {
   let mut p = 1.0
   for _ in 0..<n {
     p = p * 10.0
@@ -74,7 +74,7 @@ fn pow10(n : Int) -> Double {
 
 ///|
 /// `10L ^ n` for a small non-negative `n`.
-fn pow10_i64(n : Int) -> Int64 {
+fn pow10_i64(n : Int32) -> Int64 {
   let mut p = 1L
   for _ in 0..<n {
     p = p * 10L
@@ -86,7 +86,7 @@ fn pow10_i64(n : Int) -> Int64 {
 /// Format a double with exactly `digits` digits after the decimal point.
 /// Values are rounded half away from zero. Used by the CLI and the docs so
 /// that recorded output is stable.
-pub fn format_fixed(x : Double, digits : Int) -> String {
+pub fn format_fixed(x : Double, digits : Int32) -> String {
   if x.is_nan() {
     return "nan"
   }
@@ -129,7 +129,7 @@ pub fn format_fixed(x : Double, digits : Int) -> String {
 
 ///|
 /// Format a latitude/longitude pair as `lat, lng`.
-pub fn format_latlng(lat : Double, lng : Double, digits : Int) -> String {
+pub fn format_latlng(lat : Double, lng : Double, digits : Int32) -> String {
   format_fixed(lat, digits) + ", " + format_fixed(lng, digits)
 }
 

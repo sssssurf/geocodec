@@ -32,8 +32,8 @@ pub impl Show for LocationKind with fn to_string(self : LocationKind) -> String 
 ///   the region is the square envelope of that uncertainty;
 /// - `resolution_m` is the longer side of the region in metres (0 when the
 ///   notation carries no extent);
-/// - `uncertainty_m` is the greatest distance from `point` to the region
-///   boundary (0 for an exact point);
+/// - `uncertainty_m` is a conservative cell coverage bound or explicit input
+///   accuracy. Consult `uncertainty_known`: a placeholder 0 may mean unknown;
 /// - `raw` keeps the text that produced the value, so the original notation is
 ///   never lost even when the point/region is converted further.
 pub(all) struct Location {
@@ -43,6 +43,9 @@ pub(all) struct Location {
   region : BoundingBox
   resolution_m : Double
   uncertainty_m : Double
+  /// False means accuracy was not specified; numerical zero is not proof of
+  /// an exact physical position. Cells always have a known geometric bound.
+  uncertainty_known : Bool
   area_m2 : Double
   altitude_m : Double?
   crs : String?
@@ -52,7 +55,7 @@ pub(all) struct Location {
 ///|
 /// Build a cell location from its exact bounds. The representative point is
 /// the centre; the resolution is the longer side of the cell on the ground,
-/// and the uncertainty is the distance from the centre to a corner.
+/// and the uncertainty is a conservative bound from the centre to any corner.
 fn cell_location(
   format : LocationFormat,
   raw : String,
@@ -64,8 +67,6 @@ fn cell_location(
   }
   let width_m = bounds.width() * 111320.0 * @math.cos(to_radians(point.lat()))
   let height_m = bounds.height() * 110574.0
-  let half_w = width_m / 2.0
-  let half_h = height_m / 2.0
   let resolution = if width_m > height_m { width_m } else { height_m }
   Some({
     format,
@@ -73,7 +74,8 @@ fn cell_location(
     point,
     region: bounds,
     resolution_m: resolution,
-    uncertainty_m: (half_w * half_w + half_h * half_h).sqrt(),
+    uncertainty_m: cell_radius_bound(bounds),
+    uncertainty_known: true,
     area_m2: width_m * height_m,
     altitude_m: None,
     crs: None,
@@ -94,12 +96,16 @@ fn point_location(
 ) -> Location? {
   match uncertainty_m {
     Some(u) if u > 0.0 && is_finite(u) => {
-      let lat_delta = u / 110574.0
+      // A sphere with radius below WGS84's minimum curvature radius gives
+      // a conservative angular envelope, including at poles and date lines.
+      let angle = u / 6335000.0
+      let lat_delta = angle / 0.017453292519943295
       let cos_lat = @math.cos(to_radians(point.lat()))
-      let lng_delta = if cos_lat < 1.0e-12 {
+      let touches_pole = point.lat().abs() + lat_delta >= 90.0
+      let lng_delta = if touches_pole {
         180.0
       } else {
-        u / (111320.0 * cos_lat)
+        @math.asin(@math.sin(angle) / cos_lat) / 0.017453292519943295
       }
       let region = if lat_delta >= 90.0 {
         BoundingBox::new(-90.0, -180.0, 90.0, 180.0)
@@ -128,7 +134,12 @@ fn point_location(
             region: box,
             resolution_m: 2.0 * u,
             uncertainty_m: u,
-            area_m2: 4.0 * u * u,
+            uncertainty_known: true,
+            area_m2: if u > 20000000.0 {
+              510100000000000.0
+            } else {
+              4.0 * u * u
+            },
             altitude_m,
             crs,
             raw,
@@ -148,6 +159,7 @@ fn point_location(
         region,
         resolution_m: 0.0,
         uncertainty_m: 0.0,
+        uncertainty_known: uncertainty_m is Some(_),
         area_m2: 0.0,
         altitude_m,
         crs,
@@ -192,7 +204,7 @@ pub fn Location::is_point(self : Location) -> Bool {
 pub fn Location::to_cell(
   self : Location,
   format : LocationFormat,
-  precision : Int,
+  precision : Int32,
 ) -> Location? {
   let code = match format {
     GeoHash => geohash_encode(self.point, precision)
@@ -232,22 +244,86 @@ pub fn Location::intersects(self : Location, other : Location) -> Bool {
 /// the original cell; the shape (rectangle) is still lost, which is exactly
 /// what `region` is for.
 pub fn Location::to_geouri(self : Location) -> String {
+  // Keep all point-URI precision and parameters, including explicit u=0.
+  if self.format == GeoUri {
+    return self.raw
+  }
   let mut out = "geo:" +
-    trim_fraction(format_fixed(self.point.lat(), 6)) +
+    trim_fraction(format_fixed(self.point.lat(), 9)) +
     "," +
-    trim_fraction(format_fixed(self.point.lng(), 6))
+    trim_fraction(format_fixed(self.point.lng(), 9))
   match self.altitude_m {
     None => ()
     Some(v) => out = out + "," + trim_fraction(format_fixed(v, 3))
-  }
-  if self.uncertainty_m > 0.0 {
-    out = out + ";u=" + trim_fraction(format_fixed(self.uncertainty_m, 3))
   }
   match self.crs {
     None => ()
     Some(v) => out = out + ";crs=" + v
   }
+  if self.uncertainty_known {
+    // Round outward and include the displacement from coordinate rounding.
+    let radius = if self.is_cell() {
+      self.uncertainty_m + 0.0001
+    } else {
+      self.uncertainty_m
+    }
+    let outward = (radius * 1000.0).ceil() / 1000.0
+    out = out + ";u=" + trim_fraction(format_fixed(outward, 3))
+  }
   out
+}
+
+///|
+/// Conservative WGS84 surface-distance bound along a straight path in angular
+/// coordinates. 111700 m/degree bounds both meridional and equatorial scales.
+/// This is a covering bound, not an ellipsoidal geodesic measurement.
+fn cell_radius_bound(box : BoundingBox) -> Double {
+  let near_lat = if box.south() <= 0.0 && box.north() >= 0.0 {
+    0.0
+  } else if box.south().abs() < box.north().abs() {
+    box.south().abs()
+  } else {
+    box.north().abs()
+  }
+  let h = box.height() / 2.0
+  let w = box.width() / 2.0 * @math.cos(to_radians(near_lat))
+  111700.0 * (h * h + w * w).sqrt()
+}
+
+///|
+/// An explicit conversion record retains source geometry, text and accuracy.
+/// `uncertainty_bound_m` bounds the source position around the target centre;
+/// None means the input never supplied an accuracy bound.
+pub(all) struct LocationConversion {
+  source : Location
+  target : Location
+  center_shift_bound_m : Double
+  uncertainty_bound_m : Double?
+}
+
+///|
+pub fn Location::convert_to_cell(
+  self : Location,
+  format : LocationFormat,
+  precision : Int32,
+) -> LocationConversion? {
+  let target = match self.to_cell(format, precision) {
+    None => return None
+    Some(v) => v
+  }
+  let lat = self.point.lat() - target.point.lat()
+  let lng = lng_delta(self.point.lng(), target.point.lng())
+  let shift = 111700.0 * (lat * lat + lng * lng).sqrt()
+  Some({
+    source: self,
+    target,
+    center_shift_bound_m: shift,
+    uncertainty_bound_m: if self.uncertainty_known {
+      Some(self.uncertainty_m + shift)
+    } else {
+      None
+    },
+  })
 }
 
 ///|
@@ -297,3 +373,15 @@ pub fn describe_code(text : String) -> Location? {
   }
   None
 }
+
+///|
+pub extend LocationKind with Eq::{not_equal, equal}
+
+///|
+pub extend LocationKind with @moonbitlang/core/debug.Debug::{to_repr}
+
+///|
+pub extend LocationKind with Show::{output, to_string}
+
+///|
+pub extend Location with Eq::{not_equal, equal}

@@ -12,7 +12,7 @@ pub const DOUBLE_PRIME : String = "″"
 
 pub const GEOHASH_ALPHABET : String = "0123456789bcdefghjkmnpqrstuvwxyz"
 
-pub const GEOHASH_MAX_PRECISION : Int = 12
+pub const GEOHASH_MAX_PRECISION : Int32 = 12
 
 pub const PLUSCODE_ALPHABET : String = "23456789CFGHJMPQRVWX"
 
@@ -36,27 +36,27 @@ pub fn clamp_lat(Double) -> Double
 
 pub fn describe_code(String) -> Location?
 
-pub fn digit_value(Char) -> Int?
+pub fn digit_value(Char) -> Int32?
 
 pub fn format_dms(Double, Bool) -> String
 
-pub fn format_fixed(Double, Int) -> String
+pub fn format_fixed(Double, Int32) -> String
 
-pub fn format_latlng(Double, Double, Int) -> String
+pub fn format_latlng(Double, Double, Int32) -> String
 
-pub fn geohash_adjacent(String, Int, Int) -> String?
+pub fn geohash_adjacent(String, Int32, Int32) -> String?
 
 pub fn geohash_bounds(String) -> BoundingBox?
 
-pub fn geohash_cover(BoundingBox, Int, max_cells? : Int) -> Array[String]?
+pub fn geohash_cover(BoundingBox, Int32, max_cells? : Int32) -> Array[String]?
 
 pub fn geohash_decode(String) -> LatLng?
 
-pub fn geohash_encode(LatLng, Int) -> String?
+pub fn geohash_encode(LatLng, Int32) -> String?
 
 pub fn geohash_neighbors(String) -> Array[String]?
 
-pub fn geohash_precision_for_meters(Double) -> Int?
+pub fn geohash_precision_for_meters(Double) -> Int32?
 
 pub fn geouri_format(GeoUri) -> String
 
@@ -64,7 +64,7 @@ pub fn geouri_parse(String) -> GeoUri?
 
 pub fn hemisphere_suffix(Double, Bool) -> String
 
-pub fn index_of(Array[Char], Char) -> Int
+pub fn index_of(Array[Char], Char) -> Int32
 
 pub fn is_ascii(String) -> Bool
 
@@ -76,11 +76,11 @@ pub fn maidenhead_bounds(String) -> BoundingBox?
 
 pub fn maidenhead_decode(String) -> LatLng?
 
-pub fn maidenhead_encode(LatLng, precision? : Int) -> String?
+pub fn maidenhead_encode(LatLng, precision? : Int32) -> String?
 
 pub fn normalize_lng(Double) -> Double
 
-pub fn parse_codes(String, max_results? : Int) -> Array[Location]
+pub fn parse_codes(String, max_results? : Int32) -> Array[Location]
 
 pub fn parse_decimal(String) -> Double?
 
@@ -88,15 +88,15 @@ pub fn parse_dms(String, Bool) -> Double?
 
 pub fn parse_location(String) -> Location?
 
-pub fn pluscode_adjacent(String, Int, Int) -> String?
+pub fn pluscode_adjacent(String, Int32, Int32) -> String?
 
 pub fn pluscode_bounds(String) -> BoundingBox?
 
-pub fn pluscode_code_length(String) -> Int
+pub fn pluscode_code_length(String) -> Int32
 
 pub fn pluscode_decode(String) -> LatLng?
 
-pub fn pluscode_encode(LatLng, code_length? : Int) -> String?
+pub fn pluscode_encode(LatLng, code_length? : Int32) -> String?
 
 pub fn pluscode_is_full(String) -> Bool
 
@@ -110,7 +110,7 @@ pub fn pluscode_recover(String, LatLng) -> String?
 
 pub fn pluscode_shorten(String, LatLng) -> String?
 
-pub fn round_to(Double, Int) -> Double
+pub fn round_to(Double, Int32) -> Double
 
 pub fn split_text(String, Char) -> Array[String]
 
@@ -137,12 +137,14 @@ pub fn BoundingBox::center(Self) -> LatLng?
 pub fn BoundingBox::contains(Self, LatLng) -> Bool
 pub fn BoundingBox::crosses_antimeridian(Self) -> Bool
 pub fn BoundingBox::east(Self) -> Double
+pub fn BoundingBox::equal(Self, Self) -> Bool
 pub fn BoundingBox::height(Self) -> Double
 pub fn BoundingBox::intersects(Self, Self) -> Bool
 pub fn BoundingBox::new(Double, Double, Double, Double) -> Self?
 pub fn BoundingBox::north(Self) -> Double
+pub fn BoundingBox::not_equal(Self, Self) -> Bool
 pub fn BoundingBox::south(Self) -> Double
-pub fn BoundingBox::to_text(Self, digits? : Int) -> String
+pub fn BoundingBox::to_text(Self, digits? : Int32) -> String
 pub fn BoundingBox::west(Self) -> Double
 pub fn BoundingBox::width(Self) -> Double
 
@@ -152,15 +154,19 @@ pub(all) struct GeoUri {
   uncertainty : Double?
   crs : String?
 } derive(Eq)
+pub fn GeoUri::equal(Self, Self) -> Bool
+pub fn GeoUri::not_equal(Self, Self) -> Bool
 
 pub struct LatLng {
   lat : Double
   lng : Double
 } derive(Eq)
+pub fn LatLng::equal(Self, Self) -> Bool
 pub fn LatLng::lat(Self) -> Double
 pub fn LatLng::lng(Self) -> Double
 pub fn LatLng::new(Double, Double) -> Self?
-pub fn LatLng::to_text(Self, digits? : Int) -> String
+pub fn LatLng::not_equal(Self, Self) -> Bool
+pub fn LatLng::to_text(Self, digits? : Int32) -> String
 
 pub(all) struct Location {
   format : LocationFormat
@@ -169,6 +175,7 @@ pub(all) struct Location {
   region : BoundingBox
   resolution_m : Double
   uncertainty_m : Double
+  uncertainty_known : Bool
   area_m2 : Double
   altitude_m : Double?
   crs : String?
@@ -178,11 +185,21 @@ pub fn Location::bounds(Self) -> BoundingBox
 pub fn Location::center(Self) -> LatLng
 pub fn Location::contains(Self, Self) -> Bool
 pub fn Location::contains_point(Self, LatLng) -> Bool
+pub fn Location::convert_to_cell(Self, LocationFormat, Int32) -> LocationConversion?
+pub fn Location::equal(Self, Self) -> Bool
 pub fn Location::intersects(Self, Self) -> Bool
 pub fn Location::is_cell(Self) -> Bool
 pub fn Location::is_point(Self) -> Bool
-pub fn Location::to_cell(Self, LocationFormat, Int) -> Self?
+pub fn Location::not_equal(Self, Self) -> Bool
+pub fn Location::to_cell(Self, LocationFormat, Int32) -> Self?
 pub fn Location::to_geouri(Self) -> String
+
+pub(all) struct LocationConversion {
+  source : Location
+  target : Location
+  center_shift_bound_m : Double
+  uncertainty_bound_m : Double?
+}
 
 pub(all) enum LocationFormat {
   GeoUri
@@ -192,16 +209,25 @@ pub(all) enum LocationFormat {
   Decimal
   Dms
 } derive(Eq, @debug.Debug)
+pub fn LocationFormat::equal(Self, Self) -> Bool
 pub fn LocationFormat::name(Self) -> String
+pub fn LocationFormat::not_equal(Self, Self) -> Bool
+pub fn LocationFormat::output(Self, &Logger) -> Unit
+pub fn LocationFormat::to_repr(Self) -> @debug.Repr
+pub fn LocationFormat::to_string(Self) -> String
 pub impl Show for LocationFormat
 
 pub(all) enum LocationKind {
   Cell
   Point
 } derive(Eq, @debug.Debug)
+pub fn LocationKind::equal(Self, Self) -> Bool
+pub fn LocationKind::not_equal(Self, Self) -> Bool
+pub fn LocationKind::output(Self, &Logger) -> Unit
+pub fn LocationKind::to_repr(Self) -> @debug.Repr
+pub fn LocationKind::to_string(Self) -> String
 pub impl Show for LocationKind
 
 // Type aliases
 
 // Traits
-

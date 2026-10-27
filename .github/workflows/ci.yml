@@ -43,6 +43,9 @@ jobs:
       - name: Example
         run: moon run --target js examples/basic
 
+      - name: Documentation matches real output
+        run: node scripts/check-docs.mjs
+
       - name: Benchmarks
         working-directory: benchmarks
         run: moon bench

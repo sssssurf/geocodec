@@ -2,6 +2,7 @@
 // distribution and supplies the trigonometric and rounding functions.
 import {
   "moonbitlang/core/math",
+  "moonbitlang/core/debug",
 }
 
 warnings = "-deprecated_syntax-test_unqualified_package"

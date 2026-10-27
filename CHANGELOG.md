@@ -4,6 +4,16 @@ All notable changes to this project are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] - 2026-10-27
+
+- Add LocationConversion retaining source/target and propagated uncertainty.
+- Distinguish unspecified accuracy from explicit zero; retain point URI text.
+- Use conservative cell-to-URI bounds with outward rounding and polar envelopes.
+- Reject unsupported CRSs in the WGS84 model and malformed/duplicate URI fields.
+- Normalize extreme finite longitudes without an unbounded subtraction loop.
+- Add conversion, high-precision corner coverage and polar regression checks.
+- Update the application, model design, reviewer response and recorded evidence.
+
 ## [0.3.0] - 2026-10-26
 
 ### Added

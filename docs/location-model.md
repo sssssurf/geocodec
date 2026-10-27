@@ -1,164 +1,67 @@
-# The unified location model
+# 地点统一模型与转换损失
 
-The library parses six notations, but they do not all mean the same kind of
-thing. Treating all of them as "a point with a string around it" is the mistake
-this model exists to prevent.
+Geohash、Plus Code 和 Maidenhead 表示区域单元；十进制坐标、度分秒和
+`geo:` URI 表示坐标点。统一的是查询接口，原生语义通过 `kind` 保留。
 
-## Two families
+| 字段 | 语义 |
+| --- | --- |
+| format / kind | 原始记法；Cell 或 Point |
+| point | 单元中心或原坐标；不是整个地点信息 |
+| region | 精确单元边界、显式 u 的保守矩形包络，或退化坐标点 |
+| resolution_m | 单元较长边的近似米数；带 u 的点为 2u；未给出范围时为 0 |
+| uncertainty_m | 单元中心的保守覆盖半径，或原文明确提供的 u；未知时数值占位为 0 |
+| uncertainty_known | 区分未指定准确度与显式 u=0；单元有已知几何覆盖界 |
+| area_m2 | 单元近似面积或 u 包络的名义面积；不是精确椭球面积 |
+| altitude_m / crs | 原 geo URI 的高程和坐标系标记 |
+| raw | 解析文本，去掉外侧空白；转换记录保留源文本 |
 
-| Family | Notations | Native value |
+不变量：解析得到的 region 包含 point；Cell 的 region 是该码的精确单元。
+Point 未给 u 时不推测测量准确度：数值占位 0 不等于实际误差为 0。
+u=0 则是显式零不确定度，序列化保留它。u 包络的 contains/intersects 是
+矩形包络判断，不是圆形不确定区域的精确相交运算。
+
+## 转换会丢失什么
+
+| 转换 | 保留与损失 | 使用方式 |
 | --- | --- | --- |
-| **Cell** | Geohash, Plus Code (OLC), Maidenhead | a rectangle at a resolution |
-| **Point** | decimal pair, DMS pair, `geo:` URI | a coordinate; `geo:` may also carry `u=` |
+| 单元 → center() | 返回代表点；单独使用会丢失区域形状与范围 | 保留原 Location |
+| 单元 → geo URI | 保留中心与向外舍入的覆盖半径；矩形变为圆，丢失形状 | to_geouri() |
+| 点 → 单元 | 量化到包含代表点的单元，丢失精确坐标；单元尺寸不代表源测量准确度 | convert_to_cell() |
+| 点 + u → 更细单元 | 源 u 不会因编码变细而减小 | 转换记录保留 source 与传播后的界 |
+| 单元 → 不同网格 | 目标单元包含源中心，但不保证覆盖源单元 | 保留 source.region |
+| 未知准确度的点 → 单元 | 可以确定目标几何范围，不能发明源准确度 | uncertainty_bound_m 为 None |
 
-A Geohash/Plus Code/Maidenhead string is not a point with decoration: the string
-identifies an area. `wx4g0b` is a 938 m × 607 m cell; `8FVC9G8F+6X` is a 13.8 m ×
-9.4 m cell. Turning either into its centre throws the area away. Conversely, a
-decimal pair or a `geo:` URI is a point; encoding it as a cell necessarily
-quantises it to the cell that contains it.
+`to_cell` 是低层代表点量化函数，返回目标 Location。需要保留转换来源时，
+使用 `convert_to_cell`，返回 `LocationConversion`：
 
-## The `Location` value
+- source：完整源 Location，包括原文、区域、u、高程；
+- target：目标单元，描述目标网格自身的几何范围；
+- center_shift_bound_m：源代表点到目标中心的保守距离界；
+- uncertainty_bound_m：源 u 加中心位移界；源准确度未指定时为 None。
 
-```moonbit
-pub(all) struct Location {
-  format : LocationFormat   // which notation produced it
-  kind : LocationKind       // Cell or Point
-  point : LatLng            // representative: cell centre, or the coordinate
-  region : BoundingBox      // exact cell, uncertainty envelope, or degenerate point
-  resolution_m : Double     // longer side of the region, metres
-  uncertainty_m : Double    // max distance from point to the region boundary
-  area_m2 : Double          // approximate ground area of the region
-  altitude_m : Double?      // only from geo: URIs
-  crs : String?             // only from geo: URIs
-  raw : String              // the original text, never discarded
-}
-```
+例如 `geo:48.198634,16.371648;u=40` 转为 10 位 Plus Code：
+target 是 `8FWR59XC+FM`，单元较长边约 13.822 m，几何覆盖半径约 8.390 m；
+source 的 40 m 不确定度仍保留，围绕新中心传播后的界约为 47.428 m。
+不能把目标的 8.390 m 当成原地点的准确度。
 
-Invariants:
+## 数值与标准边界
 
-- `region` always contains `point`.
-- `kind == Cell` means `region` is the exact cell and `point` is its centre.
-- `kind == Point` with `u=` means `region` is the square envelope of that
-  uncertainty; without `u=` it is a degenerate box at the point.
-- `resolution_m` is 0 when the notation carries no extent. The library does not
-  invent a precision from the number of decimal digits; a decimal pair is a
-  point, and `u=` is the only uncertainty the `geo:` grammar defines.
-- `uncertainty_m` is the radius that bounds the region around `point`: for a
-  cell it is the distance to a corner; for `u=` it is `u`.
-- `area_m2` is the rectangle's ground area; for a point it is 0.
-- `crs` is preserved and written back by `to_geouri`, but the library does not
-  reproject: coordinates are interpreted as WGS84 regardless of the label.
+单元尺寸与面积使用近似地面尺度；覆盖半径用 111700 m/度作为 WGS84
+方向尺度的保守上界，并使用区域内最大的纬线尺度。它是覆盖界，不是精密
+椭球测地距离。geo URI 输出使用 9 位坐标、小数半径向外舍入，并给坐标
+舍入位移留出余量，避免高精度单元转 URI 后半径反而不足。
 
-## What conversion loses
+显式 u 的矩形包络以小于 WGS84 最小曲率半径的 6,335,000 m 球体构造保守
+角范围；到达极点时覆盖全部经度。点 geo URI 保留原文，避免缩短输入精度。
+统一模型只解释 WGS84：未知 CRS 在 `parse_location` 中返回 None；低层
+`geouri_parse` 可保留合法 CRS 标签供调用方处理，不进行重投影。
 
-| Conversion | What is kept | What is lost | API |
-| --- | --- | --- | --- |
-| cell → point | centre; `region` and `uncertainty_m` remain on the `Location` | the shape; the point alone is only accurate to `uncertainty_m` | `center()` |
-| point → cell | the cell that contains the point, with its bounds | the exact point; error ≤ cell half-diagonal | `Location::to_cell(format, precision)` |
-| cell → `geo:` URI | centre plus `;u=<half diagonal>` | rectangle → circle; the circle covers the cell but also points outside it | `to_geouri()` |
-| point + `u=` → cell | the cell containing the point | the uncertainty: a cell at finer resolution than `u` pretends to more accuracy than the source had | check `u` against cell size first |
-| any notation → `raw` | original text | nothing | field `raw` |
+规范依据：[RFC 5870 §3.4.3](https://www.rfc-editor.org/rfc/rfc5870.html#section-3.4.3)
+区分缺失 u 与显式 u 值；本库不会把二者合并成“精确位置”。
 
-The model never silently drops `region`: `parse_location` returns a `Location`,
-not a `LatLng`. A caller that only wants a point calls `center()` and can read
-`uncertainty_m` to see what that shortcut costs.
+## 可验证证据
 
-## Examples
-
-### A cell
-
-```text
-$ geocodec parse "8FVC9G8F+6X"
-format: plus-code
-kind: cell
-point: 47.365562, 8.524938
-region: 47.365500,8.524875,47.365625,8.525000
-resolution_m: 13.822
-uncertainty_m: 8.365
-area_m2: 130.268
-raw: 8FVC9G8F+6X
-as_geouri: geo:47.365562,8.524938;u=8.365
-```
-
-The Plus Code cell is 13.8 m × 9.4 m. If only the centre is kept, the position
-is uncertain by up to 8.365 m (half the diagonal). `to_geouri` emits that radius,
-so a consumer that only understands `geo:` still gets a bound; the rectangle
-becomes a circle, which is a deliberate over-approximation.
-
-### A point with uncertainty
-
-```text
-$ geocodec parse "geo:48.198634,16.371648;u=40"
-format: geo-uri
-kind: point
-point: 48.198634, 16.371648
-region: 48.198272,16.371109,48.198996,16.372187
-resolution_m: 80.000
-uncertainty_m: 40.000
-area_m2: 6400.000
-raw: geo:48.198634,16.371648;u=40
-as_geouri: geo:48.198634,16.371648;u=40
-```
-
-Encoding this as a 10-digit Plus Code would quantise it to a 13.8 m cell and
-silently discard the 40 m uncertainty. The model makes that visible: `u=` is
-larger than the target cell, so the caller should keep the point form or choose
-a coarser code.
-
-### A point converted to a cell
-
-`Location::to_cell` makes the quantisation step explicit and returns a new
-`Location`:
-
-```text
-$ geocodec convert "geo:48.198634,16.371648;u=40" plus 10
-source:
-kind: point
-resolution_m: 80.000
-uncertainty_m: 40.000
-converted:
-kind: cell
-raw: 8FWR59XC+FM
-region: 48.198625,16.371625,48.198750,16.371750
-resolution_m: 13.822
-uncertainty_m: 8.323
-```
-
-The cell is finer than the source's 40 m uncertainty. The conversion is valid
-as "a cell containing the point", but it must not be read as "the point is
-accurate to 8.3 m"; the 40 m uncertainty was not representable and is lost.
-Callers that need it should keep the source `Location` or choose a cell coarser
-than `u`.
-
-### A plain point
-
-```text
-$ geocodec parse "39.9042,116.4074"
-format: decimal
-kind: point
-resolution_m: 0.000
-uncertainty_m: 0.000
-area_m2: 0.000
-```
-
-No precision is invented. The notation says "here is a coordinate"; how many
-digits the user typed is a property of the text, not a uniform semantic. If a
-caller needs a bound, it should carry one explicitly (`u=` or a cell code).
-
-## API surface
-
-- `parse_location(text) -> Location?` — one notation, full model.
-- `parse_codes(text) -> Array[Location]` — free-text scan, full model per hit.
-- `describe_code(text) -> Location?` — cell codecs only.
-- `Location::center()`, `bounds()`, `is_cell()`, `is_point()`.
-- `Location::contains_point(p)`, `contains(other)`, `intersects(other)`.
-- `Location::to_cell(format, precision)` — explicit point→cell quantisation,
-  returning a new `Location` with the new region/resolution; the new cell is
-  finer or coarser than the source, so compare the two uncertainties.
-- `Location::to_geouri()` — a lossy cell→point conversion; it writes
-  `u=` so the loss is bounded.
-- `Location::raw` — original notation text.
-
-The codec encoders stay point-based: `geohash_encode(point, precision)` is the
-explicit quantisation step. The model's job is to make the input semantics
-visible, not to forbid quantisation.
+`location_test.mbt` 覆盖模型分类、包含关系、u=0 与未知准确度、源准确度传播、
+不支持 CRS、极点包络，以及 2/6/10/15 位 Plus Code 转 URI 后四角仍在包络内。
+`geo_math_test.mbt` 还覆盖极大有限经度的归一化，避免循环无法取得进展。
+实际输出见 [reproducible-demo.md](reproducible-demo.md)。

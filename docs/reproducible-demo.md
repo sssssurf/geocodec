@@ -1,50 +1,104 @@
-# Reproducible demo
+# Reproducible review evidence
 
-Every command below was run from the repository root on Windows with the
-toolchain recorded in the first section. The output is copied from that run, so
-a reviewer can compare it with a fresh run rather than trusting a screenshot.
+Verified on 2026-10-27 with moon 0.1.20261023 and moonc 0.10.17.
+Windows runs js/wasm/wasm-gc; native is tested in WSL Ubuntu 24.04 with GCC.
 
-## 1. Environment
+Run from the repository root:
 
-```text
-$ moon version --all
-moon 0.1.20260608 (60bc8c3 2026-06-08)
-moonc v0.10.0+e66899a54 (2026-06-09)
-moonrun 0.1.20260608 (60bc8c3 2026-06-08)
+```bash
+moon check
+moon test --target js
+moon test --target wasm
+moon test --target wasm-gc
+moon test --target native
+node scripts/check-docs.mjs
 ```
 
-The repository is built and tested with that toolchain locally. CI installs the
-current release from `cli.moonbitlang.com` and runs the same commands, so the
-code is also exercised on a newer compiler. `native` additionally needs a system
-C compiler; the JS and wasm-gc targets do not.
+62 test blocks. Target-by-target results are also recorded in the workspace verification report.
 
-## 2. Build, format and test
+The snapshots below are checked by scripts/check-docs.mjs; --update refreshes
+them from actual commands, never manually invented values.
 
 ```text
-$ moon fmt --check
-Finished.
-
-$ moon check --target js
-Finished.
-
-$ moon test --target js
-Total tests: 59, passed: 59, failed: 0.
-
-$ moon test --target wasm-gc
-Total tests: 59, passed: 59, failed: 0.
+$ moon run --target js cmd/main -- parse "8FVC9G8F+6X"
+format: plus-code
+kind: cell
+point: 47.365562, 8.524938
+dms: 47°21′56.02″N 8°31′29.78″E
+region: 47.365500,8.524875,47.365625,8.525000
+resolution_m: 13.822
+uncertainty_m: 8.432
+uncertainty_known: true
+area_m2: 130.268
+altitude_m: (none)
+crs: wgs84
+raw: 8FVC9G8F+6X
+as_geouri: geo:47.3655625,8.5249375;u=8.432
 ```
-
-The `Finished.` lines also carry a task count that depends on the build cache,
-so it is omitted here; the exit status is what matters.
-
-The CLI is an ordinary main package, so it is built by the same commands:
 
 ```text
-$ moon build --target js cmd/main
-Finished.
+$ moon run --target js cmd/main -- convert "geo:48.198634,16.371648;u=40" plus 10
+source:
+format: geo-uri
+kind: point
+point: 48.198634, 16.371648
+dms: 48°11′55.08″N 16°22′17.93″E
+region: 48.198272,16.371105,48.198996,16.372191
+resolution_m: 80.000
+uncertainty_m: 40.000
+uncertainty_known: true
+area_m2: 6400.000
+altitude_m: (none)
+crs: wgs84
+raw: geo:48.198634,16.371648;u=40
+as_geouri: geo:48.198634,16.371648;u=40
+converted:
+format: plus-code
+kind: cell
+point: 48.198688, 16.371688
+dms: 48°11′55.27″N 16°22′18.08″E
+region: 48.198625,16.371625,48.198750,16.371750
+resolution_m: 13.822
+uncertainty_m: 8.390
+uncertainty_known: true
+area_m2: 128.197
+altitude_m: (none)
+crs: wgs84
+raw: 8FWR59XC+FM
+as_geouri: geo:48.1986875,16.3716875;u=8.391
+source_uncertainty_bound_m: 47.428
 ```
 
-## 3. End-to-end demo
+```text
+$ moon run --target js cmd/main -- json "geo:1,2"
+{"format":"geo-uri","kind":"point","lat":1.000000000,"lng":2.000000000,"south":1.000000000,"west":2.000000000,"north":1.000000000,"east":2.000000000,"resolution_m":0.000,"uncertainty_m":0.000,"uncertainty_known":false,"area_m2":0.000,"altitude_m":null,"crs":null,"raw":"geo:1,2","as_geouri":"geo:1,2"}
+```
+
+```text
+$ moon run --target js cmd/main -- json "geo:1,2;u=0"
+{"format":"geo-uri","kind":"point","lat":1.000000000,"lng":2.000000000,"south":1.000000000,"west":2.000000000,"north":1.000000000,"east":2.000000000,"resolution_m":0.000,"uncertainty_m":0.000,"uncertainty_known":true,"area_m2":0.000,"altitude_m":null,"crs":null,"raw":"geo:1,2;u=0","as_geouri":"geo:1,2;u=0"}
+```
+
+```text
+$ moon run --target js cmd/main -- parse "geo:1,2;crs=custom-grid"
+parse: not recognised
+```
+
+```text
+$ moon run --target js examples/basic
+format: plus-code
+kind: cell
+point: 47.365562, 8.524938
+region: 47.365500,8.524875,47.365625,8.525000
+resolution_m: 13.822
+uncertainty_m: 8.432
+as_geouri: geo:47.3655625,8.5249375;u=8.432
+as_geohash6: u0qj3y (828.4 m)
+scanned: 3
+  plus-code 47.365562, 8.524938
+  maidenhead 51.520833, -0.125000
+  geo-uri 48.198634, 16.371648
+```
 
 ```text
 $ moon run --target js cmd/main -- demo
@@ -68,277 +122,8 @@ plus: 4RRH46J5+FP
 maidenhead: QF56OD51
 ```
 
-The demo is deterministic: it uses three fixed points and no clock, locale or
-random source.
-
-## 4. Individual operations
-
-### 4.1 Parse without being told the notation
-
-```text
-$ moon run --target js cmd/main -- parse "8FVC9G8F+6X"
-format: plus-code
-kind: cell
-point: 47.365562, 8.524938
-dms: 47°21′56.02″N 8°31′29.78″E
-region: 47.365500,8.524875,47.365625,8.525000
-resolution_m: 13.822
-uncertainty_m: 8.365
-area_m2: 130.268
-altitude_m: (none)
-crs: wgs84
-raw: 8FVC9G8F+6X
-as_geouri: geo:47.365562,8.524938;u=8.365
-```
-
-`8FVC9G8F+6X` is a cell: the region is exact, the longer side is 13.822 m, and
-reducing it to its centre costs up to 8.365 m (half the diagonal). `as_geouri`
-writes that radius as `;u=`, so a `geo:`-only consumer still gets a covering
-circle; the rectangle shape is kept in `region`.
-
-### 4.2 Encode the three cell codecs
-
-```text
-$ moon run --target js cmd/main -- geohash 39.9042 116.4074 9
-geohash: wx4g0bm6c
-point: 39.904200, 116.407400
-dms: 39°54′15.12″N 116°24′26.64″E
-bounds: 39.904189,116.407399,39.904232,116.407442
-center: 39.904211, 116.407421
-
-$ moon run --target js cmd/main -- plus 39.9042 116.4074 10
-plus: 8PFRWC34+MX
-point: 39.904200, 116.407400
-dms: 39°54′15.12″N 116°24′26.64″E
-bounds: 39.904125,116.407375,39.904250,116.407500
-center: 39.904188, 116.407438
-
-$ moon run --target js cmd/main -- maidenhead 51.5074 -0.1278 6
-maidenhead: IO91WM
-point: 51.507400, -0.127800
-dms: 51°30′26.64″N 0°07′40.08″W
-bounds: 51.500000,-0.166667,51.541667,-0.083333
-center: 51.520833, -0.125000
-```
-
-### 4.3 Scan prose for codes
-
-```text
-$ moon run --target js cmd/main -- scan "Meet at 8FVC9G8F+6X near IO91WM, or send geo:48.198634,16.371648;u=40 and wx4g0b."
-found: 4
-plus-code: 47.365562, 8.524938 [cell, 13.8 m]
-maidenhead: 51.520833, -0.125000 [cell, 5772.2 m]
-geo-uri: 48.198634, 16.371648 [point, 80.0 m]
-geohash: 39.905090, 116.405640 [cell, 938.2 m]
-```
-
-The words "Meet", "at", "near", "or", "send" and "and" are not reported. Some of
-them ("meet", "send") are legal geohash strings; the scanner requires a digit
-and at least five characters before accepting a geohash, which is what keeps
-the prose readable.
-
-### 4.4 Cover a box with geohash cells
-
-```text
-$ moon run --target js cmd/main -- cover 39.900 116.400 39.905 116.405 7
-cells: 20
-wx4fbxx
-wx4fbz8
-wx4fbz9
-wx4fbzd
-wx4fbze
-wx4fbxz
-wx4fbzb
-wx4fbzc
-wx4fbzf
-wx4fbzg
-wx4g08p
-wx4g0b0
-wx4g0b1
-wx4g0b4
-wx4g0b5
-wx4g08r
-wx4g0b2
-wx4g0b3
-wx4g0b6
-wx4g0b7
-```
-
-The order is ascending latitude, then ascending longitude (within the two
-longitude segments when the box crosses the date line). The list is capped by
-the optional `max` argument; exceeding the cap is an error, not a truncation.
-
-### 4.5 Describe a cell
-
-```text
-$ moon run --target js cmd/main -- info "8FVC9G8F+6X"
-format: plus-code
-kind: cell
-point: 47.365562, 8.524938
-dms: 47°21′56.02″N 8°31′29.78″E
-region: 47.365500,8.524875,47.365625,8.525000
-resolution_m: 13.822
-uncertainty_m: 8.365
-area_m2: 130.268
-altitude_m: (none)
-crs: wgs84
-raw: 8FVC9G8F+6X
-as_geouri: geo:47.365562,8.524938;u=8.365
-```
-
-The 10-digit Plus Code cell is 0.000125° on a side; at 47.4°N that is about
-13.8 m of latitude and 9.4 m of longitude, so the reported longer side is 13.8 m,
-the half-diagonal is 8.365 m and the area is about 130 m².
-
-### 4.6 Geo URI and DMS
-
-```text
-$ moon run --target js cmd/main -- geouri "geo:48.198634,16.371648;u=40"
-format: geo-uri
-kind: point
-point: 48.198634, 16.371648
-dms: 48°11′55.08″N 16°22′17.93″E
-region: 48.198272,16.371109,48.198996,16.372187
-resolution_m: 80.000
-uncertainty_m: 40.000
-area_m2: 6400.000
-altitude_m: (none)
-crs: wgs84
-raw: geo:48.198634,16.371648;u=40
-as_geouri: geo:48.198634,16.371648;u=40
-
-$ moon run --target js cmd/main -- dms 51.5074 lat
-51°30′26.64″N
-```
-
-### 4.7 Explicit point-to-cell conversion
-
-`convert` calls `Location::to_cell` and prints the source and the quantised cell,
-so the loss is visible in the numbers:
-
-```text
-$ moon run --target js cmd/main -- convert "geo:48.198634,16.371648;u=40" plus 10
-source:
-format: geo-uri
-kind: point
-point: 48.198634, 16.371648
-dms: 48°11′55.08″N 16°22′17.93″E
-region: 48.198272,16.371109,48.198996,16.372187
-resolution_m: 80.000
-uncertainty_m: 40.000
-area_m2: 6400.000
-altitude_m: (none)
-crs: wgs84
-raw: geo:48.198634,16.371648;u=40
-as_geouri: geo:48.198634,16.371648;u=40
-converted:
-format: plus-code
-kind: cell
-point: 48.198688, 16.371688
-dms: 48°11′55.27″N 16°22′18.08″E
-region: 48.198625,16.371625,48.198750,16.371750
-resolution_m: 13.822
-uncertainty_m: 8.323
-area_m2: 128.197
-altitude_m: (none)
-crs: wgs84
-raw: 8FWR59XC+FM
-as_geouri: geo:48.198688,16.371688;u=8.323
-```
-
-The source had `u=40`; the converted cell is finer than that (13.822 m). The
-cell is a valid "cell containing the point", but its 8.323 m uncertainty does
-not restore the source's 40 m bound. This is exactly the loss the model exposes.
-
-### 4.8 Machine-readable output
-
-`json` emits one line with the same model, for scripts and AI agents:
-
-```text
-$ moon run --target js cmd/main -- json "8FVC9G8F+6X"
-{"format":"plus-code","kind":"cell","lat":47.365562,"lng":8.524938,"south":47.365500,"west":8.524875,"north":47.365625,"east":8.525000,"resolution_m":13.822,"uncertainty_m":8.365,"area_m2":130.268,"altitude_m":null,"crs":null,"raw":"8FVC9G8F+6X","as_geouri":"geo:47.365562,8.524938;u=8.365"}
-```
-
-### 4.9 Runnable example and benchmarks
-
-The library example is a separate main package, so it exercises the public API
-the way a user would:
-
-```text
-$ moon run --target js examples/basic
-format: plus-code
-kind: cell
-point: 47.365562, 8.524938
-region: 47.365500,8.524875,47.365625,8.525000
-resolution_m: 13.822
-uncertainty_m: 8.365
-as_geouri: geo:47.365562,8.524938;u=8.365
-as_geohash6: u0qj3y (828.4 m)
-scanned: 3
-  plus-code 47.365562, 8.524938
-  maidenhead 51.520833, -0.125000
-  geo-uri 48.198634, 16.371648
-```
-
-```text
-$ cd benchmarks && moon bench
-bench: geohash encode       278.08 ns
-bench: plus code encode     241.58 ns
-bench: maidenhead encode     91.72 ns
-bench: parse a plus code      2.67 µs
-bench: parse a geo uri        2.38 µs
-bench: cell to geo uri      758.74 ns
-bench: point to plus cell     3.10 µs
-bench: geohash cover         22.92 µs
-bench: scan a sentence       14.79 µs
-bench: region containment    15.18 ns
-```
-
-These are the means from the local run; they are regression indicators, not a
-machine-independent guarantee. CI runs `moon bench` so the package cannot rot.
-
-## 5. Error paths are part of the demo
-
-These inputs are wrong on purpose; the point is that the program reports them
-and exits normally instead of panicking.
-
-```text
-$ moon run --target js cmd/main -- parse "geo:91,0"
-parse: not recognised
-
-$ moon run --target js cmd/main -- geohash 0 0 13
-geohash: precision must be between 1 and 12
-
-$ moon run --target js cmd/main -- plus 0 0 7
-plus: length must be 2, 4, 6, 8, 10, 11, 12, 13, 14 or 15
-
-$ moon run --target js cmd/main -- cover 0 0 10 10 10 10
-cover: too many cells, or an invalid precision
-
-$ moon run --target js cmd/main -- bbox "not-a-code"
-bbox: not a recognised code
-```
-
-## 6. What to check
-
-1. `moon test` reports 59 passing tests.
-2. `moon run --target js cmd/main -- demo` prints three blocks, and the codes
-   match section 3.
-3. `moon run --target js cmd/main -- parse "8FVC9G8F+6X"` reports
-   `format: plus-code`, not `geohash`.
-4. `moon run --target js cmd/main -- scan ...` reports exactly four results and
-   does not return "Meet" or "send".
-5. `moon run --target js cmd/main -- convert "geo:48.198634,16.371648;u=40" plus 10`
-   shows source `uncertainty_m: 40.000` and converted `uncertainty_m: 8.323`.
-6. Bad input in section 5 returns a message, not a stack trace.
-
-## 7. Acceptance evidence
-
-| Requirement | Evidence in this repository |
-| --- | --- |
-| MoonBit is the main language | all source files are `.mbt`; `moon.mod` lists no third-party dependency |
-| Public repository with traceable history | `git log` contains the feature/test/docs commits in development order |
-| Buildable, runnable, reproducible | sections 1–5 above; `moon test`, `moon run` |
-| Substantial work in this round | the whole module is new; `CHANGELOG.md` records 0.3.0 |
-| Open-source compliance | `LICENSE` (Apache-2.0); `README.md` lists standards and states that no code was ported |
-| Explainable AI use | `docs/development-retrospective.md` records the decisions, the rejected alternatives and the role of the AI assistant |
+The 40 m source accuracy remains in the conversion record. The target cell
+geometry is finer; source_uncertainty_bound_m is the propagated bound around
+the new centre. Unknown accuracy differs from explicit u=0 in JSON. Unsupported
+CRSs are rejected by the WGS84 model. See location-model.md for approximation
+and conversion-loss semantics.

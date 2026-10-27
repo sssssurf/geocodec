@@ -85,7 +85,7 @@ fn print_usage() -> Unit {
 }
 
 ///|
-fn arg_at(args : Array[String], index : Int) -> String {
+fn arg_at(args : Array[String], index : Int32) -> String {
   if index < args.length() {
     args[index]
   } else {
@@ -94,7 +94,7 @@ fn arg_at(args : Array[String], index : Int) -> String {
 }
 
 ///|
-fn join_from(args : Array[String], index : Int) -> String {
+fn join_from(args : Array[String], index : Int32) -> String {
   let out = StringBuilder()
   let mut i = index
   while i < args.length() {
@@ -149,6 +149,7 @@ fn show_location(loc : @geocodec.Location) -> Unit {
   println("region: " + loc.region.to_text(digits=6))
   println("resolution_m: " + @geocodec.format_fixed(loc.resolution_m, 3))
   println("uncertainty_m: " + @geocodec.format_fixed(loc.uncertainty_m, 3))
+  println("uncertainty_known: " + loc.uncertainty_known.to_string())
   println("area_m2: " + @geocodec.format_fixed(loc.area_m2, 3))
   match loc.altitude_m {
     Some(v) => println("altitude_m: " + @geocodec.format_fixed(v, 3))
@@ -395,11 +396,16 @@ fn run_convert(args : Array[String]) -> Unit {
   }
   println("source:")
   show_location(source)
-  match source.to_cell(target, precision) {
+  match source.convert_to_cell(target, precision) {
     None => println("convert: cannot encode at this precision")
-    Some(cell) => {
+    Some(conversion) => {
       println("converted:")
-      show_location(cell)
+      show_location(conversion.target)
+      match conversion.uncertainty_bound_m {
+        Some(u) =>
+          println("source_uncertainty_bound_m: " + @geocodec.format_fixed(u, 3))
+        None => println("source_uncertainty_bound_m: (unspecified)")
+      }
     }
   }
 }
@@ -428,21 +434,23 @@ fn run_json(code : String) -> Unit {
     "\",\"kind\":\"" +
     kind +
     "\",\"lat\":" +
-    @geocodec.format_fixed(loc.point.lat(), 6) +
+    @geocodec.format_fixed(loc.point.lat(), 9) +
     ",\"lng\":" +
-    @geocodec.format_fixed(loc.point.lng(), 6) +
+    @geocodec.format_fixed(loc.point.lng(), 9) +
     ",\"south\":" +
-    @geocodec.format_fixed(loc.region.south(), 6) +
+    @geocodec.format_fixed(loc.region.south(), 9) +
     ",\"west\":" +
-    @geocodec.format_fixed(loc.region.west(), 6) +
+    @geocodec.format_fixed(loc.region.west(), 9) +
     ",\"north\":" +
-    @geocodec.format_fixed(loc.region.north(), 6) +
+    @geocodec.format_fixed(loc.region.north(), 9) +
     ",\"east\":" +
-    @geocodec.format_fixed(loc.region.east(), 6) +
+    @geocodec.format_fixed(loc.region.east(), 9) +
     ",\"resolution_m\":" +
     @geocodec.format_fixed(loc.resolution_m, 3) +
     ",\"uncertainty_m\":" +
     @geocodec.format_fixed(loc.uncertainty_m, 3) +
+    ",\"uncertainty_known\":" +
+    loc.uncertainty_known.to_string() +
     ",\"area_m2\":" +
     @geocodec.format_fixed(loc.area_m2, 3) +
     ",\"altitude_m\":" +
@@ -475,7 +483,7 @@ fn json_escape(text : String) -> String {
 }
 
 ///|
-fn integer_arg(text : String, fallback : Int) -> Int {
+fn integer_arg(text : String, fallback : Int32) -> Int32 {
   match @geocodec.parse_decimal(text) {
     None => fallback
     Some(v) => if v < 0.0 { fallback } else { v.to_int() }

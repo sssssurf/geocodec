@@ -5,13 +5,11 @@
 Location codes for MoonBit: Geohash, Plus Codes, Maidenhead locators, `geo:`
 URIs and degrees/minutes/seconds.
 
-A place is written in more ways than one. A rescue dispatcher reads a Plus Code
-off a phone, a radio operator logs a Maidenhead locator, a travel note carries a
-geohash, a web link carries a `geo:` URI, and a map annotation carries degrees,
-minutes and seconds. `geocodec` turns each of those into one validated `LatLng`,
-converts between them, gives the bounds of every cell, and can find the codes
-inside a sentence. Every public function is total: malformed input comes back as
-`None` or `false`, never as an exception or a panic.
+A cell code identifies a region; coordinate text identifies a point.
+`parse_location` returns a `Location` carrying both the representative point and
+its original semantics. It keeps region, resolution, uncertainty and source
+text, and distinguishes unspecified accuracy from explicit zero uncertainty.
+Conversions return a record retaining the source as well as the target.
 
 ```moonbit
 let p = @geocodec.LatLng::new(39.9042, 116.4074).unwrap()
@@ -49,8 +47,7 @@ On top of the codecs:
 - `parse_codes`, which scans free text and returns every code it finds.
 - `describe_code`, which reports the notation, the region, the ground size in
   metres and the approximate area in square metres.
-- `Location::to_geouri`, which converts a cell to a point plus `;u=<half
-  diagonal>` instead of silently dropping the cell.
+- `Location::to_geouri`, which converts a cell to a point plus `;u=<covering radius>` instead of silently dropping the cell.
 - `geohash_cover`, which enumerates the geohash cells covering a bounding box,
   with a cell budget.
 - A CLI that exposes every operation for a reviewer or a shell script, plus a
@@ -58,49 +55,33 @@ On top of the codecs:
 
 ## One model, two families
 
-The notations are not interchangeable. Geohash, Plus Codes and Maidenhead denote
-a **cell**: a rectangle at a resolution. A decimal pair, a DMS pair and a `geo:`
-URI denote a **point**; `geo:` may also carry an explicit `u=` uncertainty.
-`parse_location` returns a `Location`, never a bare `LatLng`:
+Geohash, Plus Codes and Maidenhead denote **cells**. Decimal and DMS pairs and
+`geo:` URIs denote **points**, optionally with explicit uncertainty.
 
 | Field | Meaning |
 | --- | --- |
-| `format` | which notation produced the value |
-| `kind` | `Cell` or `Point` |
-| `point` | cell centre, or the coordinate itself |
-| `region` | exact cell, `u=` envelope, or degenerate point |
-| `resolution_m` | longer side of the region; 0 when the notation has no extent |
-| `uncertainty_m` | max distance from `point` to the region boundary |
-| `area_m2` | approximate ground area of the region |
-| `altitude_m`, `crs` | only from `geo:` URIs |
-| `raw` | the original text, never discarded |
+| format / kind | notation and Cell/Point |
+| point / region | representative point and exact cell or conservative u envelope |
+| resolution_m | approximate cell size, point uncertainty diameter, or 0 |
+| uncertainty_m / uncertainty_known | geometric/input bound; missing accuracy is distinct from u=0 |
+| area_m2 | approximate or nominal envelope area |
+| altitude_m / crs / raw | source altitude, CRS label and original notation |
 
-Converting a cell to a point keeps the centre and the `region` but loses the
-shape; the point is only accurate to `uncertainty_m`. Converting a point to a
-cell is the explicit `Location::to_cell(format, precision)`: it quantises to the
-cell that contains the point and returns a new `Location`, so the caller can
-compare the before/after `resolution_m` and `uncertainty_m`. `to_geouri` on a
-cell writes the centre plus `;u=<half diagonal>`, so a `geo:`-only consumer gets
-a covering circle, at the cost of the rectangle shape. A point with `u=` larger
-than the target cell should stay a point: the code would pretend to more
-accuracy than the source.
+`Location::convert_to_cell(format, precision)` returns a `LocationConversion`
+containing `source`, `target`, `center_shift_bound_m` and an optional
+`uncertainty_bound_m`. Converting a 40 m uncertain point to a 13.8 m cell
+does not improve its accuracy: the original 40 m survives in source, and the
+bound relative to the new centre is about 47.428 m. An unspecified source
+accuracy remains unspecified. `to_cell` is the lower-level centre quantiser.
 
-```moonbit
-let cell = @geocodec.parse_location("8FVC9G8F+6X").unwrap()
-// cell.kind == Cell, cell.resolution_m ~ 13.8, cell.uncertainty_m ~ 8.4
-let uri = cell.to_geouri()
-// "geo:47.365562,8.524938;u=8.365"
-let back = @geocodec.parse_location(uri).unwrap()
-// back.kind == Point, back.uncertainty_m == 8.365
+`to_geouri` on a cell emits a covering radius rounded outwards, with coordinate
+rounding accounted for. It loses rectangle shape. Point geo URIs retain their
+original text, including explicit u=0 and input precision. Unsupported CRSs are
+rejected by the unified WGS84 model rather than silently reinterpreted.
 
-let source = @geocodec.parse_location("geo:48.198634,16.371648;u=40").unwrap()
-let plus = source.to_cell(@geocodec.PlusCode, 10).unwrap()
-// plus.resolution_m ~ 13.8, plus.uncertainty_m ~ 8.3:
-// the 40 m source uncertainty is not representable by the finer cell
-```
-
-The full semantics, including the conversion-loss table and the no-invented-
-precision rule, are in [docs/location-model.md](docs/location-model.md).
+The full semantics and conversion-loss table are in
+[docs/location-model.md](docs/location-model.md). The resubmission response is
+in [docs/初审补充说明.md](docs/初审补充说明.md).
 
 ## Install
 
@@ -108,7 +89,7 @@ precision rule, are in [docs/location-model.md](docs/location-model.md).
 moon add sssssurf/geocodec   # once the first mooncakes release is published
 ```
 
-`moon.mod` declares no dependencies. The only import is `moonbitlang/core/math`,
+`moon.mod` declares no dependencies. The imports are `moonbitlang/core/math`,
 which ships with the toolchain.
 
 ## Library examples
@@ -189,7 +170,7 @@ let loc = @geocodec.describe_code("8FVC9G8F+6X").unwrap()
 // loc.resolution_m ~ 13.8
 // loc.uncertainty_m ~ 8.4
 // loc.area_m2 ~ 130
-// loc.to_geouri() == "geo:47.365562,8.524938;u=8.365"
+// loc.to_geouri() == "geo:47.365562,8.524938;u=8.432"
 ```
 
 ## Command line
@@ -202,12 +183,13 @@ point: 47.365562, 8.524938
 dms: 47°21′56.02″N 8°31′29.78″E
 region: 47.365500,8.524875,47.365625,8.525000
 resolution_m: 13.822
-uncertainty_m: 8.365
+uncertainty_m: 8.432
+uncertainty_known: true
 area_m2: 130.268
 altitude_m: (none)
 crs: wgs84
 raw: 8FVC9G8F+6X
-as_geouri: geo:47.365562,8.524938;u=8.365
+as_geouri: geo:47.3655625,8.5249375;u=8.432
 
 $ moon run --target js cmd/main -- scan "Meet at 8FVC9G8F+6X near IO91WM, or send geo:48.198634,16.371648;u=40 and wx4g0b."
 found: 4
@@ -231,7 +213,7 @@ For scripts and AI agents, `json` emits one line with the same model:
 
 ```text
 $ moon run --target js cmd/main -- json "8FVC9G8F+6X"
-{"format":"plus-code","kind":"cell","lat":47.365562,"lng":8.524938,"south":47.365500,"west":8.524875,"north":47.365625,"east":8.525000,"resolution_m":13.822,"uncertainty_m":8.365,"area_m2":130.268,"altitude_m":null,"crs":null,"raw":"8FVC9G8F+6X","as_geouri":"geo:47.365562,8.524938;u=8.365"}
+{"format":"plus-code","kind":"cell","lat":47.365562500,"lng":8.524937500,"south":47.365500000,"west":8.524875000,"north":47.365625000,"east":8.525000000,"resolution_m":13.822,"uncertainty_m":8.432,"uncertainty_known":true,"area_m2":130.268,"altitude_m":null,"crs":null,"raw":"8FVC9G8F+6X","as_geouri":"geo:47.3655625,8.5249375;u=8.432"}
 ```
 
 ## Examples and benchmarks
@@ -245,8 +227,8 @@ kind: cell
 point: 47.365562, 8.524938
 region: 47.365500,8.524875,47.365625,8.525000
 resolution_m: 13.822
-uncertainty_m: 8.365
-as_geouri: geo:47.365562,8.524938;u=8.365
+uncertainty_m: 8.432
+as_geouri: geo:47.3655625,8.5249375;u=8.432
 as_geohash6: u0qj3y (828.4 m)
 scanned: 3
   plus-code 47.365562, 8.524938
@@ -347,15 +329,14 @@ The suite is in five layers:
 3. **Property tests.** Forty deterministic pseudo-random points run through
    all three cell codecs; covers of ten random boxes are checked cell by cell.
 4. **Unified model.** Cell vs point kinds, region containment, the `u=` envelope,
-   `to_geouri`'s half-diagonal radius, and the no-invented-precision rule for
+   `to_geouri`'s covering bound radius, and the no-invented-precision rule for
    decimal/DMS.
 5. **Robustness.** Garbage strings, non-ASCII text, 10,000-character input and
    extreme numbers go through every parser without a panic.
 
-`moon fmt --check` is clean on the local `moonc 0.10.0` toolchain. CI does not
-gate on the formatter, because newer `moon fmt` releases rewrite `Int` to
-`Int32` and `options` to `pkgtype`; the test and build matrix is the gate that
-matters for compatibility.
+The October resubmission is tested with moonc 0.10.17. Modified source is
+formatted with that toolchain. CI gates on builds, tests, examples and verified
+command snapshots; formatter changes in older untouched files are not a gate.
 
 ## Repository layout
 
@@ -379,7 +360,7 @@ docs/             model notes, reproducible demo and development retrospective
 
 ## Status
 
-Version 0.3.0. The public API is intentionally small and may still change before
+Version 0.4.0. The public API is intentionally small and may still change before
 1.0. Issues and pull requests are welcome; please include a failing code string
 and the notation you expected.
 

@@ -115,17 +115,68 @@ test "a point with u= contains nearby points and excludes far ones" {
 }
 
 ///|
-test "u=0 is an exact point and disappears from the rendered uri" {
+test "explicit zero uncertainty remains distinct from unspecified accuracy" {
   let loc = parse_location("geo:1,2;u=0").unwrap()
   assert_eq(loc.uncertainty_m, 0.0)
-  assert_eq(loc.to_geouri(), "geo:1,2")
+  assert_true(loc.uncertainty_known)
+  assert_eq(loc.to_geouri(), "geo:1,2;u=0")
+  let unknown = parse_location("geo:1,2").unwrap()
+  assert_false(unknown.uncertainty_known)
+  assert_eq(unknown.to_geouri(), "geo:1,2")
 }
 
 ///|
-test "a non-wgs84 crs is preserved but not interpreted" {
-  let loc = parse_location("geo:1,2;crs=EPSG:4326").unwrap()
-  assert_eq(loc.crs.unwrap(), "EPSG:4326")
-  assert_eq(loc.to_geouri(), "geo:1,2;crs=EPSG:4326")
+test "an unsupported CRS is never silently interpreted as WGS84" {
+  assert_true(parse_location("geo:1,2;crs=custom-grid") is None)
+  let syntax = geouri_parse("geo:1,2;crs=custom-grid").unwrap()
+  assert_eq(syntax.crs, Some("custom-grid"))
+  assert_true(parse_location("geo:1,2;crs=WGS84") is Some(_))
+}
+
+///|
+test "a conversion retains original uncertainty and provenance" {
+  let source = parse_location("geo:48.198634,16.371648;u=40").unwrap()
+  let result = source.convert_to_cell(@geocodec.PlusCode, 10).unwrap()
+  assert_eq(result.source.raw, source.raw)
+  assert_eq(result.source.uncertainty_m, 40.0)
+  assert_true(result.target.region.contains(source.point))
+  assert_true(result.uncertainty_bound_m.unwrap() >= 40.0)
+  let unknown = parse_location("1,2")
+    .unwrap()
+    .convert_to_cell(@geocodec.GeoHash, 6)
+    .unwrap()
+  assert_true(unknown.uncertainty_bound_m is None)
+}
+
+///|
+test "a rendered cell circle covers all corners even at high precision" {
+  for pair in [(47.36559, 8.524997), (89.999, 179.999), (-89.999, -179.999)] {
+    let p = LatLng::new(pair.0, pair.1).unwrap()
+    for length in [2, 6, 10, 15] {
+      let code = pluscode_encode(p, code_length=length).unwrap()
+      let cell = describe_code(code).unwrap()
+      let back = parse_location(cell.to_geouri()).unwrap()
+      assert_true(back.uncertainty_m >= cell.uncertainty_m)
+      let b = cell.region
+      for
+        corner in [
+          (b.south(), b.west()),
+          (b.south(), b.east()),
+          (b.north(), b.west()),
+          (b.north(), b.east()),
+        ] {
+        assert_true(
+          back.region.contains(LatLng::new(corner.0, corner.1).unwrap()),
+        )
+      }
+    }
+  }
+}
+
+///|
+test "uncertainty reaching a pole covers every longitude" {
+  let loc = parse_location("geo:89.999,20;u=1000").unwrap()
+  assert_true(loc.region.contains(LatLng::new(90.0, -150.0).unwrap()))
 }
 
 ///|
