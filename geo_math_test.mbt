@@ -15,3 +15,17 @@ test "longitudes normalise into the half-open range" {
   assert_true(normalize_lng(1.0e100) >= -180.0)
   assert_true(normalize_lng(-1.0e100) < 180.0)
 }
+
+///|
+test "RFC decimal formatting preserves small and large finite doubles" {
+  for value in [0.0, 0.0000001, -0.0000001, 1.0e20, 1.0e-200] {
+    let text = decimal_notation(value)
+    assert_false(text.contains("e"))
+    let back = parse_decimal(text).unwrap()
+    if value == 0.0 {
+      assert_eq(back, 0.0)
+    } else {
+      assert_true((back / value - 1.0).abs() < 1.0e-12)
+    }
+  }
+}

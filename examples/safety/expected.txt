@@ -1,0 +1,8 @@
+unknown_is_none: true
+chained_unknown_is_none: true
+chained_URI_omits_u: true
+explicit_zero: true
+unknown_CRS_rejected: true
+tiny_u_preserved: true
+fine_grid_keeps_40m_bound: true
+grid_radius_below_1cm: true

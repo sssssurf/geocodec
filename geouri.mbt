@@ -2,18 +2,19 @@
 // optional uncertainty and coordinate reference system parameters.
 
 ///|
-/// A parsed `geo:` URI. `crs` is kept as written; the library only interprets
-/// WGS84 coordinates, so a non-default CRS is reported but not reprojected.
-pub(all) struct GeoUri {
+/// A validated WGS84 `geo:` URI. Unsupported CRSs are rejected before a
+/// coordinate can escape as LatLng. Readonly outside the defining package.
+pub struct GeoUri {
   point : LatLng
   altitude : Double?
   uncertainty : Double?
   crs : String?
+  raw : String
 } derive(Eq)
 
 ///|
 /// Parse a `geo:` URI. Returns `None` for a bad prefix, a coordinate outside
-/// its range, a malformed number, or a negative uncertainty.
+/// its range, a malformed number/parameter, or an unsupported CRS.
 pub fn geouri_parse(input : String) -> GeoUri? {
   let s = trim_ascii(input)
   if s.length() < 5 || ascii_lower(s[0:4].to_owned()) != "geo:" {
@@ -63,39 +64,53 @@ pub fn geouri_parse(input : String) -> GeoUri? {
   }
   let mut uncertainty : Double? = None
   let mut crs : String? = None
+  let mut extensions = false
   for i = 1; i < sections.length(); i = i + 1 {
     let section = sections[i]
     if section == "" {
       return None
     }
     let kv = split_text(section, '=')
+    if !geo_label(kv[0]) || kv.length() > 2 {
+      return None
+    }
     if kv.length() == 2 {
       let key = ascii_lower(kv[0])
       let value = kv[1]
       if key == "u" {
-        if uncertainty is Some(_) || !geo_number(value, false) {
+        if extensions || uncertainty is Some(_) || !geo_number(value, false) {
           return None
         }
         match parse_decimal(value) {
           None => return None
           Some(v) => {
-            if v < 0.0 || !is_finite(v) {
+            if v < 0.0 || !is_finite(v) || (v == 0.0 && geo_nonzero(value)) {
               return None
             }
             uncertainty = Some(v)
           }
         }
       } else if key == "crs" {
-        if value == "" || crs is Some(_) || !geo_label(value) {
+        if extensions ||
+          uncertainty is Some(_) ||
+          crs is Some(_) ||
+          ascii_lower(value) != "wgs84" {
           return None
         }
         crs = Some(value)
+      } else {
+        if !geo_parameter_value(value) {
+          return None
+        }
+        extensions = true
       }
     } else if ascii_lower(kv[0]) == "u" || ascii_lower(kv[0]) == "crs" {
       return None
+    } else {
+      extensions = true
     }
   }
-  Some({ point, altitude, uncertainty, crs, })
+  Some({ point, altitude, uncertainty, crs, raw: s, })
 }
 
 ///|
@@ -140,26 +155,52 @@ fn geo_label(text : String) -> Bool {
 }
 
 ///|
-/// Render a `geo:` URI with six decimals for the coordinates and no trailing
-/// zeros.
+/// Preserve the validated URI exactly, including tiny u, explicit zero,
+/// coordinate/altitude precision and extension parameters. Reformatting to a
+/// fixed number of decimals could move the centre or turn a positive u into 0.
 pub fn geouri_format(uri : GeoUri) -> String {
-  let mut out = "geo:" +
-    trim_fraction(format_fixed(uri.point.lat(), 6)) +
-    "," +
-    trim_fraction(format_fixed(uri.point.lng(), 6))
-  match uri.altitude {
-    None => ()
-    Some(v) => out = out + "," + trim_fraction(format_fixed(v, 3))
+  uri.raw
+}
+
+///|
+fn geo_parameter_value(text : String) -> Bool {
+  if text == "" {
+    return false
   }
-  match uri.crs {
-    None => ()
-    Some(v) => out = out + ";crs=" + v
+  let cs = chars_of(text)
+  let mut i = 0
+  while i < cs.length() {
+    let c = cs[i]
+    if c == '%' {
+      if i + 2 >= cs.length() || !geo_hex(cs[i + 1]) || !geo_hex(cs[i + 2]) {
+        return false
+      }
+      i = i + 3
+    } else if (c >= 'a' && c <= 'z') ||
+      (c >= 'A' && c <= 'Z') ||
+      (c >= '0' && c <= '9') ||
+      "-_.!~*'()[]:&+$".contains(char_str(c)) {
+      i = i + 1
+    } else {
+      return false
+    }
   }
-  match uri.uncertainty {
-    None => ()
-    Some(v) => out = out + ";u=" + trim_fraction(format_fixed(v, 3))
+  true
+}
+
+///|
+fn geo_hex(c : Char) -> Bool {
+  (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')
+}
+
+///|
+fn geo_nonzero(text : String) -> Bool {
+  for c in text {
+    if c >= '1' && c <= '9' {
+      return true
+    }
   }
-  out
+  false
 }
 
 ///|

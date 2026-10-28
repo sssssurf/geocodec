@@ -26,26 +26,25 @@ pub impl Show for LocationKind with fn to_string(self : LocationKind) -> String 
 /// A parsed location with its region, resolution and uncertainty.
 ///
 /// Invariants:
-/// - `region` always contains `point`;
+/// - `region` always contains `point` geometrically, not necessarily the
+///   physical subject when its accuracy is unknown;
 /// - `kind == Cell` means `region` is the exact cell, `point` is its centre;
 /// - `kind == Point` means the notation itself is a point; when `u=` is given
 ///   the region is the square envelope of that uncertainty;
 /// - `resolution_m` is the longer side of the region in metres (0 when the
 ///   notation carries no extent);
-/// - `uncertainty_m` is a conservative cell coverage bound or explicit input
-///   accuracy. Consult `uncertainty_known`: a placeholder 0 may mean unknown;
+/// - `uncertainty_m` is an optional coverage bound, never a zero placeholder;
+/// - `cell_radius_m` describes grid geometry, independently of input accuracy;
 /// - `raw` keeps the text that produced the value, so the original notation is
 ///   never lost even when the point/region is converted further.
-pub(all) struct Location {
+pub struct Location {
   format : LocationFormat
   kind : LocationKind
   point : LatLng
   region : BoundingBox
   resolution_m : Double
-  uncertainty_m : Double
-  /// False means accuracy was not specified; numerical zero is not proof of
-  /// an exact physical position. Cells always have a known geometric bound.
-  uncertainty_known : Bool
+  uncertainty_m : Double?
+  cell_radius_m : Double?
   area_m2 : Double
   altitude_m : Double?
   crs : String?
@@ -74,8 +73,8 @@ fn cell_location(
     point,
     region: bounds,
     resolution_m: resolution,
-    uncertainty_m: cell_radius_bound(bounds),
-    uncertainty_known: true,
+    uncertainty_m: Some(cell_radius_bound(bounds)),
+    cell_radius_m: Some(cell_radius_bound(bounds)),
     area_m2: width_m * height_m,
     altitude_m: None,
     crs: None,
@@ -94,6 +93,9 @@ fn point_location(
   crs : String?,
   uncertainty_m : Double?,
 ) -> Location? {
+  if uncertainty_m is Some(u) && (!is_finite(u) || u < 0.0) {
+    return None
+  }
   match uncertainty_m {
     Some(u) if u > 0.0 && is_finite(u) => {
       // A sphere with radius below WGS84's minimum curvature radius gives
@@ -133,8 +135,8 @@ fn point_location(
             point,
             region: box,
             resolution_m: 2.0 * u,
-            uncertainty_m: u,
-            uncertainty_known: true,
+            uncertainty_m: Some(u),
+            cell_radius_m: None,
             area_m2: if u > 20000000.0 {
               510100000000000.0
             } else {
@@ -158,8 +160,8 @@ fn point_location(
         point,
         region,
         resolution_m: 0.0,
-        uncertainty_m: 0.0,
-        uncertainty_known: uncertainty_m is Some(_),
+        uncertainty_m,
+        cell_radius_m: None,
         area_m2: 0.0,
         altitude_m,
         crs,
@@ -176,8 +178,9 @@ pub fn Location::center(self : Location) -> LatLng {
 }
 
 ///|
-/// The region: the exact cell for a cell code, the uncertainty envelope for a
-/// point with `u=`, or a degenerate box at the point otherwise.
+/// Notation geometry: the exact cell, a point's u envelope, or its degenerate
+/// coordinate. For a physical-position envelope use `uncertainty_bounds`;
+/// neither a degenerate coordinate nor a converted cell certifies accuracy.
 pub fn Location::bounds(self : Location) -> BoundingBox {
   self.region
 }
@@ -195,10 +198,10 @@ pub fn Location::is_point(self : Location) -> Bool {
 }
 
 ///|
-/// Quantise the representative point to a cell of `format` at `precision`.
-/// This is the explicit point→cell conversion: the result is a new `Location`
-/// whose `region` is the cell that contains `point`, so the caller can compare
-/// the new `resolution_m`/`uncertainty_m` with the source's and see the loss.
+/// Quantise the representative point and propagate source uncertainty.
+/// The target region is grid geometry, not a new measurement. Unknown source
+/// accuracy stays None even through repeated conversions; a known bound grows
+/// by the centre displacement and covers at least the target cell geometry.
 /// `precision` means characters for Geohash, significant digits for Plus Code
 /// and characters for Maidenhead.
 pub fn Location::to_cell(
@@ -214,7 +217,47 @@ pub fn Location::to_cell(
   }
   match code {
     None => None
-    Some(text) => describe_code(text)
+    Some(text) => {
+      let target = match describe_code(text) {
+        None => return None
+        Some(v) => v
+      }
+      let uncertainty = match self.uncertainty_m {
+        None => None
+        Some(u) => {
+          let sum = u + center_shift_bound(self.point, target.point)
+          let propagated = sum + sum * 1.0e-12 + 1.0e-9
+          if !is_finite(propagated) {
+            None // No finite bound is representable; never claim zero.
+          } else {
+            let radius = target.cell_radius_m.unwrap()
+            Some(if propagated > radius { propagated } else { radius })
+          }
+        }
+      }
+      Some({ ..target, uncertainty_m: uncertainty, })
+    }
+  }
+}
+
+///|
+/// Whether a finite coverage bound is known. Derived from the optional value.
+pub fn Location::uncertainty_known(self : Location) -> Bool {
+  self.uncertainty_m is Some(_)
+}
+
+///|
+/// Conservative horizontal envelope of the stated/propagated uncertainty.
+/// None means no finite envelope is known. Unlike `bounds`, this does not
+/// mistake the coordinate or quantised grid cell for the true-position region.
+pub fn Location::uncertainty_bounds(self : Location) -> BoundingBox? {
+  let u = match self.uncertainty_m {
+    None => return None
+    Some(v) => v
+  }
+  match point_location(self.format, self.raw, self.point, None, None, Some(u)) {
+    None => None
+    Some(loc) => Some(loc.region)
   }
 }
 
@@ -239,10 +282,9 @@ pub fn Location::intersects(self : Location, other : Location) -> Bool {
 }
 
 ///|
-/// Render the representative point as an RFC 5870 `geo:` URI. A cell becomes
-/// its centre plus `;u=<half diagonal>`, so the circle around the point covers
-/// the original cell; the shape (rectangle) is still lost, which is exactly
-/// what `region` is for.
+/// Render a representative point with its known/propagated uncertainty.
+/// Unknown accuracy omits u, including after conversion to a grid. A freshly
+/// decoded cell carries its geometric covering radius. Rectangle shape is lost.
 pub fn Location::to_geouri(self : Location) -> String {
   // Keep all point-URI precision and parameters, including explicit u=0.
   if self.format == GeoUri {
@@ -260,15 +302,18 @@ pub fn Location::to_geouri(self : Location) -> String {
     None => ()
     Some(v) => out = out + ";crs=" + v
   }
-  if self.uncertainty_known {
+  if self.uncertainty_m is Some(u) {
     // Round outward and include the displacement from coordinate rounding.
-    let radius = if self.is_cell() {
-      self.uncertainty_m + 0.0001
-    } else {
-      self.uncertainty_m
+    let radius = u + 0.0002 + u * 1.0e-12
+    if is_finite(radius) {
+      // Keep fixed-point integer conversion within range, even for huge u.
+      let rendered = if radius < 1.0e12 {
+        trim_fraction(format_fixed((radius * 1000.0).ceil() / 1000.0, 3))
+      } else {
+        decimal_notation(radius)
+      }
+      out = out + ";u=" + rendered
     }
-    let outward = (radius * 1000.0).ceil() / 1000.0
-    out = out + ";u=" + trim_fraction(format_fixed(outward, 3))
   }
   out
 }
@@ -293,8 +338,8 @@ fn cell_radius_bound(box : BoundingBox) -> Double {
 ///|
 /// An explicit conversion record retains source geometry, text and accuracy.
 /// `uncertainty_bound_m` bounds the source position around the target centre;
-/// None means the input never supplied an accuracy bound.
-pub(all) struct LocationConversion {
+/// None means the accuracy is unknown or no finite bound is representable.
+pub struct LocationConversion {
   source : Location
   target : Location
   center_shift_bound_m : Double
@@ -311,19 +356,20 @@ pub fn Location::convert_to_cell(
     None => return None
     Some(v) => v
   }
-  let lat = self.point.lat() - target.point.lat()
-  let lng = lng_delta(self.point.lng(), target.point.lng())
-  let shift = 111700.0 * (lat * lat + lng * lng).sqrt()
+  let shift = center_shift_bound(self.point, target.point)
   Some({
     source: self,
     target,
     center_shift_bound_m: shift,
-    uncertainty_bound_m: if self.uncertainty_known {
-      Some(self.uncertainty_m + shift)
-    } else {
-      None
-    },
+    uncertainty_bound_m: target.uncertainty_m,
   })
+}
+
+///|
+fn center_shift_bound(source : LatLng, target : LatLng) -> Double {
+  let lat = source.lat() - target.lat()
+  let lng = lng_delta(source.lng(), target.lng())
+  111700.0 * (lat * lat + lng * lng).sqrt()
 }
 
 ///|

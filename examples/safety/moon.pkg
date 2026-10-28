@@ -1,0 +1,5 @@
+import {
+  "sssssurf/geocodec",
+}
+
+pkgtype(kind: "executable")

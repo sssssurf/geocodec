@@ -111,8 +111,8 @@ pub fn parse_location(input : String) -> Location? {
 /// Scan free text for up to `max_results` location codes. Tokens are split on
 /// whitespace and common surrounding punctuation is removed before each token
 /// is offered to `parse_location`. This is deliberately conservative: a token
-/// that is not a complete code is ignored, and a result already seen at the
-/// same format and point is not repeated.
+/// that is not a complete code is ignored. Only identical source tokens are
+/// deduplicated; co-located URIs may carry different uncertainty or altitude.
 pub fn parse_codes(
   text : String,
   max_results~ : Int32 = 100,
@@ -140,11 +140,7 @@ pub fn parse_codes(
         if found.format == GeoHash && (token.length() < 5 || !has_letter(token)) {
           continue
         }
-        let key = found.format.name() +
-          "|" +
-          found.point.lat().to_string() +
-          "|" +
-          found.point.lng().to_string()
+        let key = found.format.name() + "|" + found.raw
         if index_of_string(seen, key) < 0 {
           seen.push(key)
           out.push(found)

@@ -34,6 +34,8 @@ pub fn chars_of(String) -> Array[Char]
 
 pub fn clamp_lat(Double) -> Double
 
+pub fn decimal_notation(Double) -> String
+
 pub fn describe_code(String) -> Location?
 
 pub fn digit_value(Char) -> Int32?
@@ -148,11 +150,12 @@ pub fn BoundingBox::to_text(Self, digits? : Int32) -> String
 pub fn BoundingBox::west(Self) -> Double
 pub fn BoundingBox::width(Self) -> Double
 
-pub(all) struct GeoUri {
+pub struct GeoUri {
   point : LatLng
   altitude : Double?
   uncertainty : Double?
   crs : String?
+  raw : String
 } derive(Eq)
 pub fn GeoUri::equal(Self, Self) -> Bool
 pub fn GeoUri::not_equal(Self, Self) -> Bool
@@ -168,14 +171,14 @@ pub fn LatLng::new(Double, Double) -> Self?
 pub fn LatLng::not_equal(Self, Self) -> Bool
 pub fn LatLng::to_text(Self, digits? : Int32) -> String
 
-pub(all) struct Location {
+pub struct Location {
   format : LocationFormat
   kind : LocationKind
   point : LatLng
   region : BoundingBox
   resolution_m : Double
-  uncertainty_m : Double
-  uncertainty_known : Bool
+  uncertainty_m : Double?
+  cell_radius_m : Double?
   area_m2 : Double
   altitude_m : Double?
   crs : String?
@@ -193,8 +196,10 @@ pub fn Location::is_point(Self) -> Bool
 pub fn Location::not_equal(Self, Self) -> Bool
 pub fn Location::to_cell(Self, LocationFormat, Int32) -> Self?
 pub fn Location::to_geouri(Self) -> String
+pub fn Location::uncertainty_bounds(Self) -> BoundingBox?
+pub fn Location::uncertainty_known(Self) -> Bool
 
-pub(all) struct LocationConversion {
+pub struct LocationConversion {
   source : Location
   target : Location
   center_shift_bound_m : Double

@@ -18,6 +18,18 @@ let p = @geocodec.LatLng::new(39.9042, 116.4074).unwrap()
 @geocodec.maidenhead_encode(p, precision=8)    // Some("OM89EV87")
 ```
 
+## 0.5.0 review correction
+
+Unknown accuracy is now a nullable value in the API and JSON, never numerical
+zero. Unsupported CRSs are rejected at every URI parser entry point. See
+[the reviewer response](docs/初审补充说明.md) and
+[the API migration](docs/location-model.md#050-迁移).
+
+```bash
+moon run --target js examples/safety
+node scripts/check-semantics.mjs
+```
+
 ## 中文简介
 
 `geocodec` 是一个纯 MoonBit 的「地点短码」库：支持 Geohash、Plus Codes
@@ -63,7 +75,8 @@ Geohash, Plus Codes and Maidenhead denote **cells**. Decimal and DMS pairs and
 | format / kind | notation and Cell/Point |
 | point / region | representative point and exact cell or conservative u envelope |
 | resolution_m | approximate cell size, point uncertainty diameter, or 0 |
-| uncertainty_m / uncertainty_known | geometric/input bound; missing accuracy is distinct from u=0 |
+| uncertainty_m | `Double?`: None means unknown; Some(0) means explicit zero |
+| cell_radius_m | optional geometric cell radius; independent of source accuracy |
 | area_m2 | approximate or nominal envelope area |
 | altitude_m / crs / raw | source altitude, CRS label and original notation |
 
@@ -72,12 +85,17 @@ containing `source`, `target`, `center_shift_bound_m` and an optional
 `uncertainty_bound_m`. Converting a 40 m uncertain point to a 13.8 m cell
 does not improve its accuracy: the original 40 m survives in source, and the
 bound relative to the new centre is about 47.428 m. An unspecified source
-accuracy remains unspecified. `to_cell` is the lower-level centre quantiser.
+accuracy remains unspecified. Both `to_cell` and `convert_to_cell` propagate
+this state into the target, including chained conversions. `uncertainty_known()`
+is derived from the optional bound; `uncertainty_bounds()` returns None when
+no physical-position envelope is known.
 
-`to_geouri` on a cell emits a covering radius rounded outwards, with coordinate
-rounding accounted for. It loses rectangle shape. Point geo URIs retain their
+`to_geouri` on a decoded cell emits a covering radius rounded outwards.
+Converted locations use the propagated bound and omit u when accuracy is unknown. It loses rectangle shape. Point geo URIs retain their
 original text, including explicit u=0 and input precision. Unsupported CRSs are
-rejected by the unified WGS84 model rather than silently reinterpreted.
+rejected by **both** `geouri_parse` and `parse_location` before any WGS84 value
+is returned. `Location`, `GeoUri` and `LocationConversion` are readonly to
+consumers. `geouri_format` preserves the validated URI, including tiny positive u.
 
 The full semantics and conversion-loss table are in
 [docs/location-model.md](docs/location-model.md). The resubmission response is
@@ -86,7 +104,7 @@ in [docs/初审补充说明.md](docs/初审补充说明.md).
 ## Install
 
 ```bash
-moon add sssssurf/geocodec   # once the first mooncakes release is published
+moon add sssssurf/geocodec
 ```
 
 `moon.mod` declares no dependencies. The imports are `moonbitlang/core/math`,
@@ -137,7 +155,7 @@ let london = @geocodec.LatLng::new(51.5074, -0.1278).unwrap()
 @geocodec.maidenhead_bounds("IO91WM")             // 5' x 2.5' cell
 ```
 
-### Anything in, point out
+### Any supported notation, semantics retained
 
 ```moonbit
 @geocodec.parse_location("8FVC9G8F+6X")      // plus-code
@@ -168,9 +186,9 @@ lower false-positive rate in prose.
 let loc = @geocodec.describe_code("8FVC9G8F+6X").unwrap()
 // loc.kind == Cell
 // loc.resolution_m ~ 13.8
-// loc.uncertainty_m ~ 8.4
+// loc.uncertainty_m == Some(approximately 8.4)
 // loc.area_m2 ~ 130
-// loc.to_geouri() == "geo:47.365562,8.524938;u=8.432"
+// loc.to_geouri() == "geo:47.3655625,8.5249375;u=8.433"
 ```
 
 ## Command line
@@ -183,13 +201,14 @@ point: 47.365562, 8.524938
 dms: 47°21′56.02″N 8°31′29.78″E
 region: 47.365500,8.524875,47.365625,8.525000
 resolution_m: 13.822
-uncertainty_m: 8.432
+uncertainty_m: 8.431896801848
+cell_radius_m: 8.431896801848
 uncertainty_known: true
 area_m2: 130.268
 altitude_m: (none)
 crs: wgs84
 raw: 8FVC9G8F+6X
-as_geouri: geo:47.3655625,8.5249375;u=8.432
+as_geouri: geo:47.3655625,8.5249375;u=8.433
 
 $ moon run --target js cmd/main -- scan "Meet at 8FVC9G8F+6X near IO91WM, or send geo:48.198634,16.371648;u=40 and wx4g0b."
 found: 4
@@ -213,7 +232,7 @@ For scripts and AI agents, `json` emits one line with the same model:
 
 ```text
 $ moon run --target js cmd/main -- json "8FVC9G8F+6X"
-{"format":"plus-code","kind":"cell","lat":47.365562500,"lng":8.524937500,"south":47.365500000,"west":8.524875000,"north":47.365625000,"east":8.525000000,"resolution_m":13.822,"uncertainty_m":8.432,"uncertainty_known":true,"area_m2":130.268,"altitude_m":null,"crs":null,"raw":"8FVC9G8F+6X","as_geouri":"geo:47.3655625,8.5249375;u=8.432"}
+{"format":"plus-code","kind":"cell","lat":47.365562499999996,"lng":8.5249375,"south":47.3655,"west":8.524875,"north":47.365624999999994,"east":8.525,"resolution_m":13.821749999673159,"uncertainty_m":8.431896801848,"cell_radius_m":8.431896801848,"uncertainty_known":true,"area_m2":130.26838797871247,"altitude_m":null,"crs":"wgs84","raw":"8FVC9G8F+6X","as_geouri":"geo:47.3655625,8.5249375;u=8.433"}
 ```
 
 ## Examples and benchmarks
@@ -228,7 +247,7 @@ point: 47.365562, 8.524938
 region: 47.365500,8.524875,47.365625,8.525000
 resolution_m: 13.822
 uncertainty_m: 8.432
-as_geouri: geo:47.3655625,8.5249375;u=8.432
+as_geouri: geo:47.3655625,8.5249375;u=8.433
 as_geohash6: u0qj3y (828.4 m)
 scanned: 3
   plus-code 47.365562, 8.524938
@@ -313,10 +332,10 @@ the formulas come from the public specifications listed below.
 
 ```text
 $ moon test --target js
-Total tests: 59, passed: 59, failed: 0.
+Total tests: 72, passed: 72, failed: 0.
 
 $ moon test --target wasm-gc
-Total tests: 59, passed: 59, failed: 0.
+Total tests: 72, passed: 72, failed: 0.
 ```
 
 The suite is in five layers:

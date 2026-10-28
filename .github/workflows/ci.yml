@@ -46,6 +46,9 @@ jobs:
       - name: Documentation matches real output
         run: node scripts/check-docs.mjs
 
+      - name: Map consumer semantics and readonly API
+        run: node scripts/check-semantics.mjs
+
       - name: Benchmarks
         working-directory: benchmarks
         run: moon bench

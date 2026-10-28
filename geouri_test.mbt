@@ -42,3 +42,55 @@ test "geo uri rejects malformed input" {
   assert_true(geouri_parse("http:48.2,16.3") is None)
   assert_true(geouri_parse("geo:abc,16.3") is None)
 }
+
+///|
+test "unknown CRSs never escape through either public parser" {
+  for
+    crs in ["custom-grid", "GCJ-02", "bd09", "epsg-3857", "epsg4326", "wgs-84"] {
+    for coordinates in ["1,2", "500000,4649776", "1,2,3"] {
+      let input = "geo:" + coordinates + ";crs=" + crs + ";u=40"
+      assert_true(geouri_parse(input) is None)
+      assert_true(parse_location(input) is None)
+      assert_eq(parse_codes(input).length(), 0)
+    }
+  }
+  for crs in ["wgs84", "WGS84", "WgS84"] {
+    assert_true(geouri_parse("geo:1,2;crs=" + crs) is Some(_))
+  }
+}
+
+///|
+test "URI formatting never rounds a positive uncertainty to zero" {
+  for
+    text in [
+      "geo:1.123456789123,2.987654321987;u=0.0000001", "geo:1,2,3.123456789;u=0",
+      "GEO:1,180;CRS=WGS84;u=0.0004;label=a%20b", "geo:1,2;foo=bar;flag",
+    ] {
+    let uri = geouri_parse(text).unwrap()
+    assert_eq(geouri_format(uri), text)
+    assert_eq(parse_location(text).unwrap().to_geouri(), text)
+  }
+  assert_true(
+    geouri_parse("geo:1,2;u=0.0000001").unwrap().uncertainty.unwrap() > 0.0,
+  )
+}
+
+///|
+test "RFC parameter ordering and extension syntax are validated" {
+  for
+    text in [
+      "geo:1,2;u=40;crs=wgs84",
+      "geo:1,2;foo=bar;u=40",
+      "geo:1,2;foo=bar;crs=wgs84",
+      "geo:1,2;foo=",
+      "geo:1,2;foo=a=b",
+      "geo:1,2;foo=%xx",
+      "geo:1,2;foo=%2",
+      "geo:1,2;foo=hello world",
+      "geo:1,2;crs=wgs84;u=1;U=2",
+      "geo:1,2;u=0." + "0".repeat(400) + "1",
+    ] {
+    assert_true(geouri_parse(text) is None)
+  }
+  assert_true(geouri_parse("geo:1,2;crs=wgs84;u=40;foo=%20;flag") is Some(_))
+}

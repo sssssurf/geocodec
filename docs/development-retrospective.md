@@ -118,27 +118,23 @@ Geohash、Plus Code、Maidenhead 的单元都可能跨 180° 经线。`BoundingB
 逐字符、显式返回 `Option`。这样 `parse_dms("1e999")`、`geo:0,0;u=1e999` 都是
 `None`，而不是依赖异常路径。所有编解码入口先检查长度、字符集和数值范围。
 
-### 5.6 统一模型：区域、精度、不确定度
+### 5.6 统一模型在第二轮反馈后的修正（0.5.0）
 
-初版的 `parse_location` 把所有记法都压成一个 `LatLng`。这个抽象是错的：
-Geohash 这类网格编码和 `geo:` 这类坐标文本不是一类东西，压成点会丢掉区域、
-精度和不确定度。于是补了 `Location`：
+前版把未知准确度存为 0，再要求消费者检查一个布尔字段，容易让 JSON 消费者
+把未知当成精确点；低层 URI 解析器还允许未知 CRS 标签搭配 LatLng 返回。
+这两处是实际 API 缺陷，不能仅靠申报措辞修正。
 
-- `kind` 区分 `Cell`（Geohash、Plus Code、Maidenhead）和 `Point`（十进制、
-  度分秒、`geo:` URI）；
-- `region` 保留精确单元、`u=` 包络或退化点；
-- `resolution_m` 是区域长边，`uncertainty_m` 是代表点到边界的最大距离，
-  `area_m2` 是区域面积；
-- `raw` 保留原始文本，转换不会把「它原来是什么记法」弄丢。
+- uncertainty_m 改成 Double?：None 为未知，Some(0) 才是显式零。
+- cell_radius_m 单独表达网格几何，不能用细网格半径替代源准确度。
+- to_cell 和 convert_to_cell 都传播未知状态或已知源界，支持连续转换；
+  source 保留原文与高程，target 是水平网格量化结果。
+- geouri_parse 与 parse_location 均拒绝未知 CRS；GeoUri 和 Location 包外只读。
+- geouri_format 保留已校验原文，避免把微小正 u 舍入为 0。
+- uncertainty_bounds() 未知时返回 None；region 仍是记法几何，不能当作物理位置证明。
 
-转换损失变成显式的：单元取中心只保留 `region` 和 `uncertainty_m`；点编码成
-单元由 `Location::to_cell(format, precision)` 完成，返回一个新的 `Location`，
-调用方可以直接比较转换前后的 `resolution_m`/`uncertainty_m`；单元转 `geo:` 用
-`to_geouri` 写出 `;u=<半对角线>`，用圆覆盖矩形，形状损失由 `region` 保留。
-十进制和度分秒不根据小数位数猜精度，`u=` 是唯一由记法本身携带的不确定度。
-
-这个模型也解释了「转换是否会丢信息」：会，丢的是形状；模型把丢掉的量和原文
-一起留下，而不是返回一个看起来精确的中心点。
+覆盖界和近似面积的适用范围、迁移方式、实际命令输出分别见
+location-model.md 与 reproducible-demo.md。新增外部消费者检查会验证 JSON
+并尝试伪造只读模型，要求编译器明确拒绝。
 
 ## 6. 测试策略：标准向量、闭环、属性、模型、健壮性
 
@@ -212,8 +208,7 @@ Geohash 这类网格编码和 `geo:` 这类坐标文本不是一类东西，压�
 
 ## 11. 规模
 
-- 库源码 2,182 行（不含测试），CLI 486 行，测试 692 行；另有 benchmarks 66 行、examples 30 行。
-- 77 个公开函数，5 类记法，59 个测试块。
+- 5 类记法，72 个测试块；四目标验证记录见 docs/verification-results.json。
 - 没有为了行数堆功能：每个记法只做「编码、解码、边界、校验」四件事，Geohash
   多一个 cover，Plus Code 多一个 shorten/recover 和 neighbors，三个记法共用
   `LatLng`/`BoundingBox`。
@@ -224,8 +219,8 @@ Geohash 这类网格编码和 `geo:` 这类坐标文本不是一类东西，压�
 | --- | --- | --- | --- |
 | MoonBit 为主 | 以 MoonBit 作为主要实现语言 | 全部源码为 `.mbt`，零第三方依赖 | `moon.mod`、`*.mbt` |
 | 仓库公开 | 连续、可追踪的提交与开发记录 | 按「基础类型 → 各记法 → 检索 → CLI → 文档」顺序提交，历史线性；推送到 GitHub 后即为公开仓库 | `git log` |
-| 能够运行 | README、可运行示例、必要测试 | README + CLI `demo`/`scan`/`cover`/`info` + `examples/basic` + 59 个测试 | `docs/reproducible-demo.md` |
-| 工作有效 | 须包含本期完成的实质新增工作 | 0.3.0：5 类记法、统一模型、覆盖、扫描、JSON、示例、基准、测试、文档 | `CHANGELOG.md` |
+| 能够运行 | README、可运行示例、必要测试 | README + CLI `demo`/`scan`/`cover`/`info` + `examples/basic` + 72 个测试 | `docs/reproducible-demo.md` |
+| 工作有效 | 须包含本期完成的实质新增工作 | 0.5.0：可空不确定度、全入口 CRS 拒绝、转换界传播、5 类记法、统一模型、覆盖、扫描、JSON、示例、基准、测试、文档 | `CHANGELOG.md` |
 | 开源合规 | 认可许可证，说明移植/参考来源 | Apache-2.0；README 与本文列出 OLC、RFC 5870、geohash、IARU 来源；明确未移植代码 | `LICENSE`、`README.md` |
 | AI 可解释 | 可用 AI 辅助，但目标/路径/质量由参赛者掌握 | 本文记录选题、范围取舍、三个 bug 与修正、AI 分工 | 本文 |
 

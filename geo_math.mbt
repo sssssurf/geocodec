@@ -52,6 +52,36 @@ pub fn is_finite(x : Double) -> Bool {
 }
 
 ///|
+/// Lossless Double text without an exponent, for RFC 5870 and JSON consumers.
+/// Fixed decimal rounding must not turn a tiny positive uncertainty into zero.
+pub fn decimal_notation(value : Double) -> String {
+  let text = ascii_lower(value.to_string())
+  let parts = split_text(text, 'e')
+  if parts.length() != 2 {
+    return text
+  }
+  let exponent = parse_decimal(parts[1]).unwrap().to_int()
+  let negative = parts[0][0] == '-'
+  let mantissa = if negative { parts[0][1:].to_owned() } else { parts[0] }
+  let digits = split_text(mantissa, '.')
+  let tail = if digits.length() == 2 { digits[1] } else { "" }
+  let all = digits[0] + tail
+  let place = digits[0].length() + exponent
+  let expanded = if place <= 0 {
+    "0." + "0".repeat(-place) + all
+  } else if place >= all.length() {
+    all + "0".repeat(place - all.length())
+  } else {
+    all[0:place].to_owned() + "." + all[place:].to_owned()
+  }
+  if negative {
+    "-" + expanded
+  } else {
+    expanded
+  }
+}
+
+///|
 /// Round `x` to `digits` decimal places, half away from zero.
 pub fn round_to(x : Double, digits : Int32) -> Double {
   let scale = pow10(digits)

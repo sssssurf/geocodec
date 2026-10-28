@@ -39,7 +39,7 @@ for box coverage.
 ## Install and run
 
 ```bash
-moon add sssssurf/geocodec   # once the first mooncakes release is published
+moon add sssssurf/geocodec
 moon run --target js cmd/main -- demo
 ```
 
@@ -59,7 +59,8 @@ Geohash, Plus Codes and Maidenhead denote **cells**. Decimal and DMS pairs and
 | format / kind | notation and Cell/Point |
 | point / region | representative point and exact cell or conservative u envelope |
 | resolution_m | approximate cell size, point uncertainty diameter, or 0 |
-| uncertainty_m / uncertainty_known | geometric/input bound; missing accuracy is distinct from u=0 |
+| uncertainty_m | `Double?`: None means unknown; Some(0) means explicit zero |
+| cell_radius_m | optional geometric cell radius; independent of source accuracy |
 | area_m2 | approximate or nominal envelope area |
 | altitude_m / crs / raw | source altitude, CRS label and original notation |
 
@@ -68,12 +69,17 @@ containing `source`, `target`, `center_shift_bound_m` and an optional
 `uncertainty_bound_m`. Converting a 40 m uncertain point to a 13.8 m cell
 does not improve its accuracy: the original 40 m survives in source, and the
 bound relative to the new centre is about 47.428 m. An unspecified source
-accuracy remains unspecified. `to_cell` is the lower-level centre quantiser.
+accuracy remains unspecified. Both `to_cell` and `convert_to_cell` propagate
+this state into the target, including chained conversions. `uncertainty_known()`
+is derived from the optional bound; `uncertainty_bounds()` returns None when
+no physical-position envelope is known.
 
-`to_geouri` on a cell emits a covering radius rounded outwards, with coordinate
-rounding accounted for. It loses rectangle shape. Point geo URIs retain their
+`to_geouri` on a decoded cell emits a covering radius rounded outwards.
+Converted locations use the propagated bound and omit u when accuracy is unknown. It loses rectangle shape. Point geo URIs retain their
 original text, including explicit u=0 and input precision. Unsupported CRSs are
-rejected by the unified WGS84 model rather than silently reinterpreted.
+rejected by **both** `geouri_parse` and `parse_location` before any WGS84 value
+is returned. `Location`, `GeoUri` and `LocationConversion` are readonly to
+consumers. `geouri_format` preserves the validated URI, including tiny positive u.
 
 The full semantics and conversion-loss table are in
 [docs/location-model.md](docs/location-model.md). The resubmission response is
@@ -87,7 +93,7 @@ operations; those belong to separate projection/geodesy layers.
 
 ## Tests
 
-62 test blocks: published vectors, round-trips at every precision, deterministic
+72 test blocks: published vectors, round-trips at every precision, deterministic
 property tests, cover checks, unified-model conversion checks and a robustness
 pass over malformed input. `moon test` passes on `js` and `wasm-gc`; CI also
 builds `wasm` and `native`, runs `examples/basic`, the CLI smoke tests and

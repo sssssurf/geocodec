@@ -4,6 +4,21 @@ All notable changes to this project are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] - 2026-10-28
+
+- Breaking: Location.uncertainty_m is Double?; None replaces the numeric-zero
+  placeholder. JSON emits null for unknown and 0 only for explicit zero.
+- Add independent cell_radius_m, derived uncertainty_known() and optional
+  uncertainty_bounds(); make validated model types readonly to consumers.
+- Reject unsupported CRS at geouri_parse as well as parse_location.
+- Propagate unknown/known source bounds through to_cell, conversion targets and
+  repeated conversions; emit propagated u, never the finer target-grid radius.
+- Preserve exact validated URI text in geouri_format, including tiny u and
+  altitude precision; validate RFC parameter ordering and extension syntax.
+- Preserve co-located scan results with differing accuracy or altitude.
+- Add ten test blocks, a public safety example, CLI consumer checks and negative
+  compilation tests preventing external model forgery; update review materials.
+
 ## [0.4.0] - 2026-10-27
 
 - Add LocationConversion retaining source/target and propagated uncertainty.

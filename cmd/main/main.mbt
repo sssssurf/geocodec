@@ -148,8 +148,11 @@ fn show_location(loc : @geocodec.Location) -> Unit {
   show_point(loc.point)
   println("region: " + loc.region.to_text(digits=6))
   println("resolution_m: " + @geocodec.format_fixed(loc.resolution_m, 3))
-  println("uncertainty_m: " + @geocodec.format_fixed(loc.uncertainty_m, 3))
-  println("uncertainty_known: " + loc.uncertainty_known.to_string())
+  println(
+    "uncertainty_m: " + optional_number(loc.uncertainty_m, "(unspecified)"),
+  )
+  println("cell_radius_m: " + optional_number(loc.cell_radius_m, "(none)"))
+  println("uncertainty_known: " + loc.uncertainty_known().to_string())
   println("area_m2: " + @geocodec.format_fixed(loc.area_m2, 3))
   match loc.altitude_m {
     Some(v) => println("altitude_m: " + @geocodec.format_fixed(v, 3))
@@ -403,7 +406,9 @@ fn run_convert(args : Array[String]) -> Unit {
       show_location(conversion.target)
       match conversion.uncertainty_bound_m {
         Some(u) =>
-          println("source_uncertainty_bound_m: " + @geocodec.format_fixed(u, 3))
+          println(
+            "source_uncertainty_bound_m: " + @geocodec.decimal_notation(u),
+          )
         None => println("source_uncertainty_bound_m: (unspecified)")
       }
     }
@@ -421,12 +426,12 @@ fn run_json(code : String) -> Unit {
   }
   let kind = if loc.is_cell() { "cell" } else { "point" }
   let altitude = match loc.altitude_m {
-    Some(v) => @geocodec.format_fixed(v, 3)
+    Some(v) => json_number(v)
     None => "null"
   }
   let crs = match loc.crs {
     Some(v) => "\"" + json_escape(v) + "\""
-    None => "null"
+    None => "\"wgs84\""
   }
   println(
     "{\"format\":\"" +
@@ -434,25 +439,27 @@ fn run_json(code : String) -> Unit {
     "\",\"kind\":\"" +
     kind +
     "\",\"lat\":" +
-    @geocodec.format_fixed(loc.point.lat(), 9) +
+    json_number(loc.point.lat()) +
     ",\"lng\":" +
-    @geocodec.format_fixed(loc.point.lng(), 9) +
+    json_number(loc.point.lng()) +
     ",\"south\":" +
-    @geocodec.format_fixed(loc.region.south(), 9) +
+    json_number(loc.region.south()) +
     ",\"west\":" +
-    @geocodec.format_fixed(loc.region.west(), 9) +
+    json_number(loc.region.west()) +
     ",\"north\":" +
-    @geocodec.format_fixed(loc.region.north(), 9) +
+    json_number(loc.region.north()) +
     ",\"east\":" +
-    @geocodec.format_fixed(loc.region.east(), 9) +
+    json_number(loc.region.east()) +
     ",\"resolution_m\":" +
-    @geocodec.format_fixed(loc.resolution_m, 3) +
+    json_number(loc.resolution_m) +
     ",\"uncertainty_m\":" +
-    @geocodec.format_fixed(loc.uncertainty_m, 3) +
+    optional_number(loc.uncertainty_m, "null") +
+    ",\"cell_radius_m\":" +
+    optional_number(loc.cell_radius_m, "null") +
     ",\"uncertainty_known\":" +
-    loc.uncertainty_known.to_string() +
+    loc.uncertainty_known().to_string() +
     ",\"area_m2\":" +
-    @geocodec.format_fixed(loc.area_m2, 3) +
+    json_number(loc.area_m2) +
     ",\"altitude_m\":" +
     altitude +
     ",\"crs\":" +
@@ -514,5 +521,22 @@ fn run_demo() -> Unit {
       Some(v) => println("maidenhead: " + v)
       None => ()
     }
+  }
+}
+
+///|
+fn optional_number(value : Double?, absent : String) -> String {
+  match value {
+    None => absent
+    Some(v) => json_number(v)
+  }
+}
+
+///|
+fn json_number(value : Double) -> String {
+  if @geocodec.is_finite(value) {
+    @geocodec.decimal_notation(value)
+  } else {
+    "null"
   }
 }

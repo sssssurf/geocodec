@@ -12,7 +12,9 @@ fn main {
   println("point: " + cell.point.to_text(digits=6))
   println("region: " + cell.region.to_text(digits=6))
   println("resolution_m: " + @geocodec.format_fixed(cell.resolution_m, 3))
-  println("uncertainty_m: " + @geocodec.format_fixed(cell.uncertainty_m, 3))
+  println(
+    "uncertainty_m: " + @geocodec.format_fixed(cell.uncertainty_m.unwrap(), 3),
+  )
   println("as_geouri: " + cell.to_geouri())
 
   let coarse = cell.to_cell(@geocodec.GeoHash, 6).unwrap()

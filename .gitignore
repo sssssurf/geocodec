@@ -1,4 +1,5 @@
 _build/
+.cache/
 .mooncakes/
 .DS_Store
 *.wasm
