@@ -1,6 +1,6 @@
 # Reproducible review evidence
 
-Verified on 2026-10-28 with moon 0.1.20261023 and moonc 0.10.17.
+Verified on 2026-11-07 with moon 0.1.20261023 and moonc 0.10.17.
 Windows runs js/wasm/wasm-gc; native is tested in WSL Ubuntu 24.04 with GCC.
 
 Run from the repository root:
@@ -13,9 +13,10 @@ moon test --target wasm-gc
 moon test --target native
 node scripts/check-docs.mjs
 node scripts/check-semantics.mjs
+node scripts/gen-olc-tests.mjs --check
 ```
 
-72 test blocks. Actual target results are recorded in docs/verification-results.json.
+841 test blocks. Actual target results are recorded in docs/verification-results.json.
 
 The snapshots below are checked by scripts/check-docs.mjs; --update refreshes
 them from actual commands, never manually invented values.
@@ -145,6 +146,9 @@ unknown_CRS_rejected: true
 tiny_u_preserved: true
 fine_grid_keeps_40m_bound: true
 grid_radius_below_1cm: true
+plus_boundary: 8QGFJP22+
+plus_west_neighbor: 8QGFJM2X+
+plus_south_neighbor: 8QGFHPX2+
 ```
 
 Unknown accuracy also remains unknown after quantisation:

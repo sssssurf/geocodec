@@ -2,8 +2,9 @@
 //
 // The first ten significant characters encode five latitude/longitude pairs in
 // base 20. Characters eleven to fifteen refine the cell with a 5x4 grid. The
-// implementation works in the integer domain the specification defines, so
-// encode/decode are exact rather than accumulating floating-point error.
+// Digits are emitted in the integer domain. Conversion from Double coordinates
+// uses their shortest round-trip decimal spelling: multiplying the binary float
+// and flooring can put an exact decimal boundary one unit into the prior cell.
 
 ///|
 /// The OLC alphabet. `0`, `+` and the vowels are deliberately absent.
@@ -53,7 +54,7 @@ let olc_pair_resolutions : Array[Double] = [20.0, 1.0, 0.05, 0.0025, 0.000125]
 /// Encode a point as a Plus Code. `code_length` counts significant characters
 /// and excludes the separator; 10 (about 13.5 m) is the default, 11 to 15 add
 /// grid refinement, and 2/4/6/8 are the area-only lengths.
-pub fn pluscode_encode(point : LatLng, code_length? : Int = 10) -> String? {
+pub fn pluscode_encode(point : LatLng, code_length~ : Int32 = 10) -> String? {
   let length = if code_length < 2 {
     return None
   } else if code_length < 10 && code_length % 2 == 1 {
@@ -118,8 +119,7 @@ pub fn pluscode_encode(point : LatLng, code_length? : Int = 10) -> String? {
 /// Turn a latitude into the OLC integer grid, clamping to the legal range.
 fn olc_lat_integer(lat : Double) -> Int64 {
   let limit = OLC_LAT_OFFSET * 2L
-  let mut v = (lat * OLC_FINAL_LAT_PRECISION.to_double()).floor().to_int64() +
-    OLC_LAT_OFFSET
+  let mut v = olc_decimal_floor(lat, OLC_FINAL_LAT_PRECISION) + OLC_LAT_OFFSET
   if v < 0L {
     v = 0L
   } else if v >= limit {
@@ -131,10 +131,42 @@ fn olc_lat_integer(lat : Double) -> Int64 {
 ///|
 /// Turn a longitude into the OLC integer grid, wrapping around the date line.
 fn olc_lng_integer(lng : Double) -> Int64 {
-  let mut v = (lng * OLC_FINAL_LNG_PRECISION.to_double()).floor().to_int64() +
-    OLC_LNG_OFFSET
+  let mut v = olc_decimal_floor(lng, OLC_FINAL_LNG_PRECISION) + OLC_LNG_OFFSET
   v = (v % OLC_LNG_RANGE + OLC_LNG_RANGE) % OLC_LNG_RANGE
   v
+}
+
+///|
+/// Floor the shortest decimal spelling times a positive integer scale exactly.
+/// Work from the least significant fractional digit, carrying in base ten.
+/// Each intermediate is below 10*scale; no BigInt, floating multiplication,
+/// overflow, decimal-place truncation or global boundary epsilon is needed.
+fn olc_decimal_floor(value : Double, scale : Int64) -> Int64 {
+  let cs = chars_of(decimal_notation(value))
+  let negative = cs[0] == '-'
+  let mut begin = if negative { 1 } else { 0 }
+  let mut whole = 0L
+  while begin < cs.length() && cs[begin] != '.' {
+    whole = whole * 10L + (cs[begin].to_int() - 48).to_int64()
+    begin = begin + 1
+  }
+  let mut carry = 0L
+  let mut remainder = false
+  let mut i = cs.length()
+  while i > begin + 1 {
+    i = i - 1
+    let product = (cs[i].to_int() - 48).to_int64() * scale + carry
+    if product % 10L != 0L {
+      remainder = true
+    }
+    carry = product / 10L
+  }
+  let magnitude = whole * scale + carry
+  if negative {
+    -magnitude - (if remainder { 1L } else { 0L })
+  } else {
+    magnitude
+  }
 }
 
 ///|
@@ -230,7 +262,7 @@ pub fn pluscode_is_full(code : String) -> Bool {
 ///|
 /// The number of significant characters in a full code (separator and padding
 /// removed), capped at 15.
-pub fn pluscode_code_length(code : String) -> Int {
+pub fn pluscode_code_length(code : String) -> Int32 {
   let chars = chars_of(ascii_upper(trim_ascii(code)))
   let mut n = 0
   for ch in chars {
@@ -331,7 +363,7 @@ pub fn pluscode_decode(code : String) -> LatLng? {
 /// The cell immediately `dx` cells east and `dy` cells north, at the same
 /// precision. At a pole the latitude is clamped, so a northward move from the
 /// top row can repeat the same cell.
-pub fn pluscode_adjacent(code : String, dx : Int, dy : Int) -> String? {
+pub fn pluscode_adjacent(code : String, dx : Int32, dy : Int32) -> String? {
   let bounds = match pluscode_bounds(code) {
     None => return None
     Some(b) => b

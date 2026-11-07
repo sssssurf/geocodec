@@ -11,6 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
       - name: Install MoonBit
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
@@ -21,6 +25,9 @@ jobs:
 
       - name: Check
         run: moon check
+
+      - name: Pinned official OLC corpus is unchanged and generated tests are current
+        run: node scripts/gen-olc-tests.mjs --check
 
       - name: Test (js)
         run: moon test --target js
@@ -39,6 +46,7 @@ jobs:
           moon run --target js cmd/main -- json "8FVC9G8F+6X" | grep -q '"kind":"cell"'
           moon run --target js cmd/main -- convert "geo:48.198634,16.371648;u=40" plus 10 | grep -q "converted:"
           moon run --target js cmd/main -- demo | grep -q "geohash: wx4g0bm6c"
+          moon run --target js cmd/main -- plus 40.6 129.7 8 | grep -q "plus: 8QGFJP22+"
 
       - name: Example
         run: moon run --target js examples/basic

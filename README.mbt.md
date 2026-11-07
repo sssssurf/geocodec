@@ -1,5 +1,14 @@
 # geocodec
 
+Version 0.6.0 fixes the formal acceptance finding: `(40.6,129.7)` at length 8
+now yields **8QGFJP22+**. All 766 pinned official OLC vectors run continuously,
+including all 13 encoding mismatches reproduced against 0.5.0. Coordinates are
+quantized from their shortest round-trip decimal spelling with integer decimal
+arithmetic, preserving adjacent floating-point values on either side of a
+boundary. See [conformance evidence](docs/pluscode-conformance.md) and the
+[formal review response](docs/正式验收修正说明.md).
+
+
 [![CI](https://github.com/sssssurf/geocodec/actions/workflows/ci.yml/badge.svg)](https://github.com/ssssurf/geocodec/actions/workflows/ci.yml)
 
 Location codes for MoonBit: Geohash, Plus Codes, Maidenhead locators, `geo:`
@@ -93,7 +102,7 @@ operations; those belong to separate projection/geodesy layers.
 
 ## Tests
 
-72 test blocks: published vectors, round-trips at every precision, deterministic
+841 test blocks: published vectors, round-trips at every precision, deterministic
 property tests, cover checks, unified-model conversion checks and a robustness
 pass over malformed input. `moon test` passes on `js` and `wasm-gc`; CI also
 builds `wasm` and `native`, runs `examples/basic`, the CLI smoke tests and
@@ -101,5 +110,6 @@ builds `wasm` and `native`, runs `examples/basic`, the CLI smoke tests and
 
 ## License
 
-Apache-2.0. Formulas come from the OLC specification, RFC 5870, the geohash
+Apache-2.0. Official OLC test fixtures retain their license and provenance;
+see THIRD_PARTY_NOTICES.md. Formulas come from the OLC specification, RFC 5870, the geohash
 description and the IARU locator scheme; no code was ported.

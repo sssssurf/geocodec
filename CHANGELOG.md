@@ -4,6 +4,18 @@ All notable changes to this project are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.6.0] - 2026-11-07
+
+- Fix (40.6,129.7), length 8: 8QGFJP22+ replaces the incorrect prior cell.
+- Quantize the shortest round-trip decimal coordinate using integer decimal
+  carries, exact negative floor, and exponent handling; no global epsilon.
+- Add 766 pinned original Google OLC vectors: 302 encoding, 420 decoding,
+  25 validity and 19 shortening/recovery. Retain all 13 pre-fix encoding failures.
+- Add adjacent-double boundary and quantizer regressions; 841 tests total.
+- CI checks fixture hashes, offline generation, all targets and the actual CLI
+  boundary result. Extend the public safety example for registry consumers.
+- Record formal rejection and the November repair separately from 0.5.0 evidence.
+
 ## [0.5.0] - 2026-10-28
 
 - Breaking: Location.uncertainty_m is Double?; None replaces the numeric-zero

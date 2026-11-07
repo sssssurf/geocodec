@@ -30,4 +30,25 @@ fn main {
   println(
     "grid_radius_below_1cm: " + (fine.cell_radius_m.unwrap() < 0.01).to_string(),
   )
+  println(
+    "plus_boundary: " +
+    @geocodec.pluscode_encode(
+      @geocodec.LatLng::new(40.6, 129.7).unwrap(),
+      code_length=8,
+    ).unwrap(),
+  )
+  println(
+    "plus_west_neighbor: " +
+    @geocodec.pluscode_encode(
+      @geocodec.LatLng::new(40.6, 129.69999999999996).unwrap(),
+      code_length=8,
+    ).unwrap(),
+  )
+  println(
+    "plus_south_neighbor: " +
+    @geocodec.pluscode_encode(
+      @geocodec.LatLng::new(40.599999999999994, 129.7).unwrap(),
+      code_length=8,
+    ).unwrap(),
+  )
 }

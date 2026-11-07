@@ -1,0 +1,32 @@
+{
+  "repository": "https://github.com/google/open-location-code",
+  "commit": "83986da0156bbf51fba33d0327d8ca4b7f955c89",
+  "license": "Apache-2.0",
+  "files": {
+    "encoding.csv": {
+      "sha256": "a91e870bdf5311499666ef72424fa81d701aabe447b5e3afb12ca1ed7dcd818b",
+      "gitBlob": "534299cf7eb38317959b1297e422f892680b7dc7",
+      "rows": 302
+    },
+    "decoding.csv": {
+      "sha256": "af16026687a36e4b8c6c66f46eb4643d044dfb913cbc9fc77632be4904e5a78b",
+      "gitBlob": "ca61b525f7fc93383cb4127732966169f7a792da",
+      "rows": 420
+    },
+    "validityTests.csv": {
+      "sha256": "ace87391952e74edbaeab630bba75483039bf2c01d396dfdca074a31a8ad527f",
+      "gitBlob": "984be50fb53dba55a299391b5b0496f2a73d417a",
+      "rows": 25
+    },
+    "shortCodeTests.csv": {
+      "sha256": "81a9a53bd9c4f9ee56161c809b3a463a20482e1cdbf0570e5091c2155a03c1e5",
+      "gitBlob": "0b336047adf7dc73fdfe310b25fb576f69352180",
+      "rows": 19
+    },
+    "LICENSE": {
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "gitBlob": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "rows": null
+    }
+  }
+}

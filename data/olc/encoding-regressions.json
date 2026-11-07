@@ -1,0 +1,113 @@
+{
+  "beforeVersion": "0.5.0",
+  "encodingVectorCount": 302,
+  "mismatchesBefore": 13,
+  "cases": [
+    {
+      "line": 75,
+      "latitude": "40.6",
+      "longitude": "129.7",
+      "length": 8,
+      "expected": "8QGFJP22+",
+      "before": "8QGFJM2X+"
+    },
+    {
+      "line": 80,
+      "latitude": "2.5",
+      "longitude": "-64.23",
+      "length": 11,
+      "expected": "67JQGQ2C+222",
+      "before": "67JQGQ29+2X5"
+    },
+    {
+      "line": 82,
+      "latitude": "-34.45",
+      "longitude": "-93.719",
+      "length": 6,
+      "expected": "46Q8H700+",
+      "before": "46Q8G700+"
+    },
+    {
+      "line": 88,
+      "latitude": "41.87",
+      "longitude": "-145.59",
+      "length": 13,
+      "expected": "83HPVCC6+22222",
+      "before": "83HPVC96+X2RRR"
+    },
+    {
+      "line": 90,
+      "latitude": "-37.014",
+      "longitude": "-159.936",
+      "length": 10,
+      "expected": "43J2X3P7+CJ",
+      "before": "43J2X3P7+9J"
+    },
+    {
+      "line": 97,
+      "latitude": "16.179",
+      "longitude": "150.075",
+      "length": 12,
+      "expected": "7R8G53HG+J222",
+      "before": "7R8G53HG+H2RR"
+    },
+    {
+      "line": 99,
+      "latitude": "76.1",
+      "longitude": "-82.5",
+      "length": 15,
+      "expected": "C68V4G22+2222222",
+      "before": "C68V3GX2+X2RRRRR"
+    },
+    {
+      "line": 104,
+      "latitude": "-34.2",
+      "longitude": "66.4",
+      "length": 12,
+      "expected": "4JQ8RC22+2222",
+      "before": "4JQ8QCX2+X2RR"
+    },
+    {
+      "line": 108,
+      "latitude": "64.1",
+      "longitude": "107.9",
+      "length": 12,
+      "expected": "9PP94W22+2222",
+      "before": "9PP93WX2+X2RR"
+    },
+    {
+      "line": 285,
+      "latitude": "-77.54",
+      "longitude": "110.22",
+      "length": 11,
+      "expected": "2PJGF66C+222",
+      "before": "2PJGF65C+X2R"
+    },
+    {
+      "line": 302,
+      "latitude": "-10.5782",
+      "longitude": "25.7779",
+      "length": 11,
+      "expected": "5GX7CQCH+P5C",
+      "before": "5GX7CQCH+P56"
+    },
+    {
+      "line": 328,
+      "latitude": "-18.100",
+      "longitude": "-83.091",
+      "length": 13,
+      "expected": "56HRWW25+2J222",
+      "before": "56HRVWX5+XJRRR"
+    },
+    {
+      "line": 361,
+      "latitude": "2.28",
+      "longitude": "65.18",
+      "length": 11,
+      "expected": "6JJ775JJ+222",
+      "before": "6JJ775HJ+X2R"
+    }
+  ],
+  "afterVersion": "0.6.0",
+  "mismatchesAfter": 0
+}

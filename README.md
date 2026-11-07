@@ -1,5 +1,14 @@
 # geocodec
 
+Version 0.6.0 fixes the formal acceptance finding: `(40.6,129.7)` at length 8
+now yields **8QGFJP22+**. All 766 pinned official OLC vectors run continuously,
+including all 13 encoding mismatches reproduced against 0.5.0. Coordinates are
+quantized from their shortest round-trip decimal spelling with integer decimal
+arithmetic, preserving adjacent floating-point values on either side of a
+boundary. See [conformance evidence](docs/pluscode-conformance.md) and the
+[formal review response](docs/正式验收修正说明.md).
+
+
 [![CI](https://github.com/sssssurf/geocodec/actions/workflows/ci.yml/badge.svg)](https://github.com/sssssurf/geocodec/actions/workflows/ci.yml)
 
 Location codes for MoonBit: Geohash, Plus Codes, Maidenhead locators, `geo:`
@@ -332,10 +341,10 @@ the formulas come from the public specifications listed below.
 
 ```text
 $ moon test --target js
-Total tests: 72, passed: 72, failed: 0.
+Total tests: 841, passed: 841, failed: 0.
 
 $ moon test --target wasm-gc
-Total tests: 72, passed: 72, failed: 0.
+Total tests: 841, passed: 841, failed: 0.
 ```
 
 The suite is in five layers:
@@ -396,3 +405,15 @@ Apache-2.0. See `LICENSE`.
 - G. Niemeyer, geohash (2008), as described in the geohash specification.
 - IARU Maidenhead locator system.
 - The MoonBit core library documentation for `math` and string handling.
+
+
+Continuously checked boundary example:
+
+```text
+$ moon run --target js cmd/main -- plus 40.6 129.7 8
+plus: 8QGFJP22+
+point: 40.600000, 129.700000
+dms: 40°36′00.00″N 129°42′00.00″E
+bounds: 40.600000,129.700000,40.602500,129.702500
+center: 40.601250, 129.701250
+```

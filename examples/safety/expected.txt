@@ -6,3 +6,6 @@ unknown_CRS_rejected: true
 tiny_u_preserved: true
 fine_grid_keeps_40m_bound: true
 grid_radius_below_1cm: true
+plus_boundary: 8QGFJP22+
+plus_west_neighbor: 8QGFJM2X+
+plus_south_neighbor: 8QGFHPX2+

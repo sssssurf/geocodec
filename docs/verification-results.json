@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "date": "2026-10-28T14:59:49.115792+00:00",
+  "date": "2026-11-07T03:35:29.063145+00:00",
   "module": "sssssurf/geocodec",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "status": "passed",
   "toolchain": {
     "moon": "0.1.20261023",
     "moonc": "0.10.17+d971670cd"
   },
-  "compiledSourceSha256": "45c611e00e14e4c313fec1a527a352b359dcb3ecd563c8ffc6a11d69b4d25753",
+  "compiledSourceSha256": "d28163a627fafedd71f152355de35d5a6c7709f83a981a62608014bc29dffca3",
   "targets": [
     {
       "target": "js",
@@ -16,8 +16,8 @@
       "check": "passed",
       "build": "passed",
       "tests": {
-        "total": 72,
-        "passed": 72,
+        "total": 841,
+        "passed": 841,
         "failed": 0
       }
     },
@@ -27,8 +27,8 @@
       "check": "passed",
       "build": "passed",
       "tests": {
-        "total": 72,
-        "passed": 72,
+        "total": 841,
+        "passed": 841,
         "failed": 0
       }
     },
@@ -38,8 +38,8 @@
       "check": "passed",
       "build": "passed",
       "tests": {
-        "total": 72,
-        "passed": 72,
+        "total": 841,
+        "passed": 841,
         "failed": 0
       }
     },
@@ -49,8 +49,8 @@
       "check": "passed",
       "build": "passed",
       "tests": {
-        "total": 72,
-        "passed": 72,
+        "total": 841,
+        "passed": 841,
         "failed": 0
       }
     }
@@ -61,7 +61,7 @@
       "passed": 10,
       "failed": 0
     },
-    "documentedCommandSnapshots": 14,
+    "documentedCommandSnapshots": 15,
     "semanticConsumer": {
       "status": "passed",
       "checks": [
@@ -72,8 +72,25 @@
         "public safety example",
         "external Location and GeoUri forgery rejected"
       ],
-      "date": "2026-10-28T14:58:01.643Z"
+      "date": "2026-11-07T03:34:00.248Z"
     },
-    "publishablePackage": "passed"
+    "officialOlc": {
+      "encoding": 302,
+      "decoding": 420,
+      "validity": 25,
+      "shorteningRecovery": 19,
+      "total": 766,
+      "beforeEncodingMismatches": 13,
+      "afterEncodingMismatches": 0,
+      "commit": "83986da0156bbf51fba33d0327d8ca4b7f955c89",
+      "fixtureHashes": "all passed"
+    }
+  },
+  "formalAcceptance": {
+    "organizerDecision": "rejected",
+    "repairVersion": "0.6.0",
+    "repairDate": "2026-11-07",
+    "resubmission": "not submitted",
+    "organizerApproval": false
   }
 }
