@@ -11,11 +11,11 @@ pub const GEOHASH_ALPHABET : String = "0123456789bcdefghjkmnpqrstuvwxyz"
 ///|
 /// The maximum number of characters a geohash can have here. Twelve
 /// characters already resolve to under a centimetre.
-pub const GEOHASH_MAX_PRECISION : Int = 12
+pub const GEOHASH_MAX_PRECISION : Int32 = 12
 
 ///|
 /// Encode a point as a geohash of `precision` characters (1 to 12).
-pub fn geohash_encode(point : LatLng, precision : Int) -> String? {
+pub fn geohash_encode(point : LatLng, precision : Int32) -> String? {
   if precision < 1 || precision > GEOHASH_MAX_PRECISION {
     return None
   }
@@ -119,7 +119,7 @@ pub fn geohash_decode(code : String) -> LatLng? {
 /// The cell immediately `dx` cells east and `dy` cells north. The result is
 /// `None` when the input is not a geohash; at a pole the latitude is clamped,
 /// so a northward move from the top row can repeat the same cell.
-pub fn geohash_adjacent(code : String, dx : Int, dy : Int) -> String? {
+pub fn geohash_adjacent(code : String, dx : Int32, dy : Int32) -> String? {
   match geohash_bounds(code) {
     None => None
     Some(b) => {
@@ -164,7 +164,7 @@ pub fn geohash_neighbors(code : String) -> Array[String]? {
 ///|
 /// The smallest precision whose cell is no larger than `meters` at the
 /// equator. Returns 12 for sub-centimetre requests.
-pub fn geohash_precision_for_meters(meters : Double) -> Int? {
+pub fn geohash_precision_for_meters(meters : Double) -> Int32? {
   if !is_finite(meters) || meters <= 0.0 {
     return None
   }
@@ -190,8 +190,8 @@ pub fn geohash_precision_for_meters(meters : Double) -> Int? {
 /// antimeridian produces cells on both sides of the date line.
 pub fn geohash_cover(
   box : BoundingBox,
-  precision : Int,
-  max_cells? : Int = 1000,
+  precision : Int32,
+  max_cells~ : Int32 = 1000,
 ) -> Array[String]? {
   if precision < 1 || precision > GEOHASH_MAX_PRECISION || max_cells < 1 {
     return None
@@ -213,7 +213,7 @@ pub fn geohash_cover(
     0,
     rows - 1,
   )
-  let segments : Array[(Int, Int)] = []
+  let segments : Array[(Int32, Int32)] = []
   if !box.crosses_antimeridian() {
     let start = clamp_int(
       ((box.west() + 180.0) / width).floor().to_int(),
@@ -232,13 +232,19 @@ pub fn geohash_cover(
       0,
       columns - 1,
     )
-    segments.push((west_start, columns - 1))
     let east_end = clamp_int(
       ((box.east() + 180.0) / width).floor().to_int(),
       0,
       columns - 1,
     )
-    segments.push((0, east_end))
+    // At coarse precision both sides of a crossing box can touch the same
+    // column. Enumerate their union once and budget the distinct cells.
+    if east_end >= west_start {
+      segments.push((0, columns - 1))
+    } else {
+      segments.push((west_start, columns - 1))
+      segments.push((0, east_end))
+    }
   }
   let row_count = row_end - row_start + 1
   if row_count < 1 {
@@ -254,7 +260,7 @@ pub fn geohash_cover(
     if row_count > max_cells || column_count > max_cells {
       return None
     }
-    if row_count * column_count > max_cells - total {
+    if row_count > (max_cells - total) / column_count {
       return None
     }
     total = total + row_count * column_count
@@ -284,7 +290,7 @@ pub fn geohash_cover(
 
 ///|
 /// Clamp an integer into `[low, high]`.
-fn clamp_int(value : Int, low : Int, high : Int) -> Int {
+fn clamp_int(value : Int32, low : Int32, high : Int32) -> Int32 {
   if value < low {
     low
   } else if value > high {
@@ -296,7 +302,7 @@ fn clamp_int(value : Int, low : Int, high : Int) -> Int {
 
 ///|
 /// `2.0 ^ n` for a small non-negative integer.
-fn pow2(n : Int) -> Double {
+fn pow2(n : Int32) -> Double {
   let mut p = 1.0
   for _ in 0..<n {
     p = p * 2.0

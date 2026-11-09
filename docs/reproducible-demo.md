@@ -16,7 +16,7 @@ node scripts/check-semantics.mjs
 node scripts/gen-olc-tests.mjs --check
 ```
 
-841 test blocks. Actual target results are recorded in docs/verification-results.json.
+850 test blocks. Actual target results are recorded in docs/verification-results.json.
 
 The snapshots below are checked by scripts/check-docs.mjs; --update refreshes
 them from actual commands, never manually invented values.
@@ -149,6 +149,10 @@ grid_radius_below_1cm: true
 plus_boundary: 8QGFJP22+
 plus_west_neighbor: 8QGFJM2X+
 plus_south_neighbor: 8QGFHPX2+
+text_pluscode: 6F9952W3+C6222
+date_line_alias: true
+DMS_seconds_positive: true
+unique_cover_budget: true
 ```
 
 Unknown accuracy also remains unknown after quantisation:
@@ -192,5 +196,5 @@ Tiny positive uncertainty survives JSON and URI formatting:
 
 ```text
 $ moon run --target js cmd/main -- json "geo:1.123456789123,2;u=0.0000001"
-{"format":"geo-uri","kind":"point","lat":1.123456789123,"lng":2,"south":1.1234567891220957,"west":1.9999999999990954,"north":1.1234567891239045,"east":2.0000000000009046,"resolution_m":0.00000020000000000000004,"uncertainty_m":0.00000010000000000000002,"cell_radius_m":null,"uncertainty_known":true,"area_m2":0.00000000000004000000000000002,"altitude_m":null,"crs":"wgs84","raw":"geo:1.123456789123,2;u=0.0000001","as_geouri":"geo:1.123456789123,2;u=0.0000001"}
+{"format":"geo-uri","kind":"point","lat":1.123456789123,"lng":2,"south":1.1234567891220957,"west":1.9999999999990954,"north":1.1234567891239045,"east":2.0000000000009046,"resolution_m":0.0000002,"uncertainty_m":0.0000001,"cell_radius_m":null,"uncertainty_known":true,"area_m2":0.000000000000039999999999999994,"altitude_m":null,"crs":"wgs84","raw":"geo:1.123456789123,2;u=0.0000001","as_geouri":"geo:1.123456789123,2;u=0.0000001"}
 ```

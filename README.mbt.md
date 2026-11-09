@@ -1,5 +1,8 @@
 # geocodec
 
+Current audit release: **0.7.0**, 2026-11-09. See [full audit findings](docs/完整复核.md) for newly reproduced defects, fixes and validation coverage. Formal acceptance has not been granted.
+
+
 Version 0.6.0 fixes the formal acceptance finding: `(40.6,129.7)` at length 8
 now yields **8QGFJP22+**. All 766 pinned official OLC vectors run continuously,
 including all 13 encoding mismatches reproduced against 0.5.0. Coordinates are
@@ -102,7 +105,7 @@ operations; those belong to separate projection/geodesy layers.
 
 ## Tests
 
-841 test blocks: published vectors, round-trips at every precision, deterministic
+850 test blocks: published vectors, round-trips at every precision, deterministic
 property tests, cover checks, unified-model conversion checks and a robustness
 pass over malformed input. `moon test` passes on `js` and `wasm-gc`; CI also
 builds `wasm` and `native`, runs `examples/basic`, the CLI smoke tests and

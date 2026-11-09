@@ -10,6 +10,10 @@ test "official OLC encoding.csv:16" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 16 " + code); None => println("OLC_ENCODING_MISMATCH 16 NONE") }
   }
   assert_eq(actual, Some("7FG49Q00+"))
+  let decimal = @geocodec.parse_location("20.375,2.775").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "7FG49Q00+")
+  let uri = @geocodec.parse_location("geo:20.375,2.775").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "7FG49Q00+")
 }
 
 ///|
@@ -20,6 +24,10 @@ test "official OLC encoding.csv:17" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 17 " + code); None => println("OLC_ENCODING_MISMATCH 17 NONE") }
   }
   assert_eq(actual, Some("7FG49QCJ+2V"))
+  let decimal = @geocodec.parse_location("20.3700625,2.7821875").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "7FG49QCJ+2V")
+  let uri = @geocodec.parse_location("geo:20.3700625,2.7821875").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "7FG49QCJ+2V")
 }
 
 ///|
@@ -30,6 +38,10 @@ test "official OLC encoding.csv:18" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 18 " + code); None => println("OLC_ENCODING_MISMATCH 18 NONE") }
   }
   assert_eq(actual, Some("7FG49QCJ+2VX"))
+  let decimal = @geocodec.parse_location("20.3701125,2.782234375").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "7FG49QCJ+2VX")
+  let uri = @geocodec.parse_location("geo:20.3701125,2.782234375").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "7FG49QCJ+2VX")
 }
 
 ///|
@@ -40,6 +52,10 @@ test "official OLC encoding.csv:19" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 19 " + code); None => println("OLC_ENCODING_MISMATCH 19 NONE") }
   }
   assert_eq(actual, Some("7FG49QCJ+2VXGJ"))
+  let decimal = @geocodec.parse_location("20.3701135,2.78223535156").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "7FG49QCJ+2VXGJ")
+  let uri = @geocodec.parse_location("geo:20.3701135,2.78223535156").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "7FG49QCJ+2VXGJ")
 }
 
 ///|
@@ -50,6 +66,10 @@ test "official OLC encoding.csv:20" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 20 " + code); None => println("OLC_ENCODING_MISMATCH 20 NONE") }
   }
   assert_eq(actual, Some("8FVC2222+22"))
+  let decimal = @geocodec.parse_location("47.0000625,8.0000625").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "8FVC2222+22")
+  let uri = @geocodec.parse_location("geo:47.0000625,8.0000625").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "8FVC2222+22")
 }
 
 ///|
@@ -60,6 +80,10 @@ test "official OLC encoding.csv:21" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 21 " + code); None => println("OLC_ENCODING_MISMATCH 21 NONE") }
   }
   assert_eq(actual, Some("4VCPPQGP+Q9"))
+  let decimal = @geocodec.parse_location("-41.2730625,174.7859375").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "4VCPPQGP+Q9")
+  let uri = @geocodec.parse_location("geo:-41.2730625,174.7859375").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "4VCPPQGP+Q9")
 }
 
 ///|
@@ -70,6 +94,10 @@ test "official OLC encoding.csv:22" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 22 " + code); None => println("OLC_ENCODING_MISMATCH 22 NONE") }
   }
   assert_eq(actual, Some("62G20000+"))
+  let decimal = @geocodec.parse_location("0.5,-179.5").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "62G20000+")
+  let uri = @geocodec.parse_location("geo:0.5,-179.5").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "62G20000+")
 }
 
 ///|
@@ -80,6 +108,10 @@ test "official OLC encoding.csv:23" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 23 " + code); None => println("OLC_ENCODING_MISMATCH 23 NONE") }
   }
   assert_eq(actual, Some("22220000+"))
+  let decimal = @geocodec.parse_location("-89.5,-179.5").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "22220000+")
+  let uri = @geocodec.parse_location("geo:-89.5,-179.5").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "22220000+")
 }
 
 ///|
@@ -90,6 +122,10 @@ test "official OLC encoding.csv:24" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 24 " + code); None => println("OLC_ENCODING_MISMATCH 24 NONE") }
   }
   assert_eq(actual, Some("7FG40000+"))
+  let decimal = @geocodec.parse_location("20.5,2.5").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "7FG40000+")
+  let uri = @geocodec.parse_location("geo:20.5,2.5").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "7FG40000+")
 }
 
 ///|
@@ -100,6 +136,10 @@ test "official OLC encoding.csv:25" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 25 " + code); None => println("OLC_ENCODING_MISMATCH 25 NONE") }
   }
   assert_eq(actual, Some("22222222+22"))
+  let decimal = @geocodec.parse_location("-89.9999375,-179.9999375").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "22222222+22")
+  let uri = @geocodec.parse_location("geo:-89.9999375,-179.9999375").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "22222222+22")
 }
 
 ///|
@@ -110,6 +150,10 @@ test "official OLC encoding.csv:26" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 26 " + code); None => println("OLC_ENCODING_MISMATCH 26 NONE") }
   }
   assert_eq(actual, Some("6VGX0000+"))
+  let decimal = @geocodec.parse_location("0.5,179.5").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "6VGX0000+")
+  let uri = @geocodec.parse_location("geo:0.5,179.5").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "6VGX0000+")
 }
 
 ///|
@@ -120,6 +164,10 @@ test "official OLC encoding.csv:27" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 27 " + code); None => println("OLC_ENCODING_MISMATCH 27 NONE") }
   }
   assert_eq(actual, Some("6FH32222+222"))
+  let decimal = @geocodec.parse_location("1,1").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "6FH32222+222")
+  let uri = @geocodec.parse_location("geo:1,1").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "6FH32222+222")
 }
 
 ///|
@@ -130,6 +178,10 @@ test "official OLC encoding.csv:33" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 33 " + code); None => println("OLC_ENCODING_MISMATCH 33 NONE") }
   }
   assert_eq(actual, Some("CFX30000+"))
+  let decimal = @geocodec.parse_location("90,1").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "CFX30000+")
+  let uri = @geocodec.parse_location("geo:90,1").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "CFX30000+")
 }
 
 ///|
@@ -150,6 +202,10 @@ test "official OLC encoding.csv:35" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 35 " + code); None => println("OLC_ENCODING_MISMATCH 35 NONE") }
   }
   assert_eq(actual, Some("CFX3X2X2+X2"))
+  let decimal = @geocodec.parse_location("90,1").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "CFX3X2X2+X2")
+  let uri = @geocodec.parse_location("geo:90,1").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "CFX3X2X2+X2")
 }
 
 ///|
@@ -160,6 +216,10 @@ test "official OLC encoding.csv:41" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 41 " + code); None => println("OLC_ENCODING_MISMATCH 41 NONE") }
   }
   assert_eq(actual, Some("62H20000+"))
+  let decimal = @geocodec.parse_location("1,180").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "62H20000+")
+  let uri = @geocodec.parse_location("geo:1,180").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "62H20000+")
 }
 
 ///|
@@ -170,6 +230,8 @@ test "official OLC encoding.csv:42" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 42 " + code); None => println("OLC_ENCODING_MISMATCH 42 NONE") }
   }
   assert_eq(actual, Some("62H30000+"))
+  let decimal = @geocodec.parse_location("1,181").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "62H30000+")
 }
 
 ///|
@@ -180,6 +242,8 @@ test "official OLC encoding.csv:43" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 43 " + code); None => println("OLC_ENCODING_MISMATCH 43 NONE") }
   }
   assert_eq(actual, Some("7FG49QCJ+2VXGJ"))
+  let decimal = @geocodec.parse_location("20.3701135,362.78223535156").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "7FG49QCJ+2VXGJ")
 }
 
 ///|
@@ -190,6 +254,8 @@ test "official OLC encoding.csv:44" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 44 " + code); None => println("OLC_ENCODING_MISMATCH 44 NONE") }
   }
   assert_eq(actual, Some("8FVC2222+22"))
+  let decimal = @geocodec.parse_location("47.0000625,728.0000625").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "8FVC2222+22")
 }
 
 ///|
@@ -200,6 +266,8 @@ test "official OLC encoding.csv:45" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 45 " + code); None => println("OLC_ENCODING_MISMATCH 45 NONE") }
   }
   assert_eq(actual, Some("4VCPPQGP+Q9"))
+  let decimal = @geocodec.parse_location("-41.2730625,1254.7859375").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "4VCPPQGP+Q9")
 }
 
 ///|
@@ -210,6 +278,8 @@ test "official OLC encoding.csv:46" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 46 " + code); None => println("OLC_ENCODING_MISMATCH 46 NONE") }
   }
   assert_eq(actual, Some("7FG49QCJ+2VXGJ"))
+  let decimal = @geocodec.parse_location("20.3701135,-357.217764648").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "7FG49QCJ+2VXGJ")
 }
 
 ///|
@@ -220,6 +290,8 @@ test "official OLC encoding.csv:47" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 47 " + code); None => println("OLC_ENCODING_MISMATCH 47 NONE") }
   }
   assert_eq(actual, Some("8FVC2222+22"))
+  let decimal = @geocodec.parse_location("47.0000625,-711.9999375").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "8FVC2222+22")
 }
 
 ///|
@@ -230,6 +302,8 @@ test "official OLC encoding.csv:48" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 48 " + code); None => println("OLC_ENCODING_MISMATCH 48 NONE") }
   }
   assert_eq(actual, Some("4VCPPQGP+Q9"))
+  let decimal = @geocodec.parse_location("-41.2730625,-905.2140625").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "4VCPPQGP+Q9")
 }
 
 ///|
@@ -240,6 +314,10 @@ test "official OLC encoding.csv:54" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 54 " + code); None => println("OLC_ENCODING_MISMATCH 54 NONE") }
   }
   assert_eq(actual, Some("6FH56C22+22"))
+  let decimal = @geocodec.parse_location("1.2,3.4").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "6FH56C22+22")
+  let uri = @geocodec.parse_location("geo:1.2,3.4").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "6FH56C22+22")
 }
 
 ///|
@@ -250,6 +328,10 @@ test "official OLC encoding.csv:61" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 61 " + code); None => println("OLC_ENCODING_MISMATCH 61 NONE") }
   }
   assert_eq(actual, Some("849VGJQF+VX7QR3J"))
+  let decimal = @geocodec.parse_location("37.539669125,-122.375069724").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "849VGJQF+VX7QR3J")
+  let uri = @geocodec.parse_location("geo:37.539669125,-122.375069724").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "849VGJQF+VX7QR3J")
 }
 
 ///|
@@ -260,6 +342,10 @@ test "official OLC encoding.csv:62" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 62 " + code); None => println("OLC_ENCODING_MISMATCH 62 NONE") }
   }
   assert_eq(actual, Some("849VGJQF+VX7QR3J"))
+  let decimal = @geocodec.parse_location("37.539669125,-122.375069724").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 16).unwrap().raw, "849VGJQF+VX7QR3J")
+  let uri = @geocodec.parse_location("geo:37.539669125,-122.375069724").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 16).unwrap().raw, "849VGJQF+VX7QR3J")
 }
 
 ///|
@@ -270,6 +356,10 @@ test "official OLC encoding.csv:63" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 63 " + code); None => println("OLC_ENCODING_MISMATCH 63 NONE") }
   }
   assert_eq(actual, Some("849VGJQF+VX7QR3J"))
+  let decimal = @geocodec.parse_location("37.539669125,-122.375069724").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 100).unwrap().raw, "849VGJQF+VX7QR3J")
+  let uri = @geocodec.parse_location("geo:37.539669125,-122.375069724").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 100).unwrap().raw, "849VGJQF+VX7QR3J")
 }
 
 ///|
@@ -280,6 +370,10 @@ test "official OLC encoding.csv:69" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 69 " + code); None => println("OLC_ENCODING_MISMATCH 69 NONE") }
   }
   assert_eq(actual, Some("8F75J22M+26"))
+  let decimal = @geocodec.parse_location("35.6,3.033").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "8F75J22M+26")
+  let uri = @geocodec.parse_location("geo:35.6,3.033").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "8F75J22M+26")
 }
 
 ///|
@@ -290,6 +384,10 @@ test "official OLC encoding.csv:70" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 70 " + code); None => println("OLC_ENCODING_MISMATCH 70 NONE") }
   }
   assert_eq(actual, Some("4R347QRJ+"))
+  let decimal = @geocodec.parse_location("-48.71,142.78").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "4R347QRJ+")
+  let uri = @geocodec.parse_location("geo:-48.71,142.78").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "4R347QRJ+")
 }
 
 ///|
@@ -300,6 +398,10 @@ test "official OLC encoding.csv:71" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 71 " + code); None => println("OLC_ENCODING_MISMATCH 71 NONE") }
   }
   assert_eq(actual, Some("3V252P22+"))
+  let decimal = @geocodec.parse_location("-70,163.7").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "3V252P22+")
+  let uri = @geocodec.parse_location("geo:-70,163.7").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "3V252P22+")
 }
 
 ///|
@@ -310,6 +412,10 @@ test "official OLC encoding.csv:72" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 72 " + code); None => println("OLC_ENCODING_MISMATCH 72 NONE") }
   }
   assert_eq(actual, Some("6F9952W3+C6222"))
+  let decimal = @geocodec.parse_location("-2.804,7.003").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "6F9952W3+C6222")
+  let uri = @geocodec.parse_location("geo:-2.804,7.003").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "6F9952W3+C6222")
 }
 
 ///|
@@ -320,6 +426,10 @@ test "official OLC encoding.csv:73" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 73 " + code); None => println("OLC_ENCODING_MISMATCH 73 NONE") }
   }
   assert_eq(actual, Some("7V56WV2J+2222"))
+  let decimal = @geocodec.parse_location("13.9,164.88").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "7V56WV2J+2222")
+  let uri = @geocodec.parse_location("geo:13.9,164.88").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "7V56WV2J+2222")
 }
 
 ///|
@@ -330,6 +440,10 @@ test "official OLC encoding.csv:74" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 74 " + code); None => println("OLC_ENCODING_MISMATCH 74 NONE") }
   }
   assert_eq(actual, Some("5VRJQQCC+"))
+  let decimal = @geocodec.parse_location("-13.23,172.77").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "5VRJQQCC+")
+  let uri = @geocodec.parse_location("geo:-13.23,172.77").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "5VRJQQCC+")
 }
 
 ///|
@@ -340,6 +454,10 @@ test "official OLC encoding.csv:75" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 75 " + code); None => println("OLC_ENCODING_MISMATCH 75 NONE") }
   }
   assert_eq(actual, Some("8QGFJP22+"))
+  let decimal = @geocodec.parse_location("40.6,129.7").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "8QGFJP22+")
+  let uri = @geocodec.parse_location("geo:40.6,129.7").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "8QGFJP22+")
 }
 
 ///|
@@ -350,6 +468,10 @@ test "official OLC encoding.csv:76" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 76 " + code); None => println("OLC_ENCODING_MISMATCH 76 NONE") }
   }
   assert_eq(actual, Some("3FVMRMMV+JJ2222"))
+  let decimal = @geocodec.parse_location("-52.166,13.694").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "3FVMRMMV+JJ2222")
+  let uri = @geocodec.parse_location("geo:-52.166,13.694").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "3FVMRMMV+JJ2222")
 }
 
 ///|
@@ -360,6 +482,10 @@ test "official OLC encoding.csv:77" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 77 " + code); None => println("OLC_ENCODING_MISMATCH 77 NONE") }
   }
   assert_eq(actual, Some("5PR82W00+"))
+  let decimal = @geocodec.parse_location("-14,106.9").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "5PR82W00+")
+  let uri = @geocodec.parse_location("geo:-14,106.9").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "5PR82W00+")
 }
 
 ///|
@@ -370,6 +496,10 @@ test "official OLC encoding.csv:78" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 78 " + code); None => println("OLC_ENCODING_MISMATCH 78 NONE") }
   }
   assert_eq(actual, Some("C62J8926+22222"))
+  let decimal = @geocodec.parse_location("70.3,-87.64").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "C62J8926+22222")
+  let uri = @geocodec.parse_location("geo:70.3,-87.64").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "C62J8926+22222")
 }
 
 ///|
@@ -380,6 +510,10 @@ test "official OLC encoding.csv:79" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 79 " + code); None => println("OLC_ENCODING_MISMATCH 79 NONE") }
   }
   assert_eq(actual, Some("95RPV2R2+22"))
+  let decimal = @geocodec.parse_location("66.89,-106").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "95RPV2R2+22")
+  let uri = @geocodec.parse_location("geo:66.89,-106").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "95RPV2R2+22")
 }
 
 ///|
@@ -390,6 +524,10 @@ test "official OLC encoding.csv:80" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 80 " + code); None => println("OLC_ENCODING_MISMATCH 80 NONE") }
   }
   assert_eq(actual, Some("67JQGQ2C+222"))
+  let decimal = @geocodec.parse_location("2.5,-64.23").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "67JQGQ2C+222")
+  let uri = @geocodec.parse_location("geo:2.5,-64.23").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "67JQGQ2C+222")
 }
 
 ///|
@@ -400,6 +538,10 @@ test "official OLC encoding.csv:81" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 81 " + code); None => println("OLC_ENCODING_MISMATCH 81 NONE") }
   }
   assert_eq(actual, Some("38MJ8R22+222222"))
+  let decimal = @geocodec.parse_location("-56.7,-47.2").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "38MJ8R22+222222")
+  let uri = @geocodec.parse_location("geo:-56.7,-47.2").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "38MJ8R22+222222")
 }
 
 ///|
@@ -410,6 +552,10 @@ test "official OLC encoding.csv:82" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 82 " + code); None => println("OLC_ENCODING_MISMATCH 82 NONE") }
   }
   assert_eq(actual, Some("46Q8H700+"))
+  let decimal = @geocodec.parse_location("-34.45,-93.719").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "46Q8H700+")
+  let uri = @geocodec.parse_location("geo:-34.45,-93.719").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "46Q8H700+")
 }
 
 ///|
@@ -420,6 +566,10 @@ test "official OLC encoding.csv:83" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 83 " + code); None => println("OLC_ENCODING_MISMATCH 83 NONE") }
   }
   assert_eq(actual, Some("46P85722+C222"))
+  let decimal = @geocodec.parse_location("-35.849,-93.75").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "46P85722+C222")
+  let uri = @geocodec.parse_location("geo:-35.849,-93.75").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "46P85722+C222")
 }
 
 ///|
@@ -430,6 +580,10 @@ test "official OLC encoding.csv:84" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 84 " + code); None => println("OLC_ENCODING_MISMATCH 84 NONE") }
   }
   assert_eq(actual, Some("9GQ6P8X8+6C22"))
+  let decimal = @geocodec.parse_location("65.748,24.316").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "9GQ6P8X8+6C22")
+  let uri = @geocodec.parse_location("geo:65.748,24.316").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "9GQ6P8X8+6C22")
 }
 
 ///|
@@ -440,6 +594,10 @@ test "official OLC encoding.csv:85" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 85 " + code); None => println("OLC_ENCODING_MISMATCH 85 NONE") }
   }
   assert_eq(actual, Some("3QJGMCJJ+2222"))
+  let decimal = @geocodec.parse_location("-57.32,130.43").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "3QJGMCJJ+2222")
+  let uri = @geocodec.parse_location("geo:-57.32,130.43").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "3QJGMCJJ+2222")
 }
 
 ///|
@@ -450,6 +608,10 @@ test "official OLC encoding.csv:86" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 86 " + code); None => println("OLC_ENCODING_MISMATCH 86 NONE") }
   }
   assert_eq(actual, Some("789QJJ00+"))
+  let decimal = @geocodec.parse_location("17.6,-44.4").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "789QJJ00+")
+  let uri = @geocodec.parse_location("geo:17.6,-44.4").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "789QJJ00+")
 }
 
 ///|
@@ -460,6 +622,10 @@ test "official OLC encoding.csv:87" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 87 " + code); None => println("OLC_ENCODING_MISMATCH 87 NONE") }
   }
   assert_eq(actual, Some("554QC600+"))
+  let decimal = @geocodec.parse_location("-27.6,-104.8").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "554QC600+")
+  let uri = @geocodec.parse_location("geo:-27.6,-104.8").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "554QC600+")
 }
 
 ///|
@@ -470,6 +636,10 @@ test "official OLC encoding.csv:88" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 88 " + code); None => println("OLC_ENCODING_MISMATCH 88 NONE") }
   }
   assert_eq(actual, Some("83HPVCC6+22222"))
+  let decimal = @geocodec.parse_location("41.87,-145.59").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "83HPVCC6+22222")
+  let uri = @geocodec.parse_location("geo:41.87,-145.59").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "83HPVCC6+22222")
 }
 
 ///|
@@ -480,6 +650,10 @@ test "official OLC encoding.csv:89" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 89 " + code); None => println("OLC_ENCODING_MISMATCH 89 NONE") }
   }
   assert_eq(actual, Some("6R7CFJ5Q+66222"))
+  let decimal = @geocodec.parse_location("-4.542,148.638").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "6R7CFJ5Q+66222")
+  let uri = @geocodec.parse_location("geo:-4.542,148.638").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "6R7CFJ5Q+66222")
 }
 
 ///|
@@ -490,6 +664,10 @@ test "official OLC encoding.csv:90" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 90 " + code); None => println("OLC_ENCODING_MISMATCH 90 NONE") }
   }
   assert_eq(actual, Some("43J2X3P7+CJ"))
+  let decimal = @geocodec.parse_location("-37.014,-159.936").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "43J2X3P7+CJ")
+  let uri = @geocodec.parse_location("geo:-37.014,-159.936").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "43J2X3P7+CJ")
 }
 
 ///|
@@ -500,6 +678,10 @@ test "official OLC encoding.csv:91" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 91 " + code); None => println("OLC_ENCODING_MISMATCH 91 NONE") }
   }
   assert_eq(actual, Some("3QJ7QF2R+2222222"))
+  let decimal = @geocodec.parse_location("-57.25,125.49").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "3QJ7QF2R+2222222")
+  let uri = @geocodec.parse_location("geo:-57.25,125.49").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "3QJ7QF2R+2222222")
 }
 
 ///|
@@ -510,6 +692,10 @@ test "official OLC encoding.csv:92" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 92 " + code); None => println("OLC_ENCODING_MISMATCH 92 NONE") }
   }
   assert_eq(actual, Some("86WXVFRJ+22222"))
+  let decimal = @geocodec.parse_location("48.89,-80.52").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "86WXVFRJ+22222")
+  let uri = @geocodec.parse_location("geo:48.89,-80.52").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "86WXVFRJ+22222")
 }
 
 ///|
@@ -520,6 +706,10 @@ test "official OLC encoding.csv:93" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 93 " + code); None => println("OLC_ENCODING_MISMATCH 93 NONE") }
   }
   assert_eq(actual, Some("9V5GMX6C+222222"))
+  let decimal = @geocodec.parse_location("53.66,170.97").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "9V5GMX6C+222222")
+  let uri = @geocodec.parse_location("geo:53.66,170.97").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "9V5GMX6C+222222")
 }
 
 ///|
@@ -530,6 +720,10 @@ test "official OLC encoding.csv:94" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 94 " + code); None => println("OLC_ENCODING_MISMATCH 94 NONE") }
   }
   assert_eq(actual, Some("67G5F2RJ+2222222"))
+  let decimal = @geocodec.parse_location("0.49,-76.97").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "67G5F2RJ+2222222")
+  let uri = @geocodec.parse_location("geo:0.49,-76.97").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "67G5F2RJ+2222222")
 }
 
 ///|
@@ -540,6 +734,10 @@ test "official OLC encoding.csv:95" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 95 " + code); None => println("OLC_ENCODING_MISMATCH 95 NONE") }
   }
   assert_eq(actual, Some("89G5C8R2+2222"))
+  let decimal = @geocodec.parse_location("40.44,-36.7").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "89G5C8R2+2222")
+  let uri = @geocodec.parse_location("geo:40.44,-36.7").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "89G5C8R2+2222")
 }
 
 ///|
@@ -550,6 +748,10 @@ test "official OLC encoding.csv:96" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 96 " + code); None => println("OLC_ENCODING_MISMATCH 96 NONE") }
   }
   assert_eq(actual, Some("9JCFPXJ2+"))
+  let decimal = @geocodec.parse_location("58.73,69.95").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "9JCFPXJ2+")
+  let uri = @geocodec.parse_location("geo:58.73,69.95").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "9JCFPXJ2+")
 }
 
 ///|
@@ -560,6 +762,10 @@ test "official OLC encoding.csv:97" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 97 " + code); None => println("OLC_ENCODING_MISMATCH 97 NONE") }
   }
   assert_eq(actual, Some("7R8G53HG+J222"))
+  let decimal = @geocodec.parse_location("16.179,150.075").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "7R8G53HG+J222")
+  let uri = @geocodec.parse_location("geo:16.179,150.075").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "7R8G53HG+J222")
 }
 
 ///|
@@ -570,6 +776,10 @@ test "official OLC encoding.csv:98" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 98 " + code); None => println("OLC_ENCODING_MISMATCH 98 NONE") }
   }
   assert_eq(actual, Some("37PFCWGQ+CJ22"))
+  let decimal = @geocodec.parse_location("-55.574,-70.061").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "37PFCWGQ+CJ22")
+  let uri = @geocodec.parse_location("geo:-55.574,-70.061").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "37PFCWGQ+CJ22")
 }
 
 ///|
@@ -580,6 +790,10 @@ test "official OLC encoding.csv:99" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 99 " + code); None => println("OLC_ENCODING_MISMATCH 99 NONE") }
   }
   assert_eq(actual, Some("C68V4G22+2222222"))
+  let decimal = @geocodec.parse_location("76.1,-82.5").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "C68V4G22+2222222")
+  let uri = @geocodec.parse_location("geo:76.1,-82.5").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "C68V4G22+2222222")
 }
 
 ///|
@@ -590,6 +804,10 @@ test "official OLC encoding.csv:100" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 100 " + code); None => println("OLC_ENCODING_MISMATCH 100 NONE") }
   }
   assert_eq(actual, Some("9RCFM56C+22"))
+  let decimal = @geocodec.parse_location("58.66,149.17").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "9RCFM56C+22")
+  let uri = @geocodec.parse_location("geo:58.66,149.17").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "9RCFM56C+22")
 }
 
 ///|
@@ -600,6 +818,10 @@ test "official OLC encoding.csv:101" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 101 " + code); None => println("OLC_ENCODING_MISMATCH 101 NONE") }
   }
   assert_eq(actual, Some("3H4CRJ00+"))
+  let decimal = @geocodec.parse_location("-67.2,48.6").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "3H4CRJ00+")
+  let uri = @geocodec.parse_location("geo:-67.2,48.6").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "3H4CRJ00+")
 }
 
 ///|
@@ -610,6 +832,10 @@ test "official OLC encoding.csv:102" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 102 " + code); None => println("OLC_ENCODING_MISMATCH 102 NONE") }
   }
   assert_eq(actual, Some("6867CG22+222222"))
+  let decimal = @geocodec.parse_location("-5.6,-54.5").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "6867CG22+222222")
+  let uri = @geocodec.parse_location("geo:-5.6,-54.5").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "6867CG22+222222")
 }
 
 ///|
@@ -620,6 +846,10 @@ test "official OLC encoding.csv:103" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 103 " + code); None => println("OLC_ENCODING_MISMATCH 103 NONE") }
   }
   assert_eq(actual, Some("4RR72G22+222222"))
+  let decimal = @geocodec.parse_location("-34,145.5").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "4RR72G22+222222")
+  let uri = @geocodec.parse_location("geo:-34,145.5").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "4RR72G22+222222")
 }
 
 ///|
@@ -630,6 +860,10 @@ test "official OLC encoding.csv:104" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 104 " + code); None => println("OLC_ENCODING_MISMATCH 104 NONE") }
   }
   assert_eq(actual, Some("4JQ8RC22+2222"))
+  let decimal = @geocodec.parse_location("-34.2,66.4").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "4JQ8RC22+2222")
+  let uri = @geocodec.parse_location("geo:-34.2,66.4").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "4JQ8RC22+2222")
 }
 
 ///|
@@ -640,6 +874,10 @@ test "official OLC encoding.csv:105" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 105 " + code); None => println("OLC_ENCODING_MISMATCH 105 NONE") }
   }
   assert_eq(actual, Some("759HRG00+"))
+  let decimal = @geocodec.parse_location("17.8,-108.5").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "759HRG00+")
+  let uri = @geocodec.parse_location("geo:17.8,-108.5").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "759HRG00+")
 }
 
 ///|
@@ -650,6 +888,10 @@ test "official OLC encoding.csv:106" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 106 " + code); None => println("OLC_ENCODING_MISMATCH 106 NONE") }
   }
   assert_eq(actual, Some("722HPPM4+JC"))
+  let decimal = @geocodec.parse_location("10.734,-168.294").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "722HPPM4+JC")
+  let uri = @geocodec.parse_location("geo:10.734,-168.294").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "722HPPM4+JC")
 }
 
 ///|
@@ -660,6 +902,10 @@ test "official OLC encoding.csv:107" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 107 " + code); None => println("OLC_ENCODING_MISMATCH 107 NONE") }
   }
   assert_eq(actual, Some("5H3P789C+"))
+  let decimal = @geocodec.parse_location("-28.732,54.32").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "5H3P789C+")
+  let uri = @geocodec.parse_location("geo:-28.732,54.32").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "5H3P789C+")
 }
 
 ///|
@@ -670,6 +916,10 @@ test "official OLC encoding.csv:108" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 108 " + code); None => println("OLC_ENCODING_MISMATCH 108 NONE") }
   }
   assert_eq(actual, Some("9PP94W22+2222"))
+  let decimal = @geocodec.parse_location("64.1,107.9").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "9PP94W22+2222")
+  let uri = @geocodec.parse_location("geo:64.1,107.9").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "9PP94W22+2222")
 }
 
 ///|
@@ -680,6 +930,10 @@ test "official OLC encoding.csv:109" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 109 " + code); None => println("OLC_ENCODING_MISMATCH 109 NONE") }
   }
   assert_eq(actual, Some("CFF8QX36+"))
+  let decimal = @geocodec.parse_location("79.7525,6.9623").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "CFF8QX36+")
+  let uri = @geocodec.parse_location("geo:79.7525,6.9623").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "CFF8QX36+")
 }
 
 ///|
@@ -690,6 +944,10 @@ test "official OLC encoding.csv:110" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 110 " + code); None => println("OLC_ENCODING_MISMATCH 110 NONE") }
   }
   assert_eq(actual, Some("398P9V43+"))
+  let decimal = @geocodec.parse_location("-63.6449,-25.1475").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "398P9V43+")
+  let uri = @geocodec.parse_location("geo:-63.6449,-25.1475").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "398P9V43+")
 }
 
 ///|
@@ -700,6 +958,10 @@ test "official OLC encoding.csv:111" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 111 " + code); None => println("OLC_ENCODING_MISMATCH 111 NONE") }
   }
   assert_eq(actual, Some("8R7C2R9G+JR2"))
+  let decimal = @geocodec.parse_location("35.019,148.827").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "8R7C2R9G+JR2")
+  let uri = @geocodec.parse_location("geo:35.019,148.827").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "8R7C2R9G+JR2")
 }
 
 ///|
@@ -710,6 +972,10 @@ test "official OLC encoding.csv:112" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 112 " + code); None => println("OLC_ENCODING_MISMATCH 112 NONE") }
   }
   assert_eq(actual, Some("C6334CJ8+RC22222"))
+  let decimal = @geocodec.parse_location("71.132,-98.584").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "C6334CJ8+RC22222")
+  let uri = @geocodec.parse_location("geo:71.132,-98.584").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "C6334CJ8+RC22222")
 }
 
 ///|
@@ -720,6 +986,10 @@ test "official OLC encoding.csv:113" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 113 " + code); None => println("OLC_ENCODING_MISMATCH 113 NONE") }
   }
   assert_eq(actual, Some("985C9MJ6+2222"))
+  let decimal = @geocodec.parse_location("53.38,-51.34").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "985C9MJ6+2222")
+  let uri = @geocodec.parse_location("geo:53.38,-51.34").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "985C9MJ6+2222")
 }
 
 ///|
@@ -730,6 +1000,10 @@ test "official OLC encoding.csv:114" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 114 " + code); None => println("OLC_ENCODING_MISMATCH 114 NONE") }
   }
   assert_eq(actual, Some("6VCGR622+2222"))
+  let decimal = @geocodec.parse_location("-1.2,170.2").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "6VCGR622+2222")
+  let uri = @geocodec.parse_location("geo:-1.2,170.2").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "6VCGR622+2222")
 }
 
 ///|
@@ -740,6 +1014,10 @@ test "official OLC encoding.csv:115" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 115 " + code); None => println("OLC_ENCODING_MISMATCH 115 NONE") }
   }
   assert_eq(actual, Some("922V6622+222"))
+  let decimal = @geocodec.parse_location("50.2,-162.8").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "922V6622+222")
+  let uri = @geocodec.parse_location("geo:50.2,-162.8").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "922V6622+222")
 }
 
 ///|
@@ -750,6 +1028,10 @@ test "official OLC encoding.csv:116" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 116 " + code); None => println("OLC_ENCODING_MISMATCH 116 NONE") }
   }
   assert_eq(actual, Some("5862652Q+R6"))
+  let decimal = @geocodec.parse_location("-25.798,-59.812").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "5862652Q+R6")
+  let uri = @geocodec.parse_location("geo:-25.798,-59.812").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "5862652Q+R6")
 }
 
 ///|
@@ -760,6 +1042,10 @@ test "official OLC encoding.csv:117" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 117 " + code); None => println("OLC_ENCODING_MISMATCH 117 NONE") }
   }
   assert_eq(actual, Some("C2HVMH3H+J62222"))
+  let decimal = @geocodec.parse_location("81.654,-162.422").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "C2HVMH3H+J62222")
+  let uri = @geocodec.parse_location("geo:81.654,-162.422").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "C2HVMH3H+J62222")
 }
 
 ///|
@@ -770,6 +1056,10 @@ test "official OLC encoding.csv:118" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 118 " + code); None => println("OLC_ENCODING_MISMATCH 118 NONE") }
   }
   assert_eq(actual, Some("29P68J22+"))
+  let decimal = @geocodec.parse_location("-75.7,-35.4").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "29P68J22+")
+  let uri = @geocodec.parse_location("geo:-75.7,-35.4").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "29P68J22+")
 }
 
 ///|
@@ -780,6 +1070,10 @@ test "official OLC encoding.csv:119" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 119 " + code); None => println("OLC_ENCODING_MISMATCH 119 NONE") }
   }
   assert_eq(actual, Some("9PVQ6422+222"))
+  let decimal = @geocodec.parse_location("67.2,115.1").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "9PVQ6422+222")
+  let uri = @geocodec.parse_location("geo:67.2,115.1").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "9PVQ6422+222")
 }
 
 ///|
@@ -790,6 +1084,10 @@ test "official OLC encoding.csv:120" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 120 " + code); None => println("OLC_ENCODING_MISMATCH 120 NONE") }
   }
   assert_eq(actual, Some("28HVV274+6222"))
+  let decimal = @geocodec.parse_location("-78.137,-42.995").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "28HVV274+6222")
+  let uri = @geocodec.parse_location("geo:-78.137,-42.995").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "28HVV274+6222")
 }
 
 ///|
@@ -800,6 +1098,10 @@ test "official OLC encoding.csv:121" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 121 " + code); None => println("OLC_ENCODING_MISMATCH 121 NONE") }
   }
   assert_eq(actual, Some("3PMPPG22+222"))
+  let decimal = @geocodec.parse_location("-56.3,114.5").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "3PMPPG22+222")
+  let uri = @geocodec.parse_location("geo:-56.3,114.5").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "3PMPPG22+222")
 }
 
 ///|
@@ -810,6 +1112,10 @@ test "official OLC encoding.csv:122" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 122 " + code); None => println("OLC_ENCODING_MISMATCH 122 NONE") }
   }
   assert_eq(actual, Some("772VQ687+R6222"))
+  let decimal = @geocodec.parse_location("10.767,-62.787").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "772VQ687+R6222")
+  let uri = @geocodec.parse_location("geo:10.767,-62.787").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "772VQ687+R6222")
 }
 
 ///|
@@ -820,6 +1126,10 @@ test "official OLC encoding.csv:123" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 123 " + code); None => println("OLC_ENCODING_MISMATCH 123 NONE") }
   }
   assert_eq(actual, Some("5PG9QCQF+66"))
+  let decimal = @geocodec.parse_location("-19.212,107.423").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "5PG9QCQF+66")
+  let uri = @geocodec.parse_location("geo:-19.212,107.423").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "5PG9QCQF+66")
 }
 
 ///|
@@ -830,6 +1140,10 @@ test "official OLC encoding.csv:124" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 124 " + code); None => println("OLC_ENCODING_MISMATCH 124 NONE") }
   }
   assert_eq(actual, Some("78HP5VR4+R222222"))
+  let decimal = @geocodec.parse_location("21.192,-45.145").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "78HP5VR4+R222222")
+  let uri = @geocodec.parse_location("geo:21.192,-45.145").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "78HP5VR4+R222222")
 }
 
 ///|
@@ -840,6 +1154,10 @@ test "official OLC encoding.csv:125" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 125 " + code); None => println("OLC_ENCODING_MISMATCH 125 NONE") }
   }
   assert_eq(actual, Some("7R8CPJ2X+C62222"))
+  let decimal = @geocodec.parse_location("16.701,148.648").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "7R8CPJ2X+C62222")
+  let uri = @geocodec.parse_location("geo:16.701,148.648").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "7R8CPJ2X+C62222")
 }
 
 ///|
@@ -850,6 +1168,10 @@ test "official OLC encoding.csv:126" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 126 " + code); None => println("OLC_ENCODING_MISMATCH 126 NONE") }
   }
   assert_eq(actual, Some("97447H22+2222222"))
+  let decimal = @geocodec.parse_location("52.25,-77.45").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "97447H22+2222222")
+  let uri = @geocodec.parse_location("geo:52.25,-77.45").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "97447H22+2222222")
 }
 
 ///|
@@ -860,6 +1182,10 @@ test "official OLC encoding.csv:127" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 127 " + code); None => println("OLC_ENCODING_MISMATCH 127 NONE") }
   }
   assert_eq(actual, Some("373VF53M+X4J"))
+  let decimal = @geocodec.parse_location("-68.54504,-62.81725").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "373VF53M+X4J")
+  let uri = @geocodec.parse_location("geo:-68.54504,-62.81725").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "373VF53M+X4J")
 }
 
 ///|
@@ -870,6 +1196,10 @@ test "official OLC encoding.csv:128" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 128 " + code); None => println("OLC_ENCODING_MISMATCH 128 NONE") }
   }
   assert_eq(actual, Some("C68MPR2H+2622"))
+  let decimal = @geocodec.parse_location("76.7,-86.172").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "C68MPR2H+2622")
+  let uri = @geocodec.parse_location("geo:76.7,-86.172").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "C68MPR2H+2622")
 }
 
 ///|
@@ -880,6 +1210,10 @@ test "official OLC encoding.csv:129" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 129 " + code); None => println("OLC_ENCODING_MISMATCH 129 NONE") }
   }
   assert_eq(actual, Some("6M5RRJ22+22222"))
+  let decimal = @geocodec.parse_location("-6.2,96.6").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "6M5RRJ22+22222")
+  let uri = @geocodec.parse_location("geo:-6.2,96.6").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "6M5RRJ22+22222")
 }
 
 ///|
@@ -890,6 +1224,10 @@ test "official OLC encoding.csv:130" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 130 " + code); None => println("OLC_ENCODING_MISMATCH 130 NONE") }
   }
   assert_eq(actual, Some("93F48QCR+2222"))
+  let decimal = @geocodec.parse_location("59.32,-157.21").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "93F48QCR+2222")
+  let uri = @geocodec.parse_location("geo:59.32,-157.21").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "93F48QCR+2222")
 }
 
 ///|
@@ -900,6 +1238,10 @@ test "official OLC encoding.csv:131" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 131 " + code); None => println("OLC_ENCODING_MISMATCH 131 NONE") }
   }
   assert_eq(actual, Some("7GXXPJ22+2222"))
+  let decimal = @geocodec.parse_location("29.7,39.6").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "7GXXPJ22+2222")
+  let uri = @geocodec.parse_location("geo:29.7,39.6").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "7GXXPJ22+2222")
 }
 
 ///|
@@ -910,6 +1252,10 @@ test "official OLC encoding.csv:132" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 132 " + code); None => println("OLC_ENCODING_MISMATCH 132 NONE") }
   }
   assert_eq(actual, Some("5MHRM9JW+2R"))
+  let decimal = @geocodec.parse_location("-18.32,96.397").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "5MHRM9JW+2R")
+  let uri = @geocodec.parse_location("geo:-18.32,96.397").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "5MHRM9JW+2R")
 }
 
 ///|
@@ -920,6 +1266,10 @@ test "official OLC encoding.csv:133" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 133 " + code); None => println("OLC_ENCODING_MISMATCH 133 NONE") }
   }
   assert_eq(actual, Some("4JXRPG22+222"))
+  let decimal = @geocodec.parse_location("-30.3,76.5").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "4JXRPG22+222")
+  let uri = @geocodec.parse_location("geo:-30.3,76.5").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "4JXRPG22+222")
 }
 
 ///|
@@ -930,6 +1280,10 @@ test "official OLC encoding.csv:134" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 134 " + code); None => println("OLC_ENCODING_MISMATCH 134 NONE") }
   }
   assert_eq(actual, Some("95298FR8+RC22222"))
+  let decimal = @geocodec.parse_location("50.342,-112.534").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "95298FR8+RC22222")
+  let uri = @geocodec.parse_location("geo:50.342,-112.534").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "95298FR8+RC22222")
 }
 
 ///|
@@ -940,6 +1294,10 @@ test "official OLC encoding.csv:141" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 141 " + code); None => println("OLC_ENCODING_MISMATCH 141 NONE") }
   }
   assert_eq(actual, Some("CHGW2H6C+2222222"))
+  let decimal = @geocodec.parse_location("80.0100000001,58.57").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "CHGW2H6C+2222222")
+  let uri = @geocodec.parse_location("geo:80.0100000001,58.57").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "CHGW2H6C+2222222")
 }
 
 ///|
@@ -950,6 +1308,10 @@ test "official OLC encoding.csv:142" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 142 " + code); None => println("OLC_ENCODING_MISMATCH 142 NONE") }
   }
   assert_eq(actual, Some("CHGW2H5C+X2RRRRR"))
+  let decimal = @geocodec.parse_location("80.00999996,58.57").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "CHGW2H5C+X2RRRRR")
+  let uri = @geocodec.parse_location("geo:80.00999996,58.57").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "CHGW2H5C+X2RRRRR")
 }
 
 ///|
@@ -960,6 +1322,10 @@ test "official OLC encoding.csv:143" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 143 " + code); None => println("OLC_ENCODING_MISMATCH 143 NONE") }
   }
   assert_eq(actual, Some("2HFWXHRC+2222222"))
+  let decimal = @geocodec.parse_location("-80.0099999999,58.57").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "2HFWXHRC+2222222")
+  let uri = @geocodec.parse_location("geo:-80.0099999999,58.57").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "2HFWXHRC+2222222")
 }
 
 ///|
@@ -970,6 +1336,10 @@ test "official OLC encoding.csv:144" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 144 " + code); None => println("OLC_ENCODING_MISMATCH 144 NONE") }
   }
   assert_eq(actual, Some("2HFWXHQC+X2RRRRR"))
+  let decimal = @geocodec.parse_location("-80.0100000399,58.57").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "2HFWXHQC+X2RRRRR")
+  let uri = @geocodec.parse_location("geo:-80.0100000399,58.57").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "2HFWXHQC+X2RRRRR")
 }
 
 ///|
@@ -980,6 +1350,10 @@ test "official OLC encoding.csv:150" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 150 " + code); None => println("OLC_ENCODING_MISMATCH 150 NONE") }
   }
   assert_eq(actual, Some("8FVC2222+235235C"))
+  let decimal = @geocodec.parse_location("47.000000080000000,8.00022229").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "8FVC2222+235235C")
+  let uri = @geocodec.parse_location("geo:47.000000080000000,8.00022229").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "8FVC2222+235235C")
 }
 
 ///|
@@ -990,6 +1364,10 @@ test "official OLC encoding.csv:151" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 151 " + code); None => println("OLC_ENCODING_MISMATCH 151 NONE") }
   }
   assert_eq(actual, Some("9PWM9J2G+272FWJV"))
+  let decimal = @geocodec.parse_location("68.3500147997595,113.625636875353").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "9PWM9J2G+272FWJV")
+  let uri = @geocodec.parse_location("geo:68.3500147997595,113.625636875353").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "9PWM9J2G+272FWJV")
 }
 
 ///|
@@ -1000,6 +1378,10 @@ test "official OLC encoding.csv:152" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 152 " + code); None => println("OLC_ENCODING_MISMATCH 152 NONE") }
   }
   assert_eq(actual, Some("8VC74C9R+2QX445C"))
+  let decimal = @geocodec.parse_location("38.1176000887231,165.441989844555").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "8VC74C9R+2QX445C")
+  let uri = @geocodec.parse_location("geo:38.1176000887231,165.441989844555").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "8VC74C9R+2QX445C")
 }
 
 ///|
@@ -1010,6 +1392,10 @@ test "official OLC encoding.csv:153" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 153 " + code); None => println("OLC_ENCODING_MISMATCH 153 NONE") }
   }
   assert_eq(actual, Some("5337VWHM+77PR2GR"))
+  let decimal = @geocodec.parse_location("-28.1217794010122,-154.066811473758").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "5337VWHM+77PR2GR")
+  let uri = @geocodec.parse_location("geo:-28.1217794010122,-154.066811473758").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "5337VWHM+77PR2GR")
 }
 
 ///|
@@ -1020,6 +1406,10 @@ test "official OLC encoding.csv:159" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 159 " + code); None => println("OLC_ENCODING_MISMATCH 159 NONE") }
   }
   assert_eq(actual, Some("84000000+"))
+  let decimal = @geocodec.parse_location("37.539669125,-122.375069724").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "84000000+")
+  let uri = @geocodec.parse_location("geo:37.539669125,-122.375069724").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "84000000+")
 }
 
 ///|
@@ -1030,6 +1420,8 @@ test "official OLC encoding.csv:168" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 168 " + code); None => println("OLC_ENCODING_MISMATCH 168 NONE") }
   }
   assert_eq(actual, Some("9V3Q4QHC+3RC"))
+  let decimal = @geocodec.parse_location("51.1276857,-184.2279861").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "9V3Q4QHC+3RC")
 }
 
 ///|
@@ -1050,6 +1442,10 @@ test "official OLC encoding.csv:170" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 170 " + code); None => println("OLC_ENCODING_MISMATCH 170 NONE") }
   }
   assert_eq(actual, Some("5265RHR5+HC62QC"))
+  let decimal = @geocodec.parse_location("-25.1585965,-176.4414937").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "5265RHR5+HC62QC")
+  let uri = @geocodec.parse_location("geo:-25.1585965,-176.4414937").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "5265RHR5+HC62QC")
 }
 
 ///|
@@ -1060,6 +1456,10 @@ test "official OLC encoding.csv:171" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 171 " + code); None => println("OLC_ENCODING_MISMATCH 171 NONE") }
   }
   assert_eq(actual, Some("CGJGR64H+JMF55"))
+  let decimal = @geocodec.parse_location("82.806550,30.229187").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "CGJGR64H+JMF55")
+  let uri = @geocodec.parse_location("geo:82.806550,30.229187").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "CGJGR64H+JMF55")
 }
 
 ///|
@@ -1070,6 +1470,10 @@ test "official OLC encoding.csv:172" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 172 " + code); None => println("OLC_ENCODING_MISMATCH 172 NONE") }
   }
   assert_eq(actual, Some("9C4QMCFX+25GG5"))
+  let decimal = @geocodec.parse_location("52.67256,-4.55204").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "9C4QMCFX+25GG5")
+  let uri = @geocodec.parse_location("geo:52.67256,-4.55204").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "9C4QMCFX+25GG5")
 }
 
 ///|
@@ -1080,6 +1484,10 @@ test "official OLC encoding.csv:173" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 173 " + code); None => println("OLC_ENCODING_MISMATCH 173 NONE") }
   }
   assert_eq(actual, Some("79000000+"))
+  let decimal = @geocodec.parse_location("14.9420223132,-24.1698775963").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "79000000+")
+  let uri = @geocodec.parse_location("geo:14.9420223132,-24.1698775963").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "79000000+")
 }
 
 ///|
@@ -1090,6 +1498,10 @@ test "official OLC encoding.csv:174" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 174 " + code); None => println("OLC_ENCODING_MISMATCH 174 NONE") }
   }
   assert_eq(actual, Some("9P2JF26C+2222"))
+  let decimal = @geocodec.parse_location("50.46,112.02").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "9P2JF26C+2222")
+  let uri = @geocodec.parse_location("geo:50.46,112.02").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "9P2JF26C+2222")
 }
 
 ///|
@@ -1100,6 +1512,10 @@ test "official OLC encoding.csv:175" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 175 " + code); None => println("OLC_ENCODING_MISMATCH 175 NONE") }
   }
   assert_eq(actual, Some("2HV40000+"))
+  let decimal = @geocodec.parse_location("-72.929463,42.000964").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "2HV40000+")
+  let uri = @geocodec.parse_location("geo:-72.929463,42.000964").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "2HV40000+")
 }
 
 ///|
@@ -1110,6 +1526,10 @@ test "official OLC encoding.csv:176" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 176 " + code); None => println("OLC_ENCODING_MISMATCH 176 NONE") }
   }
   assert_eq(actual, Some("C48P39RR+"))
+  let decimal = @geocodec.parse_location("76.091456,-125.608062").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "C48P39RR+")
+  let uri = @geocodec.parse_location("geo:76.091456,-125.608062").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "C48P39RR+")
 }
 
 ///|
@@ -1130,6 +1550,10 @@ test "official OLC encoding.csv:178" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 178 " + code); None => println("OLC_ENCODING_MISMATCH 178 NONE") }
   }
   assert_eq(actual, Some("CMW80000+"))
+  let decimal = @geocodec.parse_location("88.1,86.0").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "CMW80000+")
+  let uri = @geocodec.parse_location("geo:88.1,86.0").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "CMW80000+")
 }
 
 ///|
@@ -1140,6 +1564,10 @@ test "official OLC encoding.csv:179" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 179 " + code); None => println("OLC_ENCODING_MISMATCH 179 NONE") }
   }
   assert_eq(actual, Some("487XF73X+WV"))
+  let decimal = @geocodec.parse_location("-44.545247,-40.700335").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "487XF73X+WV")
+  let uri = @geocodec.parse_location("geo:-44.545247,-40.700335").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "487XF73X+WV")
 }
 
 ///|
@@ -1150,6 +1578,10 @@ test "official OLC encoding.csv:180" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 180 " + code); None => println("OLC_ENCODING_MISMATCH 180 NONE") }
   }
   assert_eq(actual, Some("74G8MJC2+"))
+  let decimal = @geocodec.parse_location("20.67,-133.40").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "74G8MJC2+")
+  let uri = @geocodec.parse_location("geo:20.67,-133.40").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "74G8MJC2+")
 }
 
 ///|
@@ -1170,6 +1602,8 @@ test "official OLC encoding.csv:182" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 182 " + code); None => println("OLC_ENCODING_MISMATCH 182 NONE") }
   }
   assert_eq(actual, Some("9VP9J26J+2222"))
+  let decimal = @geocodec.parse_location("64.61,-192.97").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "9VP9J26J+2222")
 }
 
 ///|
@@ -1180,6 +1614,10 @@ test "official OLC encoding.csv:183" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 183 " + code); None => println("OLC_ENCODING_MISMATCH 183 NONE") }
   }
   assert_eq(actual, Some("53G5HJFW+6222"))
+  let decimal = @geocodec.parse_location("-19.427,-156.355").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "53G5HJFW+6222")
+  let uri = @geocodec.parse_location("geo:-19.427,-156.355").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "53G5HJFW+6222")
 }
 
 ///|
@@ -1190,6 +1628,10 @@ test "official OLC encoding.csv:184" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 184 " + code); None => println("OLC_ENCODING_MISMATCH 184 NONE") }
   }
   assert_eq(actual, Some("24JVR6G8+"))
+  let decimal = @geocodec.parse_location("-77.172610657,-122.783537134").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "24JVR6G8+")
+  let uri = @geocodec.parse_location("geo:-77.172610657,-122.783537134").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "24JVR6G8+")
 }
 
 ///|
@@ -1200,6 +1642,10 @@ test "official OLC encoding.csv:185" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 185 " + code); None => println("OLC_ENCODING_MISMATCH 185 NONE") }
   }
   assert_eq(actual, Some("434X2222+22"))
+  let decimal = @geocodec.parse_location("-48,-141").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "434X2222+22")
+  let uri = @geocodec.parse_location("geo:-48,-141").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "434X2222+22")
 }
 
 ///|
@@ -1210,6 +1656,10 @@ test "official OLC encoding.csv:186" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 186 " + code); None => println("OLC_ENCODING_MISMATCH 186 NONE") }
   }
   assert_eq(actual, Some("45000000+"))
+  let decimal = @geocodec.parse_location("-48,-111").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "45000000+")
+  let uri = @geocodec.parse_location("geo:-48,-111").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "45000000+")
 }
 
 ///|
@@ -1220,6 +1670,10 @@ test "official OLC encoding.csv:187" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 187 " + code); None => println("OLC_ENCODING_MISMATCH 187 NONE") }
   }
   assert_eq(actual, Some("8G6MHCVQ+38PM976"))
+  let decimal = @geocodec.parse_location("34.59271625,33.43832676").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "8G6MHCVQ+38PM976")
+  let uri = @geocodec.parse_location("geo:34.59271625,33.43832676").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "8G6MHCVQ+38PM976")
 }
 
 ///|
@@ -1230,6 +1684,10 @@ test "official OLC encoding.csv:188" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 188 " + code); None => println("OLC_ENCODING_MISMATCH 188 NONE") }
   }
   assert_eq(actual, Some("5CHG7900+"))
+  let decimal = @geocodec.parse_location("-18.70036,-9.64681").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "5CHG7900+")
+  let uri = @geocodec.parse_location("geo:-18.70036,-9.64681").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "5CHG7900+")
 }
 
 ///|
@@ -1240,6 +1698,8 @@ test "official OLC encoding.csv:189" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 189 " + code); None => println("OLC_ENCODING_MISMATCH 189 NONE") }
   }
   assert_eq(actual, Some("C2JP4R00+"))
+  let decimal = @geocodec.parse_location("82.14,194.83").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "C2JP4R00+")
 }
 
 ///|
@@ -1250,6 +1710,10 @@ test "official OLC encoding.csv:190" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 190 " + code); None => println("OLC_ENCODING_MISMATCH 190 NONE") }
   }
   assert_eq(actual, Some("2888WF00+"))
+  let decimal = @geocodec.parse_location("-83.0611,-53.5201").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "2888WF00+")
+  let uri = @geocodec.parse_location("geo:-83.0611,-53.5201").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "2888WF00+")
 }
 
 ///|
@@ -1270,6 +1734,10 @@ test "official OLC encoding.csv:192" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 192 " + code); None => println("OLC_ENCODING_MISMATCH 192 NONE") }
   }
   assert_eq(actual, Some("79M3V34G+"))
+  let decimal = @geocodec.parse_location("23.857492947,-38.922971931").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "79M3V34G+")
+  let uri = @geocodec.parse_location("geo:23.857492947,-38.922971931").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "79M3V34G+")
 }
 
 ///|
@@ -1280,6 +1748,10 @@ test "official OLC encoding.csv:193" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 193 " + code); None => println("OLC_ENCODING_MISMATCH 193 NONE") }
   }
   assert_eq(actual, Some("C43J8Q2X+G49CW45"))
+  let decimal = @geocodec.parse_location("71.301289,-127.202151").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "C43J8Q2X+G49CW45")
+  let uri = @geocodec.parse_location("geo:71.301289,-127.202151").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "C43J8Q2X+G49CW45")
 }
 
 ///|
@@ -1290,6 +1762,10 @@ test "official OLC encoding.csv:194" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 194 " + code); None => println("OLC_ENCODING_MISMATCH 194 NONE") }
   }
   assert_eq(actual, Some("77000000+"))
+  let decimal = @geocodec.parse_location("22.613410,-65.531218").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "77000000+")
+  let uri = @geocodec.parse_location("geo:22.613410,-65.531218").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "77000000+")
 }
 
 ///|
@@ -1300,6 +1776,10 @@ test "official OLC encoding.csv:195" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 195 " + code); None => println("OLC_ENCODING_MISMATCH 195 NONE") }
   }
   assert_eq(actual, Some("3P000000+"))
+  let decimal = @geocodec.parse_location("-59.5,100.8").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "3P000000+")
+  let uri = @geocodec.parse_location("geo:-59.5,100.8").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "3P000000+")
 }
 
 ///|
@@ -1310,6 +1790,8 @@ test "official OLC encoding.csv:196" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 196 " + code); None => println("OLC_ENCODING_MISMATCH 196 NONE") }
   }
   assert_eq(actual, Some("CVV22JC6+FGCW3JV"))
+  let decimal = @geocodec.parse_location("87.021195762,-199.388732204").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "CVV22JC6+FGCW3JV")
 }
 
 ///|
@@ -1320,6 +1802,10 @@ test "official OLC encoding.csv:197" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 197 " + code); None => println("OLC_ENCODING_MISMATCH 197 NONE") }
   }
   assert_eq(actual, Some("9VCJHFV8+822V"))
+  let decimal = @geocodec.parse_location("58.5932701,172.4650093").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "9VCJHFV8+822V")
+  let uri = @geocodec.parse_location("geo:58.5932701,172.4650093").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "9VCJHFV8+822V")
 }
 
 ///|
@@ -1330,6 +1816,10 @@ test "official OLC encoding.csv:198" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 198 " + code); None => println("OLC_ENCODING_MISMATCH 198 NONE") }
   }
   assert_eq(actual, Some("4HW3R9FG+"))
+  let decimal = @geocodec.parse_location("-31.17610,41.37565").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "4HW3R9FG+")
+  let uri = @geocodec.parse_location("geo:-31.17610,41.37565").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "4HW3R9FG+")
 }
 
 ///|
@@ -1340,6 +1830,10 @@ test "official OLC encoding.csv:199" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 199 " + code); None => println("OLC_ENCODING_MISMATCH 199 NONE") }
   }
   assert_eq(actual, Some("8HPW2200+"))
+  let decimal = @geocodec.parse_location("44,58").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "8HPW2200+")
+  let uri = @geocodec.parse_location("geo:44,58").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "8HPW2200+")
 }
 
 ///|
@@ -1350,6 +1844,10 @@ test "official OLC encoding.csv:200" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 200 " + code); None => println("OLC_ENCODING_MISMATCH 200 NONE") }
   }
   assert_eq(actual, Some("6R7PXP00+"))
+  let decimal = @geocodec.parse_location("-4.0070,154.7493").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "6R7PXP00+")
+  let uri = @geocodec.parse_location("geo:-4.0070,154.7493").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "6R7PXP00+")
 }
 
 ///|
@@ -1360,6 +1858,10 @@ test "official OLC encoding.csv:201" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 201 " + code); None => println("OLC_ENCODING_MISMATCH 201 NONE") }
   }
   assert_eq(actual, Some("65J2R422+2222"))
+  let decimal = @geocodec.parse_location("2.8,-119.9").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "65J2R422+2222")
+  let uri = @geocodec.parse_location("geo:2.8,-119.9").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "65J2R422+2222")
 }
 
 ///|
@@ -1370,6 +1872,10 @@ test "official OLC encoding.csv:202" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 202 " + code); None => println("OLC_ENCODING_MISMATCH 202 NONE") }
   }
   assert_eq(actual, Some("C5930000+"))
+  let decimal = @geocodec.parse_location("77.296962202,-118.449652886").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "C5930000+")
+  let uri = @geocodec.parse_location("geo:77.296962202,-118.449652886").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "C5930000+")
 }
 
 ///|
@@ -1380,6 +1886,10 @@ test "official OLC encoding.csv:203" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 203 " + code); None => println("OLC_ENCODING_MISMATCH 203 NONE") }
   }
   assert_eq(actual, Some("8M7RFGJF+2369252"))
+  let decimal = @geocodec.parse_location("35.48003,96.52265").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "8M7RFGJF+2369252")
+  let uri = @geocodec.parse_location("geo:35.48003,96.52265").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "8M7RFGJF+2369252")
 }
 
 ///|
@@ -1390,6 +1900,10 @@ test "official OLC encoding.csv:204" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 204 " + code); None => println("OLC_ENCODING_MISMATCH 204 NONE") }
   }
   assert_eq(actual, Some("9J42CFFW+"))
+  let decimal = @geocodec.parse_location("52.42264,60.49549").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "9J42CFFW+")
+  let uri = @geocodec.parse_location("geo:52.42264,60.49549").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "9J42CFFW+")
 }
 
 ///|
@@ -1400,6 +1914,10 @@ test "official OLC encoding.csv:205" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 205 " + code); None => println("OLC_ENCODING_MISMATCH 205 NONE") }
   }
   assert_eq(actual, Some("7VX834WJ+C2"))
+  let decimal = @geocodec.parse_location("29.096,166.130").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "7VX834WJ+C2")
+  let uri = @geocodec.parse_location("geo:29.096,166.130").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "7VX834WJ+C2")
 }
 
 ///|
@@ -1410,6 +1928,10 @@ test "official OLC encoding.csv:206" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 206 " + code); None => println("OLC_ENCODING_MISMATCH 206 NONE") }
   }
   assert_eq(actual, Some("9GVWF6WX+GC"))
+  let decimal = @geocodec.parse_location("67.496291,38.248585").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "9GVWF6WX+GC")
+  let uri = @geocodec.parse_location("geo:67.496291,38.248585").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "9GVWF6WX+GC")
 }
 
 ///|
@@ -1420,6 +1942,8 @@ test "official OLC encoding.csv:207" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 207 " + code); None => println("OLC_ENCODING_MISMATCH 207 NONE") }
   }
   assert_eq(actual, Some("9VXW76X8+768"))
+  let decimal = @geocodec.parse_location("69.298163526,-181.784436557").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "9VXW76X8+768")
 }
 
 ///|
@@ -1430,6 +1954,8 @@ test "official OLC encoding.csv:208" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 208 " + code); None => println("OLC_ENCODING_MISMATCH 208 NONE") }
   }
   assert_eq(actual, Some("82WQC4WP+"))
+  let decimal = @geocodec.parse_location("48.44527393761,195.13608085747").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "82WQC4WP+")
 }
 
 ///|
@@ -1440,6 +1966,10 @@ test "official OLC encoding.csv:209" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 209 " + code); None => println("OLC_ENCODING_MISMATCH 209 NONE") }
   }
   assert_eq(actual, Some("5V385W00+"))
+  let decimal = @geocodec.parse_location("-28.8394,166.9146").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "5V385W00+")
+  let uri = @geocodec.parse_location("geo:-28.8394,166.9146").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "5V385W00+")
 }
 
 ///|
@@ -1450,6 +1980,10 @@ test "official OLC encoding.csv:210" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 210 " + code); None => println("OLC_ENCODING_MISMATCH 210 NONE") }
   }
   assert_eq(actual, Some("8PRF267J+3P26222"))
+  let decimal = @geocodec.parse_location("46.01263,109.23175").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "8PRF267J+3P26222")
+  let uri = @geocodec.parse_location("geo:46.01263,109.23175").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "8PRF267J+3P26222")
 }
 
 ///|
@@ -1460,6 +1994,10 @@ test "official OLC encoding.csv:211" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 211 " + code); None => println("OLC_ENCODING_MISMATCH 211 NONE") }
   }
   assert_eq(actual, Some("35CXJV7W+"))
+  let decimal = @geocodec.parse_location("-61.385416741,-100.103564052").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "35CXJV7W+")
+  let uri = @geocodec.parse_location("geo:-61.385416741,-100.103564052").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "35CXJV7W+")
 }
 
 ///|
@@ -1470,6 +2008,8 @@ test "official OLC encoding.csv:212" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 212 " + code); None => println("OLC_ENCODING_MISMATCH 212 NONE") }
   }
   assert_eq(actual, Some("C2QPJQJ5+"))
+  let decimal = @geocodec.parse_location("85.6301065,194.7590568").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "C2QPJQJ5+")
 }
 
 ///|
@@ -1480,6 +2020,8 @@ test "official OLC encoding.csv:213" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 213 " + code); None => println("OLC_ENCODING_MISMATCH 213 NONE") }
   }
   assert_eq(actual, Some("22QF9WXJ+"))
+  let decimal = @geocodec.parse_location("-74.602,189.932").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "22QF9WXJ+")
 }
 
 ///|
@@ -1500,6 +2042,10 @@ test "official OLC encoding.csv:215" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 215 " + code); None => println("OLC_ENCODING_MISMATCH 215 NONE") }
   }
   assert_eq(actual, Some("3JH60000+"))
+  let decimal = @geocodec.parse_location("-58.618133,64.746630").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "3JH60000+")
+  let uri = @geocodec.parse_location("geo:-58.618133,64.746630").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "3JH60000+")
 }
 
 ///|
@@ -1510,6 +2056,10 @@ test "official OLC encoding.csv:216" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 216 " + code); None => println("OLC_ENCODING_MISMATCH 216 NONE") }
   }
   assert_eq(actual, Some("96R54CR2+W2"))
+  let decimal = @geocodec.parse_location("66.1423,-96.6000").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "96R54CR2+W2")
+  let uri = @geocodec.parse_location("geo:66.1423,-96.6000").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "96R54CR2+W2")
 }
 
 ///|
@@ -1520,6 +2070,10 @@ test "official OLC encoding.csv:217" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 217 " + code); None => println("OLC_ENCODING_MISMATCH 217 NONE") }
   }
   assert_eq(actual, Some("4VGC0000+"))
+  let decimal = @geocodec.parse_location("-39.962,168.233").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "4VGC0000+")
+  let uri = @geocodec.parse_location("geo:-39.962,168.233").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "4VGC0000+")
 }
 
 ///|
@@ -1540,6 +2094,10 @@ test "official OLC encoding.csv:219" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 219 " + code); None => println("OLC_ENCODING_MISMATCH 219 NONE") }
   }
   assert_eq(actual, Some("87V6VQ5G+HMG454"))
+  let decimal = @geocodec.parse_location("47.858925,-75.223290").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "87V6VQ5G+HMG454")
+  let uri = @geocodec.parse_location("geo:47.858925,-75.223290").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "87V6VQ5G+HMG454")
 }
 
 ///|
@@ -1550,6 +2108,10 @@ test "official OLC encoding.csv:220" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 220 " + code); None => println("OLC_ENCODING_MISMATCH 220 NONE") }
   }
   assert_eq(actual, Some("56JQVM2V+2J22"))
+  let decimal = @geocodec.parse_location("-17.150,-84.306").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "56JQVM2V+2J22")
+  let uri = @geocodec.parse_location("geo:-17.150,-84.306").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "56JQVM2V+2J22")
 }
 
 ///|
@@ -1570,6 +2132,10 @@ test "official OLC encoding.csv:222" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 222 " + code); None => println("OLC_ENCODING_MISMATCH 222 NONE") }
   }
   assert_eq(actual, Some("2VGV43RW+5P3534"))
+  let decimal = @geocodec.parse_location("-79.859625,177.096808").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "2VGV43RW+5P3534")
+  let uri = @geocodec.parse_location("geo:-79.859625,177.096808").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "2VGV43RW+5P3534")
 }
 
 ///|
@@ -1580,6 +2146,8 @@ test "official OLC encoding.csv:223" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 223 " + code); None => println("OLC_ENCODING_MISMATCH 223 NONE") }
   }
   assert_eq(actual, Some("CVW37H82+5XF5V2"))
+  let decimal = @geocodec.parse_location("88.265429,-198.447568").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "CVW37H82+5XF5V2")
 }
 
 ///|
@@ -1590,6 +2158,10 @@ test "official OLC encoding.csv:224" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 224 " + code); None => println("OLC_ENCODING_MISMATCH 224 NONE") }
   }
   assert_eq(actual, Some("7G000000+"))
+  let decimal = @geocodec.parse_location("13.325,34.920").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "7G000000+")
+  let uri = @geocodec.parse_location("geo:13.325,34.920").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "7G000000+")
 }
 
 ///|
@@ -1600,6 +2172,10 @@ test "official OLC encoding.csv:225" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 225 " + code); None => println("OLC_ENCODING_MISMATCH 225 NONE") }
   }
   assert_eq(actual, Some("33000000+"))
+  let decimal = @geocodec.parse_location("-63.6,-145.4").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "33000000+")
+  let uri = @geocodec.parse_location("geo:-63.6,-145.4").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "33000000+")
 }
 
 ///|
@@ -1610,6 +2186,10 @@ test "official OLC encoding.csv:226" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 226 " + code); None => println("OLC_ENCODING_MISMATCH 226 NONE") }
   }
   assert_eq(actual, Some("33QVGG72+4W4FHRG"))
+  let decimal = @geocodec.parse_location("-54.4872370910,-142.4976735090").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "33QVGG72+4W4FHRG")
+  let uri = @geocodec.parse_location("geo:-54.4872370910,-142.4976735090").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "33QVGG72+4W4FHRG")
 }
 
 ///|
@@ -1620,6 +2200,10 @@ test "official OLC encoding.csv:227" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 227 " + code); None => println("OLC_ENCODING_MISMATCH 227 NONE") }
   }
   assert_eq(actual, Some("CJX3QM00+"))
+  let decimal = @geocodec.parse_location("89.796622,61.685912").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "CJX3QM00+")
+  let uri = @geocodec.parse_location("geo:89.796622,61.685912").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "CJX3QM00+")
 }
 
 ///|
@@ -1630,6 +2214,10 @@ test "official OLC encoding.csv:228" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 228 " + code); None => println("OLC_ENCODING_MISMATCH 228 NONE") }
   }
   assert_eq(actual, Some("5H6GRP22+"))
+  let decimal = @geocodec.parse_location("-25.2,50.7").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "5H6GRP22+")
+  let uri = @geocodec.parse_location("geo:-25.2,50.7").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "5H6GRP22+")
 }
 
 ///|
@@ -1640,6 +2228,10 @@ test "official OLC encoding.csv:229" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 229 " + code); None => println("OLC_ENCODING_MISMATCH 229 NONE") }
   }
   assert_eq(actual, Some("2JH87J00+"))
+  let decimal = @geocodec.parse_location("-78.7376,66.6281").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "2JH87J00+")
+  let uri = @geocodec.parse_location("geo:-78.7376,66.6281").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "2JH87J00+")
 }
 
 ///|
@@ -1650,6 +2242,10 @@ test "official OLC encoding.csv:230" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 230 " + code); None => println("OLC_ENCODING_MISMATCH 230 NONE") }
   }
   assert_eq(actual, Some("268QCVFM+7Q"))
+  let decimal = @geocodec.parse_location("-83.5768747454,-84.1155546149").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "268QCVFM+7Q")
+  let uri = @geocodec.parse_location("geo:-83.5768747454,-84.1155546149").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "268QCVFM+7Q")
 }
 
 ///|
@@ -1660,6 +2256,10 @@ test "official OLC encoding.csv:231" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 231 " + code); None => println("OLC_ENCODING_MISMATCH 231 NONE") }
   }
   assert_eq(actual, Some("C6V353FR+M4"))
+  let decimal = @geocodec.parse_location("87.1741743283,-98.9097172279").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "C6V353FR+M4")
+  let uri = @geocodec.parse_location("geo:87.1741743283,-98.9097172279").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "C6V353FR+M4")
 }
 
 ///|
@@ -1690,6 +2290,10 @@ test "official OLC encoding.csv:234" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 234 " + code); None => println("OLC_ENCODING_MISMATCH 234 NONE") }
   }
   assert_eq(actual, Some("9FC20000+"))
+  let decimal = @geocodec.parse_location("58.544790,0.954987").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "9FC20000+")
+  let uri = @geocodec.parse_location("geo:58.544790,0.954987").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "9FC20000+")
 }
 
 ///|
@@ -1700,6 +2304,10 @@ test "official OLC encoding.csv:235" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 235 " + code); None => println("OLC_ENCODING_MISMATCH 235 NONE") }
   }
   assert_eq(actual, Some("CVQ868F9+"))
+  let decimal = @geocodec.parse_location("85.223791,166.317567").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "CVQ868F9+")
+  let uri = @geocodec.parse_location("geo:85.223791,166.317567").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "CVQ868F9+")
 }
 
 ///|
@@ -1710,6 +2318,10 @@ test "official OLC encoding.csv:236" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 236 " + code); None => println("OLC_ENCODING_MISMATCH 236 NONE") }
   }
   assert_eq(actual, Some("7VJ3CH7F+QFQ353V"))
+  let decimal = @geocodec.parse_location("22.4144501873,161.5737330425").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "7VJ3CH7F+QFQ353V")
+  let uri = @geocodec.parse_location("geo:22.4144501873,161.5737330425").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "7VJ3CH7F+QFQ353V")
 }
 
 ///|
@@ -1720,6 +2332,8 @@ test "official OLC encoding.csv:237" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 237 " + code); None => println("OLC_ENCODING_MISMATCH 237 NONE") }
   }
   assert_eq(actual, Some("2VFH0000+"))
+  let decimal = @geocodec.parse_location("-81,-189").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "2VFH0000+")
 }
 
 ///|
@@ -1730,6 +2344,10 @@ test "official OLC encoding.csv:238" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 238 " + code); None => println("OLC_ENCODING_MISMATCH 238 NONE") }
   }
   assert_eq(actual, Some("6P884800+"))
+  let decimal = @geocodec.parse_location("-3.87,106.31").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "6P884800+")
+  let uri = @geocodec.parse_location("geo:-3.87,106.31").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "6P884800+")
 }
 
 ///|
@@ -1740,6 +2358,10 @@ test "official OLC encoding.csv:239" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 239 " + code); None => println("OLC_ENCODING_MISMATCH 239 NONE") }
   }
   assert_eq(actual, Some("2F5VWCFJ+7842XW"))
+  let decimal = @geocodec.parse_location("-86.07687005,17.43081941").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "2F5VWCFJ+7842XW")
+  let uri = @geocodec.parse_location("geo:-86.07687005,17.43081941").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "2F5VWCFJ+7842XW")
 }
 
 ///|
@@ -1750,6 +2372,10 @@ test "official OLC encoding.csv:240" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 240 " + code); None => println("OLC_ENCODING_MISMATCH 240 NONE") }
   }
   assert_eq(actual, Some("63PJ2700+"))
+  let decimal = @geocodec.parse_location("4.00247742,-147.71777983").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "63PJ2700+")
+  let uri = @geocodec.parse_location("geo:4.00247742,-147.71777983").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "63PJ2700+")
 }
 
 ///|
@@ -1760,6 +2386,10 @@ test "official OLC encoding.csv:241" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 241 " + code); None => println("OLC_ENCODING_MISMATCH 241 NONE") }
   }
   assert_eq(actual, Some("4R000000+"))
+  let decimal = @geocodec.parse_location("-34.13283986879,143.93778642288").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "4R000000+")
+  let uri = @geocodec.parse_location("geo:-34.13283986879,143.93778642288").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "4R000000+")
 }
 
 ///|
@@ -1770,6 +2400,8 @@ test "official OLC encoding.csv:242" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 242 " + code); None => println("OLC_ENCODING_MISMATCH 242 NONE") }
   }
   assert_eq(actual, Some("429V6HCJ+76PRR"))
+  let decimal = @geocodec.parse_location("-42.77927502,197.58056291").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "429V6HCJ+76PRR")
 }
 
 ///|
@@ -1780,6 +2412,10 @@ test "official OLC encoding.csv:243" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 243 " + code); None => println("OLC_ENCODING_MISMATCH 243 NONE") }
   }
   assert_eq(actual, Some("CP3RQ4W3+V29MM5P"))
+  let decimal = @geocodec.parse_location("71.797168141,116.102605255").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "CP3RQ4W3+V29MM5P")
+  let uri = @geocodec.parse_location("geo:71.797168141,116.102605255").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "CP3RQ4W3+V29MM5P")
 }
 
 ///|
@@ -1790,6 +2426,10 @@ test "official OLC encoding.csv:244" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 244 " + code); None => println("OLC_ENCODING_MISMATCH 244 NONE") }
   }
   assert_eq(actual, Some("5CQ2FPC4+R669Q"))
+  let decimal = @geocodec.parse_location("-14.52796652,-19.29446968").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "5CQ2FPC4+R669Q")
+  let uri = @geocodec.parse_location("geo:-14.52796652,-19.29446968").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "5CQ2FPC4+R669Q")
 }
 
 ///|
@@ -1800,6 +2440,10 @@ test "official OLC encoding.csv:245" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 245 " + code); None => println("OLC_ENCODING_MISMATCH 245 NONE") }
   }
   assert_eq(actual, Some("4457H2GH+772"))
+  let decimal = @geocodec.parse_location("-46.42436011120,-134.97185393078").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "4457H2GH+772")
+  let uri = @geocodec.parse_location("geo:-46.42436011120,-134.97185393078").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "4457H2GH+772")
 }
 
 ///|
@@ -1810,6 +2454,10 @@ test "official OLC encoding.csv:246" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 246 " + code); None => println("OLC_ENCODING_MISMATCH 246 NONE") }
   }
   assert_eq(actual, Some("2H8V382J+2222"))
+  let decimal = @geocodec.parse_location("-83.95,57.33").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "2H8V382J+2222")
+  let uri = @geocodec.parse_location("geo:-83.95,57.33").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "2H8V382J+2222")
 }
 
 ///|
@@ -1820,6 +2468,10 @@ test "official OLC encoding.csv:247" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 247 " + code); None => println("OLC_ENCODING_MISMATCH 247 NONE") }
   }
   assert_eq(actual, Some("2PCRR4VJ+7VCX"))
+  let decimal = @geocodec.parse_location("-81.15680196,116.13215255").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "2PCRR4VJ+7VCX")
+  let uri = @geocodec.parse_location("geo:-81.15680196,116.13215255").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "2PCRR4VJ+7VCX")
 }
 
 ///|
@@ -1830,6 +2482,10 @@ test "official OLC encoding.csv:248" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 248 " + code); None => println("OLC_ENCODING_MISMATCH 248 NONE") }
   }
   assert_eq(actual, Some("3G2W4GVR+VM"))
+  let decimal = @geocodec.parse_location("-69.8553608,38.5416297").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "3G2W4GVR+VM")
+  let uri = @geocodec.parse_location("geo:-69.8553608,38.5416297").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "3G2W4GVR+VM")
 }
 
 ///|
@@ -1840,6 +2496,10 @@ test "official OLC encoding.csv:249" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 249 " + code); None => println("OLC_ENCODING_MISMATCH 249 NONE") }
   }
   assert_eq(actual, Some("CR243M7P+"))
+  let decimal = @geocodec.parse_location("70.06392017,142.68513577").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "CR243M7P+")
+  let uri = @geocodec.parse_location("geo:70.06392017,142.68513577").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "CR243M7P+")
 }
 
 ///|
@@ -1850,6 +2510,10 @@ test "official OLC encoding.csv:250" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 250 " + code); None => println("OLC_ENCODING_MISMATCH 250 NONE") }
   }
   assert_eq(actual, Some("4GJH4FH2+VJ5MQHR"))
+  let decimal = @geocodec.parse_location("-37.87035641911,31.45160895416").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "4GJH4FH2+VJ5MQHR")
+  let uri = @geocodec.parse_location("geo:-37.87035641911,31.45160895416").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "4GJH4FH2+VJ5MQHR")
 }
 
 ///|
@@ -1860,6 +2524,10 @@ test "official OLC encoding.csv:251" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 251 " + code); None => println("OLC_ENCODING_MISMATCH 251 NONE") }
   }
   assert_eq(actual, Some("6H8QMWQP+23RXXFP"))
+  let decimal = @geocodec.parse_location("-3.31237547,55.93515507").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "6H8QMWQP+23RXXFP")
+  let uri = @geocodec.parse_location("geo:-3.31237547,55.93515507").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "6H8QMWQP+23RXXFP")
 }
 
 ///|
@@ -1870,6 +2538,10 @@ test "official OLC encoding.csv:252" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 252 " + code); None => println("OLC_ENCODING_MISMATCH 252 NONE") }
   }
   assert_eq(actual, Some("4RMH693J+RP68VG"))
+  let decimal = @geocodec.parse_location("-36.7954655,151.3817689").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "4RMH693J+RP68VG")
+  let uri = @geocodec.parse_location("geo:-36.7954655,151.3817689").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "4RMH693J+RP68VG")
 }
 
 ///|
@@ -1890,6 +2562,10 @@ test "official OLC encoding.csv:254" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 254 " + code); None => println("OLC_ENCODING_MISMATCH 254 NONE") }
   }
   assert_eq(actual, Some("8M3WGPQG+WMJ"))
+  let decimal = @geocodec.parse_location("31.53982775,98.72663309").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "8M3WGPQG+WMJ")
+  let uri = @geocodec.parse_location("geo:31.53982775,98.72663309").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "8M3WGPQG+WMJ")
 }
 
 ///|
@@ -1900,6 +2576,10 @@ test "official OLC encoding.csv:255" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 255 " + code); None => println("OLC_ENCODING_MISMATCH 255 NONE") }
   }
   assert_eq(actual, Some("7HQVGQ6V+QW54XF"))
+  let decimal = @geocodec.parse_location("25.5118795897,57.7948659543").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "7HQVGQ6V+QW54XF")
+  let uri = @geocodec.parse_location("geo:25.5118795897,57.7948659543").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "7HQVGQ6V+QW54XF")
 }
 
 ///|
@@ -1910,6 +2590,10 @@ test "official OLC encoding.csv:256" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 256 " + code); None => println("OLC_ENCODING_MISMATCH 256 NONE") }
   }
   assert_eq(actual, Some("CQ000000+"))
+  let decimal = @geocodec.parse_location("71,121").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "CQ000000+")
+  let uri = @geocodec.parse_location("geo:71,121").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "CQ000000+")
 }
 
 ///|
@@ -1920,6 +2604,10 @@ test "official OLC encoding.csv:257" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 257 " + code); None => println("OLC_ENCODING_MISMATCH 257 NONE") }
   }
   assert_eq(actual, Some("2C000000+"))
+  let decimal = @geocodec.parse_location("-82,-9").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "2C000000+")
+  let uri = @geocodec.parse_location("geo:-82,-9").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "2C000000+")
 }
 
 ///|
@@ -1930,6 +2618,10 @@ test "official OLC encoding.csv:258" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 258 " + code); None => println("OLC_ENCODING_MISMATCH 258 NONE") }
   }
   assert_eq(actual, Some("2VMMW500+"))
+  let decimal = @geocodec.parse_location("-76.08163425,173.15964020").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "2VMMW500+")
+  let uri = @geocodec.parse_location("geo:-76.08163425,173.15964020").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "2VMMW500+")
 }
 
 ///|
@@ -1940,6 +2632,10 @@ test "official OLC encoding.csv:259" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 259 " + code); None => println("OLC_ENCODING_MISMATCH 259 NONE") }
   }
   assert_eq(actual, Some("87000000+"))
+  let decimal = @geocodec.parse_location("40.53562804190,-79.76323109809").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "87000000+")
+  let uri = @geocodec.parse_location("geo:40.53562804190,-79.76323109809").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "87000000+")
 }
 
 ///|
@@ -1950,6 +2646,10 @@ test "official OLC encoding.csv:260" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 260 " + code); None => println("OLC_ENCODING_MISMATCH 260 NONE") }
   }
   assert_eq(actual, Some("36CWH800+"))
+  let decimal = @geocodec.parse_location("-61.40656,-81.69399").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "36CWH800+")
+  let uri = @geocodec.parse_location("geo:-61.40656,-81.69399").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "36CWH800+")
 }
 
 ///|
@@ -1960,6 +2660,10 @@ test "official OLC encoding.csv:261" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 261 " + code); None => println("OLC_ENCODING_MISMATCH 261 NONE") }
   }
   assert_eq(actual, Some("72V3VQCP+V9"))
+  let decimal = @geocodec.parse_location("27.8722,-178.2141").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "72V3VQCP+V9")
+  let uri = @geocodec.parse_location("geo:27.8722,-178.2141").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "72V3VQCP+V9")
 }
 
 ///|
@@ -1980,6 +2684,10 @@ test "official OLC encoding.csv:263" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 263 " + code); None => println("OLC_ENCODING_MISMATCH 263 NONE") }
   }
   assert_eq(actual, Some("C72J8HMP+66X2525"))
+  let decimal = @geocodec.parse_location("70.3331,-67.4144").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "C72J8HMP+66X2525")
+  let uri = @geocodec.parse_location("geo:70.3331,-67.4144").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "C72J8HMP+66X2525")
 }
 
 ///|
@@ -1990,6 +2698,10 @@ test "official OLC encoding.csv:264" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 264 " + code); None => println("OLC_ENCODING_MISMATCH 264 NONE") }
   }
   assert_eq(actual, Some("3P88R600+"))
+  let decimal = @geocodec.parse_location("-63.163054,106.207383").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "3P88R600+")
+  let uri = @geocodec.parse_location("geo:-63.163054,106.207383").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "3P88R600+")
 }
 
 ///|
@@ -2000,6 +2712,10 @@ test "official OLC encoding.csv:265" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 265 " + code); None => println("OLC_ENCODING_MISMATCH 265 NONE") }
   }
   assert_eq(actual, Some("9M9J6XMC+JC22222"))
+  let decimal = @geocodec.parse_location("57.234,92.971").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "9M9J6XMC+JC22222")
+  let uri = @geocodec.parse_location("geo:57.234,92.971").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "9M9J6XMC+JC22222")
 }
 
 ///|
@@ -2010,6 +2726,8 @@ test "official OLC encoding.csv:266" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 266 " + code); None => println("OLC_ENCODING_MISMATCH 266 NONE") }
   }
   assert_eq(actual, Some("8V964J22+2222"))
+  let decimal = @geocodec.parse_location("37.1,-195.4").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "8V964J22+2222")
 }
 
 ///|
@@ -2020,6 +2738,10 @@ test "official OLC encoding.csv:267" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 267 " + code); None => println("OLC_ENCODING_MISMATCH 267 NONE") }
   }
   assert_eq(actual, Some("8F3F5WW9+"))
+  let decimal = @geocodec.parse_location("31.197,9.919").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "8F3F5WW9+")
+  let uri = @geocodec.parse_location("geo:31.197,9.919").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "8F3F5WW9+")
 }
 
 ///|
@@ -2030,6 +2752,8 @@ test "official OLC encoding.csv:268" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 268 " + code); None => println("OLC_ENCODING_MISMATCH 268 NONE") }
   }
   assert_eq(actual, Some("CVQVHQ5C+4536"))
+  let decimal = @geocodec.parse_location("85.557757154,-182.229592353").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "CVQVHQ5C+4536")
 }
 
 ///|
@@ -2040,6 +2764,10 @@ test "official OLC encoding.csv:269" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 269 " + code); None => println("OLC_ENCODING_MISMATCH 269 NONE") }
   }
   assert_eq(actual, Some("67HG0000+"))
+  let decimal = @geocodec.parse_location("1.50383657,-69.55623429").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "67HG0000+")
+  let uri = @geocodec.parse_location("geo:1.50383657,-69.55623429").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "67HG0000+")
 }
 
 ///|
@@ -2050,6 +2778,10 @@ test "official OLC encoding.csv:270" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 270 " + code); None => println("OLC_ENCODING_MISMATCH 270 NONE") }
   }
   assert_eq(actual, Some("9F29CC52+JR22222"))
+  let decimal = @geocodec.parse_location("50.409,7.402").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "9F29CC52+JR22222")
+  let uri = @geocodec.parse_location("geo:50.409,7.402").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "9F29CC52+JR22222")
 }
 
 ///|
@@ -2060,6 +2792,10 @@ test "official OLC encoding.csv:271" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 271 " + code); None => println("OLC_ENCODING_MISMATCH 271 NONE") }
   }
   assert_eq(actual, Some("2G4G2222+222"))
+  let decimal = @geocodec.parse_location("-88,30").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "2G4G2222+222")
+  let uri = @geocodec.parse_location("geo:-88,30").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "2G4G2222+222")
 }
 
 ///|
@@ -2080,6 +2816,10 @@ test "official OLC encoding.csv:273" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 273 " + code); None => println("OLC_ENCODING_MISMATCH 273 NONE") }
   }
   assert_eq(actual, Some("7R3G0000+"))
+  let decimal = @geocodec.parse_location("11.4,150.4").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "7R3G0000+")
+  let uri = @geocodec.parse_location("geo:11.4,150.4").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "7R3G0000+")
 }
 
 ///|
@@ -2090,6 +2830,10 @@ test "official OLC encoding.csv:274" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 274 " + code); None => println("OLC_ENCODING_MISMATCH 274 NONE") }
   }
   assert_eq(actual, Some("2J390000+"))
+  let decimal = @geocodec.parse_location("-88.504244,67.742247").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "2J390000+")
+  let uri = @geocodec.parse_location("geo:-88.504244,67.742247").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "2J390000+")
 }
 
 ///|
@@ -2100,6 +2844,10 @@ test "official OLC encoding.csv:275" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 275 " + code); None => println("OLC_ENCODING_MISMATCH 275 NONE") }
   }
   assert_eq(actual, Some("297VV36V+"))
+  let decimal = @geocodec.parse_location("-84.13904,-22.90719").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "297VV36V+")
+  let uri = @geocodec.parse_location("geo:-84.13904,-22.90719").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "297VV36V+")
 }
 
 ///|
@@ -2110,6 +2858,10 @@ test "official OLC encoding.csv:276" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 276 " + code); None => println("OLC_ENCODING_MISMATCH 276 NONE") }
   }
   assert_eq(actual, Some("59VM4WG9+2G52"))
+  let decimal = @geocodec.parse_location("-12.874997750,-26.081150643").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "59VM4WG9+2G52")
+  let uri = @geocodec.parse_location("geo:-12.874997750,-26.081150643").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "59VM4WG9+2G52")
 }
 
 ///|
@@ -2130,6 +2882,10 @@ test "official OLC encoding.csv:278" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 278 " + code); None => println("OLC_ENCODING_MISMATCH 278 NONE") }
   }
   assert_eq(actual, Some("9H000000+"))
+  let decimal = @geocodec.parse_location("52.797623,55.332651").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "9H000000+")
+  let uri = @geocodec.parse_location("geo:52.797623,55.332651").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "9H000000+")
 }
 
 ///|
@@ -2140,6 +2896,10 @@ test "official OLC encoding.csv:279" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 279 " + code); None => println("OLC_ENCODING_MISMATCH 279 NONE") }
   }
   assert_eq(actual, Some("576XC4CC+X7M7MXV"))
+  let decimal = @geocodec.parse_location("-25.57754103,-60.87933236").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "576XC4CC+X7M7MXV")
+  let uri = @geocodec.parse_location("geo:-25.57754103,-60.87933236").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "576XC4CC+X7M7MXV")
 }
 
 ///|
@@ -2150,6 +2910,10 @@ test "official OLC encoding.csv:280" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 280 " + code); None => println("OLC_ENCODING_MISMATCH 280 NONE") }
   }
   assert_eq(actual, Some("9M945HW3+CC2222"))
+  let decimal = @geocodec.parse_location("57.1960,82.5535").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "9M945HW3+CC2222")
+  let uri = @geocodec.parse_location("geo:57.1960,82.5535").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "9M945HW3+CC2222")
 }
 
 ///|
@@ -2160,6 +2924,10 @@ test "official OLC encoding.csv:281" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 281 " + code); None => println("OLC_ENCODING_MISMATCH 281 NONE") }
   }
   assert_eq(actual, Some("5G692222+"))
+  let decimal = @geocodec.parse_location("-26,27").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "5G692222+")
+  let uri = @geocodec.parse_location("geo:-26,27").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "5G692222+")
 }
 
 ///|
@@ -2170,6 +2938,10 @@ test "official OLC encoding.csv:282" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 282 " + code); None => println("OLC_ENCODING_MISMATCH 282 NONE") }
   }
   assert_eq(actual, Some("545V2P22+222"))
+  let decimal = @geocodec.parse_location("-27.0,-122.3").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "545V2P22+222")
+  let uri = @geocodec.parse_location("geo:-27.0,-122.3").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "545V2P22+222")
 }
 
 ///|
@@ -2190,6 +2962,10 @@ test "official OLC encoding.csv:284" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 284 " + code); None => println("OLC_ENCODING_MISMATCH 284 NONE") }
   }
   assert_eq(actual, Some("7FQC8MP5+"))
+  let decimal = @geocodec.parse_location("25.33671,8.65920").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "7FQC8MP5+")
+  let uri = @geocodec.parse_location("geo:25.33671,8.65920").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "7FQC8MP5+")
 }
 
 ///|
@@ -2200,6 +2976,10 @@ test "official OLC encoding.csv:285" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 285 " + code); None => println("OLC_ENCODING_MISMATCH 285 NONE") }
   }
   assert_eq(actual, Some("2PJGF66C+222"))
+  let decimal = @geocodec.parse_location("-77.54,110.22").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "2PJGF66C+222")
+  let uri = @geocodec.parse_location("geo:-77.54,110.22").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "2PJGF66C+222")
 }
 
 ///|
@@ -2210,6 +2990,10 @@ test "official OLC encoding.csv:286" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 286 " + code); None => println("OLC_ENCODING_MISMATCH 286 NONE") }
   }
   assert_eq(actual, Some("3CPH8V49+"))
+  let decimal = @geocodec.parse_location("-55.69363663291,-8.13133426255").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "3CPH8V49+")
+  let uri = @geocodec.parse_location("geo:-55.69363663291,-8.13133426255").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "3CPH8V49+")
 }
 
 ///|
@@ -2220,6 +3004,10 @@ test "official OLC encoding.csv:287" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 287 " + code); None => println("OLC_ENCODING_MISMATCH 287 NONE") }
   }
   assert_eq(actual, Some("7M4G32GJ+4948FV6"))
+  let decimal = @geocodec.parse_location("12.0752578562,90.0309556122").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "7M4G32GJ+4948FV6")
+  let uri = @geocodec.parse_location("geo:12.0752578562,90.0309556122").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "7M4G32GJ+4948FV6")
 }
 
 ///|
@@ -2230,6 +3018,10 @@ test "official OLC encoding.csv:288" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 288 " + code); None => println("OLC_ENCODING_MISMATCH 288 NONE") }
   }
   assert_eq(actual, Some("4CH7VFP5+HMFM2"))
+  let decimal = @geocodec.parse_location("-38.11355992107,-14.54083447411").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "4CH7VFP5+HMFM2")
+  let uri = @geocodec.parse_location("geo:-38.11355992107,-14.54083447411").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "4CH7VFP5+HMFM2")
 }
 
 ///|
@@ -2240,6 +3032,10 @@ test "official OLC encoding.csv:289" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 289 " + code); None => println("OLC_ENCODING_MISMATCH 289 NONE") }
   }
   assert_eq(actual, Some("3448FQJC+22222"))
+  let decimal = @geocodec.parse_location("-67.52,-133.23").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "3448FQJC+22222")
+  let uri = @geocodec.parse_location("geo:-67.52,-133.23").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "3448FQJC+22222")
 }
 
 ///|
@@ -2250,6 +3046,10 @@ test "official OLC encoding.csv:290" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 290 " + code); None => println("OLC_ENCODING_MISMATCH 290 NONE") }
   }
   assert_eq(actual, Some("47C5C2C4+CPMF"))
+  let decimal = @geocodec.parse_location("-41.5789128,-76.9932090").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "47C5C2C4+CPMF")
+  let uri = @geocodec.parse_location("geo:-41.5789128,-76.9932090").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "47C5C2C4+CPMF")
 }
 
 ///|
@@ -2260,6 +3060,10 @@ test "official OLC encoding.csv:291" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 291 " + code); None => println("OLC_ENCODING_MISMATCH 291 NONE") }
   }
   assert_eq(actual, Some("9RM6GQ00+"))
+  let decimal = @geocodec.parse_location("63.50396935,144.75232815").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "9RM6GQ00+")
+  let uri = @geocodec.parse_location("geo:63.50396935,144.75232815").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "9RM6GQ00+")
 }
 
 ///|
@@ -2280,6 +3084,10 @@ test "official OLC encoding.csv:293" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 293 " + code); None => println("OLC_ENCODING_MISMATCH 293 NONE") }
   }
   assert_eq(actual, Some("5QR4FXX4+62222"))
+  let decimal = @geocodec.parse_location("-13.502,122.955").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "5QR4FXX4+62222")
+  let uri = @geocodec.parse_location("geo:-13.502,122.955").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "5QR4FXX4+62222")
 }
 
 ///|
@@ -2300,6 +3108,8 @@ test "official OLC encoding.csv:295" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 295 " + code); None => println("OLC_ENCODING_MISMATCH 295 NONE") }
   }
   assert_eq(actual, Some("62W2M6JC+22222"))
+  let decimal = @geocodec.parse_location("8.68,180.22").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "62W2M6JC+22222")
 }
 
 ///|
@@ -2320,6 +3130,10 @@ test "official OLC encoding.csv:297" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 297 " + code); None => println("OLC_ENCODING_MISMATCH 297 NONE") }
   }
   assert_eq(actual, Some("79RCCR2P+W39"))
+  let decimal = @geocodec.parse_location("26.4022965,-31.1647767").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "79RCCR2P+W39")
+  let uri = @geocodec.parse_location("geo:26.4022965,-31.1647767").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "79RCCR2P+W39")
 }
 
 ///|
@@ -2330,6 +3144,10 @@ test "official OLC encoding.csv:298" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 298 " + code); None => println("OLC_ENCODING_MISMATCH 298 NONE") }
   }
   assert_eq(actual, Some("C2G70000+"))
+  let decimal = @geocodec.parse_location("80.99,-174.37").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "C2G70000+")
+  let uri = @geocodec.parse_location("geo:80.99,-174.37").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "C2G70000+")
 }
 
 ///|
@@ -2340,6 +3158,10 @@ test "official OLC encoding.csv:299" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 299 " + code); None => println("OLC_ENCODING_MISMATCH 299 NONE") }
   }
   assert_eq(actual, Some("99W62W22+2222222"))
+  let decimal = @geocodec.parse_location("68.0,-35.1").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "99W62W22+2222222")
+  let uri = @geocodec.parse_location("geo:68.0,-35.1").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "99W62W22+2222222")
 }
 
 ///|
@@ -2350,6 +3172,10 @@ test "official OLC encoding.csv:300" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 300 " + code); None => println("OLC_ENCODING_MISMATCH 300 NONE") }
   }
   assert_eq(actual, Some("CJJHF2H9+HQVC2"))
+  let decimal = @geocodec.parse_location("82.4789853525,71.0194066612").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "CJJHF2H9+HQVC2")
+  let uri = @geocodec.parse_location("geo:82.4789853525,71.0194066612").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "CJJHF2H9+HQVC2")
 }
 
 ///|
@@ -2360,6 +3186,10 @@ test "official OLC encoding.csv:301" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 301 " + code); None => println("OLC_ENCODING_MISMATCH 301 NONE") }
   }
   assert_eq(actual, Some("2V780000+"))
+  let decimal = @geocodec.parse_location("-84.78480,166.71891").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "2V780000+")
+  let uri = @geocodec.parse_location("geo:-84.78480,166.71891").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "2V780000+")
 }
 
 ///|
@@ -2370,6 +3200,10 @@ test "official OLC encoding.csv:302" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 302 " + code); None => println("OLC_ENCODING_MISMATCH 302 NONE") }
   }
   assert_eq(actual, Some("5GX7CQCH+P5C"))
+  let decimal = @geocodec.parse_location("-10.5782,25.7779").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "5GX7CQCH+P5C")
+  let uri = @geocodec.parse_location("geo:-10.5782,25.7779").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "5GX7CQCH+P5C")
 }
 
 ///|
@@ -2380,6 +3214,10 @@ test "official OLC encoding.csv:303" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 303 " + code); None => println("OLC_ENCODING_MISMATCH 303 NONE") }
   }
   assert_eq(actual, Some("658G3CPW+JC4M8"))
+  let decimal = @geocodec.parse_location("-3.91348310257,-109.55392470032").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "658G3CPW+JC4M8")
+  let uri = @geocodec.parse_location("geo:-3.91348310257,-109.55392470032").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "658G3CPW+JC4M8")
 }
 
 ///|
@@ -2390,6 +3228,10 @@ test "official OLC encoding.csv:304" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 304 " + code); None => println("OLC_ENCODING_MISMATCH 304 NONE") }
   }
   assert_eq(actual, Some("3QPR7F5M+89M"))
+  let decimal = @geocodec.parse_location("-55.7416641607,136.4834168428").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "3QPR7F5M+89M")
+  let uri = @geocodec.parse_location("geo:-55.7416641607,136.4834168428").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "3QPR7F5M+89M")
 }
 
 ///|
@@ -2400,6 +3242,10 @@ test "official OLC encoding.csv:305" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 305 " + code); None => println("OLC_ENCODING_MISMATCH 305 NONE") }
   }
   assert_eq(actual, Some("3P000000+"))
+  let decimal = @geocodec.parse_location("-55.80137,105.59937").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "3P000000+")
+  let uri = @geocodec.parse_location("geo:-55.80137,105.59937").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "3P000000+")
 }
 
 ///|
@@ -2410,6 +3256,10 @@ test "official OLC encoding.csv:306" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 306 " + code); None => println("OLC_ENCODING_MISMATCH 306 NONE") }
   }
   assert_eq(actual, Some("CP000000+"))
+  let decimal = @geocodec.parse_location("70.49,104.87").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "CP000000+")
+  let uri = @geocodec.parse_location("geo:70.49,104.87").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "CP000000+")
 }
 
 ///|
@@ -2420,6 +3270,8 @@ test "official OLC encoding.csv:307" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 307 " + code); None => println("OLC_ENCODING_MISMATCH 307 NONE") }
   }
   assert_eq(actual, Some("62H3J5XG+5FRC3Q"))
+  let decimal = @geocodec.parse_location("1.6479856942,181.1761286225").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "62H3J5XG+5FRC3Q")
 }
 
 ///|
@@ -2450,6 +3302,10 @@ test "official OLC encoding.csv:310" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 310 " + code); None => println("OLC_ENCODING_MISMATCH 310 NONE") }
   }
   assert_eq(actual, Some("7Q5JCV3H+89M69"))
+  let decimal = @geocodec.parse_location("13.403331980,132.878412474").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "7Q5JCV3H+89M69")
+  let uri = @geocodec.parse_location("geo:13.403331980,132.878412474").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "7Q5JCV3H+89M69")
 }
 
 ///|
@@ -2460,6 +3316,10 @@ test "official OLC encoding.csv:311" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 311 " + code); None => println("OLC_ENCODING_MISMATCH 311 NONE") }
   }
   assert_eq(actual, Some("77M6269W+42"))
+  let decimal = @geocodec.parse_location("23.01778459,-75.75490333").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "77M6269W+42")
+  let uri = @geocodec.parse_location("geo:23.01778459,-75.75490333").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "77M6269W+42")
 }
 
 ///|
@@ -2470,6 +3330,10 @@ test "official OLC encoding.csv:312" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 312 " + code); None => println("OLC_ENCODING_MISMATCH 312 NONE") }
   }
   assert_eq(actual, Some("4R32HR00+"))
+  let decimal = @geocodec.parse_location("-48.4381338,140.8468367").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "4R32HR00+")
+  let uri = @geocodec.parse_location("geo:-48.4381338,140.8468367").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "4R32HR00+")
 }
 
 ///|
@@ -2480,6 +3344,10 @@ test "official OLC encoding.csv:313" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 313 " + code); None => println("OLC_ENCODING_MISMATCH 313 NONE") }
   }
   assert_eq(actual, Some("45HCQ34P+22"))
+  let decimal = @geocodec.parse_location("-38.2448857266,-111.9149619865").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "45HCQ34P+22")
+  let uri = @geocodec.parse_location("geo:-38.2448857266,-111.9149619865").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "45HCQ34P+22")
 }
 
 ///|
@@ -2490,6 +3358,10 @@ test "official OLC encoding.csv:314" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 314 " + code); None => println("OLC_ENCODING_MISMATCH 314 NONE") }
   }
   assert_eq(actual, Some("36870000+"))
+  let decimal = @geocodec.parse_location("-64.0,-94.4").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "36870000+")
+  let uri = @geocodec.parse_location("geo:-64.0,-94.4").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "36870000+")
 }
 
 ///|
@@ -2500,6 +3372,10 @@ test "official OLC encoding.csv:315" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 315 " + code); None => println("OLC_ENCODING_MISMATCH 315 NONE") }
   }
   assert_eq(actual, Some("484CXV00+"))
+  let decimal = @geocodec.parse_location("-47.0346874447,-51.1267770629").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "484CXV00+")
+  let uri = @geocodec.parse_location("geo:-47.0346874447,-51.1267770629").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "484CXV00+")
 }
 
 ///|
@@ -2510,6 +3386,10 @@ test "official OLC encoding.csv:316" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 316 " + code); None => println("OLC_ENCODING_MISMATCH 316 NONE") }
   }
   assert_eq(actual, Some("97R3M3JM+"))
+  let decimal = @geocodec.parse_location("66.6814,-78.9160").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "97R3M3JM+")
+  let uri = @geocodec.parse_location("geo:66.6814,-78.9160").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "97R3M3JM+")
 }
 
 ///|
@@ -2520,6 +3400,10 @@ test "official OLC encoding.csv:317" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 317 " + code); None => println("OLC_ENCODING_MISMATCH 317 NONE") }
   }
   assert_eq(actual, Some("2R950000+"))
+  let decimal = @geocodec.parse_location("-82.22446,143.24158").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "2R950000+")
+  let uri = @geocodec.parse_location("geo:-82.22446,143.24158").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "2R950000+")
 }
 
 ///|
@@ -2530,6 +3414,10 @@ test "official OLC encoding.csv:318" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 318 " + code); None => println("OLC_ENCODING_MISMATCH 318 NONE") }
   }
   assert_eq(actual, Some("45WV0000+"))
+  let decimal = @geocodec.parse_location("-31.80606,-102.08156").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "45WV0000+")
+  let uri = @geocodec.parse_location("geo:-31.80606,-102.08156").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "45WV0000+")
 }
 
 ///|
@@ -2540,6 +3428,10 @@ test "official OLC encoding.csv:319" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 319 " + code); None => println("OLC_ENCODING_MISMATCH 319 NONE") }
   }
   assert_eq(actual, Some("7M6RW4X4+XM4Q"))
+  let decimal = @geocodec.parse_location("14.94989456,96.10671106").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "7M6RW4X4+XM4Q")
+  let uri = @geocodec.parse_location("geo:14.94989456,96.10671106").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "7M6RW4X4+XM4Q")
 }
 
 ///|
@@ -2550,6 +3442,10 @@ test "official OLC encoding.csv:320" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 320 " + code); None => println("OLC_ENCODING_MISMATCH 320 NONE") }
   }
   assert_eq(actual, Some("5MPXVGXM+V29"))
+  let decimal = @geocodec.parse_location("-15.10033816850,99.53259414053").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "5MPXVGXM+V29")
+  let uri = @geocodec.parse_location("geo:-15.10033816850,99.53259414053").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "5MPXVGXM+V29")
 }
 
 ///|
@@ -2560,6 +3456,10 @@ test "official OLC encoding.csv:321" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 321 " + code); None => println("OLC_ENCODING_MISMATCH 321 NONE") }
   }
   assert_eq(actual, Some("3M2VG900+"))
+  let decimal = @geocodec.parse_location("-69.4546558690,97.3697260830").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "3M2VG900+")
+  let uri = @geocodec.parse_location("geo:-69.4546558690,97.3697260830").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "3M2VG900+")
 }
 
 ///|
@@ -2570,6 +3470,10 @@ test "official OLC encoding.csv:322" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 322 " + code); None => println("OLC_ENCODING_MISMATCH 322 NONE") }
   }
   assert_eq(actual, Some("85VGMX00+"))
+  let decimal = @geocodec.parse_location("47.6915368,-109.0087879").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "85VGMX00+")
+  let uri = @geocodec.parse_location("geo:47.6915368,-109.0087879").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "85VGMX00+")
 }
 
 ///|
@@ -2590,6 +3494,10 @@ test "official OLC encoding.csv:324" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 324 " + code); None => println("OLC_ENCODING_MISMATCH 324 NONE") }
   }
   assert_eq(actual, Some("76000000+"))
+  let decimal = @geocodec.parse_location("27.6309,-98.7061").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "76000000+")
+  let uri = @geocodec.parse_location("geo:27.6309,-98.7061").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "76000000+")
 }
 
 ///|
@@ -2600,6 +3508,10 @@ test "official OLC encoding.csv:325" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 325 " + code); None => println("OLC_ENCODING_MISMATCH 325 NONE") }
   }
   assert_eq(actual, Some("7MVJ69VR+GX9J"))
+  let decimal = @geocodec.parse_location("27.24379,92.39247").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "7MVJ69VR+GX9J")
+  let uri = @geocodec.parse_location("geo:27.24379,92.39247").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "7MVJ69VR+GX9J")
 }
 
 ///|
@@ -2610,6 +3522,10 @@ test "official OLC encoding.csv:326" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 326 " + code); None => println("OLC_ENCODING_MISMATCH 326 NONE") }
   }
   assert_eq(actual, Some("2QGM6M97+P5"))
+  let decimal = @geocodec.parse_location("-79.78071,133.66290").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "2QGM6M97+P5")
+  let uri = @geocodec.parse_location("geo:-79.78071,133.66290").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "2QGM6M97+P5")
 }
 
 ///|
@@ -2630,6 +3546,10 @@ test "official OLC encoding.csv:328" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 328 " + code); None => println("OLC_ENCODING_MISMATCH 328 NONE") }
   }
   assert_eq(actual, Some("56HRWW25+2J222"))
+  let decimal = @geocodec.parse_location("-18.100,-83.091").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "56HRWW25+2J222")
+  let uri = @geocodec.parse_location("geo:-18.100,-83.091").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "56HRWW25+2J222")
 }
 
 ///|
@@ -2640,6 +3560,10 @@ test "official OLC encoding.csv:329" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 329 " + code); None => println("OLC_ENCODING_MISMATCH 329 NONE") }
   }
   assert_eq(actual, Some("4JPMXPM9+X2GR"))
+  let decimal = @geocodec.parse_location("-35.015055,73.717570").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "4JPMXPM9+X2GR")
+  let uri = @geocodec.parse_location("geo:-35.015055,73.717570").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "4JPMXPM9+X2GR")
 }
 
 ///|
@@ -2650,6 +3574,10 @@ test "official OLC encoding.csv:330" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 330 " + code); None => println("OLC_ENCODING_MISMATCH 330 NONE") }
   }
   assert_eq(actual, Some("2V4V7HM7+54743"))
+  let decimal = @geocodec.parse_location("-87.7171,177.5628").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "2V4V7HM7+54743")
+  let uri = @geocodec.parse_location("geo:-87.7171,177.5628").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 13).unwrap().raw, "2V4V7HM7+54743")
 }
 
 ///|
@@ -2660,6 +3588,10 @@ test "official OLC encoding.csv:331" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 331 " + code); None => println("OLC_ENCODING_MISMATCH 331 NONE") }
   }
   assert_eq(actual, Some("9H8PH55W+FRP"))
+  let decimal = @geocodec.parse_location("56.55872,54.19708").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "9H8PH55W+FRP")
+  let uri = @geocodec.parse_location("geo:56.55872,54.19708").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "9H8PH55W+FRP")
 }
 
 ///|
@@ -2670,6 +3602,10 @@ test "official OLC encoding.csv:332" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 332 " + code); None => println("OLC_ENCODING_MISMATCH 332 NONE") }
   }
   assert_eq(actual, Some("5J3H9756+674"))
+  let decimal = @geocodec.parse_location("-28.6420,71.2607").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "5J3H9756+674")
+  let uri = @geocodec.parse_location("geo:-28.6420,71.2607").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "5J3H9756+674")
 }
 
 ///|
@@ -2680,6 +3616,10 @@ test "official OLC encoding.csv:333" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 333 " + code); None => println("OLC_ENCODING_MISMATCH 333 NONE") }
   }
   assert_eq(actual, Some("4G7368WH+2J"))
+  let decimal = @geocodec.parse_location("-44.755,21.329").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "4G7368WH+2J")
+  let uri = @geocodec.parse_location("geo:-44.755,21.329").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "4G7368WH+2J")
 }
 
 ///|
@@ -2690,6 +3630,10 @@ test "official OLC encoding.csv:334" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 334 " + code); None => println("OLC_ENCODING_MISMATCH 334 NONE") }
   }
   assert_eq(actual, Some("3HH6PC8P+C222222"))
+  let decimal = @geocodec.parse_location("-58.284,44.435").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "3HH6PC8P+C222222")
+  let uri = @geocodec.parse_location("geo:-58.284,44.435").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "3HH6PC8P+C222222")
 }
 
 ///|
@@ -2700,6 +3644,10 @@ test "official OLC encoding.csv:335" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 335 " + code); None => println("OLC_ENCODING_MISMATCH 335 NONE") }
   }
   assert_eq(actual, Some("7553FX98+JC2"))
+  let decimal = @geocodec.parse_location("13.469,-118.034").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "7553FX98+JC2")
+  let uri = @geocodec.parse_location("geo:13.469,-118.034").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "7553FX98+JC2")
 }
 
 ///|
@@ -2710,6 +3658,10 @@ test "official OLC encoding.csv:336" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 336 " + code); None => println("OLC_ENCODING_MISMATCH 336 NONE") }
   }
   assert_eq(actual, Some("8V000000+"))
+  let decimal = @geocodec.parse_location("40.615,173.901").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "8V000000+")
+  let uri = @geocodec.parse_location("geo:40.615,173.901").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "8V000000+")
 }
 
 ///|
@@ -2720,6 +3672,10 @@ test "official OLC encoding.csv:337" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 337 " + code); None => println("OLC_ENCODING_MISMATCH 337 NONE") }
   }
   assert_eq(actual, Some("96J72222+2222"))
+  let decimal = @geocodec.parse_location("62,-95").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "96J72222+2222")
+  let uri = @geocodec.parse_location("geo:62,-95").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "96J72222+2222")
 }
 
 ///|
@@ -2730,6 +3686,10 @@ test "official OLC encoding.csv:338" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 338 " + code); None => println("OLC_ENCODING_MISMATCH 338 NONE") }
   }
   assert_eq(actual, Some("6Q6X0000+"))
+  let decimal = @geocodec.parse_location("-5.2221889,139.2054401").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "6Q6X0000+")
+  let uri = @geocodec.parse_location("geo:-5.2221889,139.2054401").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "6Q6X0000+")
 }
 
 ///|
@@ -2740,6 +3700,10 @@ test "official OLC encoding.csv:339" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 339 " + code); None => println("OLC_ENCODING_MISMATCH 339 NONE") }
   }
   assert_eq(actual, Some("5C7J0000+"))
+  let decimal = @geocodec.parse_location("-24.8,-7.1").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "5C7J0000+")
+  let uri = @geocodec.parse_location("geo:-24.8,-7.1").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "5C7J0000+")
 }
 
 ///|
@@ -2750,6 +3714,10 @@ test "official OLC encoding.csv:340" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 340 " + code); None => println("OLC_ENCODING_MISMATCH 340 NONE") }
   }
   assert_eq(actual, Some("8FH2GC22+"))
+  let decimal = @geocodec.parse_location("41.5,0.4").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "8FH2GC22+")
+  let uri = @geocodec.parse_location("geo:41.5,0.4").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "8FH2GC22+")
 }
 
 ///|
@@ -2760,6 +3728,10 @@ test "official OLC encoding.csv:341" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 341 " + code); None => println("OLC_ENCODING_MISMATCH 341 NONE") }
   }
   assert_eq(actual, Some("32H44W3H+"))
+  let decimal = @geocodec.parse_location("-58.89638156814,-177.07241353875").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "32H44W3H+")
+  let uri = @geocodec.parse_location("geo:-58.89638156814,-177.07241353875").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "32H44W3H+")
 }
 
 ///|
@@ -2780,6 +3752,10 @@ test "official OLC encoding.csv:343" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 343 " + code); None => println("OLC_ENCODING_MISMATCH 343 NONE") }
   }
   assert_eq(actual, Some("2FCM596P+P7"))
+  let decimal = @geocodec.parse_location("-81.83814,13.38568").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "2FCM596P+P7")
+  let uri = @geocodec.parse_location("geo:-81.83814,13.38568").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "2FCM596P+P7")
 }
 
 ///|
@@ -2790,6 +3766,10 @@ test "official OLC encoding.csv:344" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 344 " + code); None => println("OLC_ENCODING_MISMATCH 344 NONE") }
   }
   assert_eq(actual, Some("29CM985C+FVQ8"))
+  let decimal = @geocodec.parse_location("-81.641294,-26.677758").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "29CM985C+FVQ8")
+  let uri = @geocodec.parse_location("geo:-81.641294,-26.677758").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "29CM985C+FVQ8")
 }
 
 ///|
@@ -2800,6 +3780,10 @@ test "official OLC encoding.csv:345" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 345 " + code); None => println("OLC_ENCODING_MISMATCH 345 NONE") }
   }
   assert_eq(actual, Some("49H7W600+"))
+  let decimal = @geocodec.parse_location("-38.1,-34.8").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "49H7W600+")
+  let uri = @geocodec.parse_location("geo:-38.1,-34.8").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "49H7W600+")
 }
 
 ///|
@@ -2810,6 +3794,10 @@ test "official OLC encoding.csv:346" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 346 " + code); None => println("OLC_ENCODING_MISMATCH 346 NONE") }
   }
   assert_eq(actual, Some("8F27QJ6F+77PC"))
+  let decimal = @geocodec.parse_location("30.760710361,5.623188694").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "8F27QJ6F+77PC")
+  let uri = @geocodec.parse_location("geo:30.760710361,5.623188694").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "8F27QJ6F+77PC")
 }
 
 ///|
@@ -2820,6 +3808,10 @@ test "official OLC encoding.csv:347" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 347 " + code); None => println("OLC_ENCODING_MISMATCH 347 NONE") }
   }
   assert_eq(actual, Some("4CFM2222+"))
+  let decimal = @geocodec.parse_location("-41,-7").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "4CFM2222+")
+  let uri = @geocodec.parse_location("geo:-41,-7").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 8).unwrap().raw, "4CFM2222+")
 }
 
 ///|
@@ -2830,6 +3822,10 @@ test "official OLC encoding.csv:348" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 348 " + code); None => println("OLC_ENCODING_MISMATCH 348 NONE") }
   }
   assert_eq(actual, Some("CFGV7C00+"))
+  let decimal = @geocodec.parse_location("80.2976,17.4494").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "CFGV7C00+")
+  let uri = @geocodec.parse_location("geo:80.2976,17.4494").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "CFGV7C00+")
 }
 
 ///|
@@ -2840,6 +3836,10 @@ test "official OLC encoding.csv:349" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 349 " + code); None => println("OLC_ENCODING_MISMATCH 349 NONE") }
   }
   assert_eq(actual, Some("63FW454P+PW"))
+  let decimal = @geocodec.parse_location("-0.8932,-141.8127").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "63FW454P+PW")
+  let uri = @geocodec.parse_location("geo:-0.8932,-141.8127").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "63FW454P+PW")
 }
 
 ///|
@@ -2850,6 +3850,10 @@ test "official OLC encoding.csv:350" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 350 " + code); None => println("OLC_ENCODING_MISMATCH 350 NONE") }
   }
   assert_eq(actual, Some("92355PW8+W6FPV3"))
+  let decimal = @geocodec.parse_location("51.1973191264,-176.2844505770").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "92355PW8+W6FPV3")
+  let uri = @geocodec.parse_location("geo:51.1973191264,-176.2844505770").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "92355PW8+W6FPV3")
 }
 
 ///|
@@ -2860,6 +3864,10 @@ test "official OLC encoding.csv:351" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 351 " + code); None => println("OLC_ENCODING_MISMATCH 351 NONE") }
   }
   assert_eq(actual, Some("9GPV9M00+"))
+  let decimal = @geocodec.parse_location("64.3538,37.6501").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "9GPV9M00+")
+  let uri = @geocodec.parse_location("geo:64.3538,37.6501").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "9GPV9M00+")
 }
 
 ///|
@@ -2870,6 +3878,10 @@ test "official OLC encoding.csv:352" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 352 " + code); None => println("OLC_ENCODING_MISMATCH 352 NONE") }
   }
   assert_eq(actual, Some("65470000+"))
+  let decimal = @geocodec.parse_location("-7.741571,-114.569063").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "65470000+")
+  let uri = @geocodec.parse_location("geo:-7.741571,-114.569063").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "65470000+")
 }
 
 ///|
@@ -2880,6 +3892,10 @@ test "official OLC encoding.csv:353" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 353 " + code); None => println("OLC_ENCODING_MISMATCH 353 NONE") }
   }
   assert_eq(actual, Some("97F8MV00+"))
+  let decimal = @geocodec.parse_location("59.668,-73.133").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "97F8MV00+")
+  let uri = @geocodec.parse_location("geo:59.668,-73.133").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 6).unwrap().raw, "97F8MV00+")
 }
 
 ///|
@@ -2890,6 +3906,10 @@ test "official OLC encoding.csv:354" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 354 " + code); None => println("OLC_ENCODING_MISMATCH 354 NONE") }
   }
   assert_eq(actual, Some("C24M0000+"))
+  let decimal = @geocodec.parse_location("72.146589,-166.255204").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "C24M0000+")
+  let uri = @geocodec.parse_location("geo:72.146589,-166.255204").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 4).unwrap().raw, "C24M0000+")
 }
 
 ///|
@@ -2900,6 +3920,10 @@ test "official OLC encoding.csv:355" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 355 " + code); None => println("OLC_ENCODING_MISMATCH 355 NONE") }
   }
   assert_eq(actual, Some("87Q4Q238+FW9"))
+  let decimal = @geocodec.parse_location("45.7536561,-77.9826424").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "87Q4Q238+FW9")
+  let uri = @geocodec.parse_location("geo:45.7536561,-77.9826424").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "87Q4Q238+FW9")
 }
 
 ///|
@@ -2910,6 +3934,10 @@ test "official OLC encoding.csv:356" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 356 " + code); None => println("OLC_ENCODING_MISMATCH 356 NONE") }
   }
   assert_eq(actual, Some("7HGWHCWP+43HR244"))
+  let decimal = @geocodec.parse_location("20.59532,58.43522").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "7HGWHCWP+43HR244")
+  let uri = @geocodec.parse_location("geo:20.59532,58.43522").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "7HGWHCWP+43HR244")
 }
 
 ///|
@@ -2920,6 +3948,10 @@ test "official OLC encoding.csv:357" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 357 " + code); None => println("OLC_ENCODING_MISMATCH 357 NONE") }
   }
   assert_eq(actual, Some("649GQFHC+5G8"))
+  let decimal = @geocodec.parse_location("-2.22208790893,-129.52868305886").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "649GQFHC+5G8")
+  let uri = @geocodec.parse_location("geo:-2.22208790893,-129.52868305886").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "649GQFHC+5G8")
 }
 
 ///|
@@ -2930,6 +3962,10 @@ test "official OLC encoding.csv:358" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 358 " + code); None => println("OLC_ENCODING_MISMATCH 358 NONE") }
   }
   assert_eq(actual, Some("7C000000+"))
+  let decimal = @geocodec.parse_location("21.37734168211,-19.82122122854").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "7C000000+")
+  let uri = @geocodec.parse_location("geo:21.37734168211,-19.82122122854").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "7C000000+")
 }
 
 ///|
@@ -2940,6 +3976,10 @@ test "official OLC encoding.csv:359" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 359 " + code); None => println("OLC_ENCODING_MISMATCH 359 NONE") }
   }
   assert_eq(actual, Some("C93W3JMR+8JVC"))
+  let decimal = @geocodec.parse_location("71.0833633113,-21.3584667975").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "C93W3JMR+8JVC")
+  let uri = @geocodec.parse_location("geo:71.0833633113,-21.3584667975").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 12).unwrap().raw, "C93W3JMR+8JVC")
 }
 
 ///|
@@ -2950,6 +3990,10 @@ test "official OLC encoding.csv:360" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 360 " + code); None => println("OLC_ENCODING_MISMATCH 360 NONE") }
   }
   assert_eq(actual, Some("8HW4J2RC+22"))
+  let decimal = @geocodec.parse_location("48.64,42.02").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "8HW4J2RC+22")
+  let uri = @geocodec.parse_location("geo:48.64,42.02").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 10).unwrap().raw, "8HW4J2RC+22")
 }
 
 ///|
@@ -2960,6 +4004,10 @@ test "official OLC encoding.csv:361" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 361 " + code); None => println("OLC_ENCODING_MISMATCH 361 NONE") }
   }
   assert_eq(actual, Some("6JJ775JJ+222"))
+  let decimal = @geocodec.parse_location("2.28,65.18").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "6JJ775JJ+222")
+  let uri = @geocodec.parse_location("geo:2.28,65.18").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "6JJ775JJ+222")
 }
 
 ///|
@@ -2970,6 +4018,10 @@ test "official OLC encoding.csv:362" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 362 " + code); None => println("OLC_ENCODING_MISMATCH 362 NONE") }
   }
   assert_eq(actual, Some("9CR72222+222222"))
+  let decimal = @geocodec.parse_location("66,-15").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "9CR72222+222222")
+  let uri = @geocodec.parse_location("geo:66,-15").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 14).unwrap().raw, "9CR72222+222222")
 }
 
 ///|
@@ -2980,6 +4032,10 @@ test "official OLC encoding.csv:363" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 363 " + code); None => println("OLC_ENCODING_MISMATCH 363 NONE") }
   }
   assert_eq(actual, Some("C5000000+"))
+  let decimal = @geocodec.parse_location("82.988994321,-114.039676643").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "C5000000+")
+  let uri = @geocodec.parse_location("geo:82.988994321,-114.039676643").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "C5000000+")
 }
 
 ///|
@@ -2990,6 +4046,10 @@ test "official OLC encoding.csv:364" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 364 " + code); None => println("OLC_ENCODING_MISMATCH 364 NONE") }
   }
   assert_eq(actual, Some("4CVGXF66+222"))
+  let decimal = @geocodec.parse_location("-32.04,-9.54").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "4CVGXF66+222")
+  let uri = @geocodec.parse_location("geo:-32.04,-9.54").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 11).unwrap().raw, "4CVGXF66+222")
 }
 
 ///|
@@ -3010,6 +4070,10 @@ test "official OLC encoding.csv:366" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 366 " + code); None => println("OLC_ENCODING_MISMATCH 366 NONE") }
   }
   assert_eq(actual, Some("C7000000+"))
+  let decimal = @geocodec.parse_location("71.75744246,-62.00099498").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "C7000000+")
+  let uri = @geocodec.parse_location("geo:71.75744246,-62.00099498").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 2).unwrap().raw, "C7000000+")
 }
 
 ///|
@@ -3020,6 +4084,10 @@ test "official OLC encoding.csv:367" {
     match actual { Some(code) => println("OLC_ENCODING_MISMATCH 367 " + code); None => println("OLC_ENCODING_MISMATCH 367 NONE") }
   }
   assert_eq(actual, Some("9J3J38QQ+XQH3452"))
+  let decimal = @geocodec.parse_location("51.089925,72.339482").unwrap()
+  assert_eq(decimal.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "9J3J38QQ+XQH3452")
+  let uri = @geocodec.parse_location("geo:51.089925,72.339482").unwrap()
+  assert_eq(uri.to_cell(@geocodec.PlusCode, 15).unwrap().raw, "9J3J38QQ+XQH3452")
 }
 
 ///|

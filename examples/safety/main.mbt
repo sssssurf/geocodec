@@ -51,4 +51,23 @@ fn main {
       code_length=8,
     ).unwrap(),
   )
+  let from_text = @geocodec.parse_location("-2.804,7.003").unwrap()
+  println(
+    "text_pluscode: " + from_text.to_cell(@geocodec.PlusCode, 13).unwrap().raw,
+  )
+  let edge = @geocodec.BoundingBox::new(-1.0, 179.0, 1.0, 180.0).unwrap()
+  println(
+    "date_line_alias: " +
+    edge.contains(@geocodec.LatLng::new(0.0, -180.0).unwrap()).to_string(),
+  )
+  println(
+    "DMS_seconds_positive: " +
+    (@geocodec.parse_dms("51d30m26.5s", true).unwrap() > 0.0).to_string(),
+  )
+  let almost_world = @geocodec.BoundingBox::new(-1.0, 170.0, 1.0, 160.0).unwrap()
+  println(
+    "unique_cover_budget: " +
+    (@geocodec.geohash_cover(almost_world, 1, max_cells=16).unwrap().length() ==
+    16).to_string(),
+  )
 }

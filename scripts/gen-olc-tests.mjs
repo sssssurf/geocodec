@@ -33,6 +33,16 @@ for (const [filename, metadata] of Object.entries(provenance.files)) {
           `    match actual { Some(code) => println(${q('OLC_ENCODING_MISMATCH '+number+' ')} + code); None => println(${q('OLC_ENCODING_MISMATCH '+number+' NONE')}) }`,
           '  }', `  assert_eq(actual, Some(${q(expected)}))`);
       } else out.push('  assert_true(actual is None)');
+      // Numeric literals alone did not exercise the real ingestion path.
+      // Verify both decimal and geo: text through parsing and conversion.
+      if (Math.abs(Number(lat)) <= 90 && expected) {
+        out.push(`  let decimal = @geocodec.parse_location(${q(lat + ',' + lng)}).unwrap()`,
+          `  assert_eq(decimal.to_cell(@geocodec.PlusCode, ${length}).unwrap().raw, ${q(expected)})`);
+        if (Math.abs(Number(lng)) <= 180) {
+          out.push(`  let uri = @geocodec.parse_location(${q('geo:' + lat + ',' + lng)}).unwrap()`,
+            `  assert_eq(uri.to_cell(@geocodec.PlusCode, ${length}).unwrap().raw, ${q(expected)})`);
+        }
+      }
     } else if (filename === 'decoding.csv') {
       const [code, length, south, west, north, east] = fields;
       out.push(`  let box = @geocodec.pluscode_bounds(${q(code)}).unwrap()`,

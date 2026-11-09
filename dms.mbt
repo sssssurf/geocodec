@@ -10,7 +10,8 @@
 /// `51d30m26.5sN`, `51:30:26.5N` and a leading sign in place of a hemisphere.
 /// `is_lat` selects the latitude range and the accepted hemisphere letters.
 pub fn parse_dms(input : String, is_lat : Bool) -> Double? {
-  let s = ascii_upper(trim_ascii(input))
+  let source = trim_ascii(input)
+  let s = ascii_upper(source)
   let chars = chars_of(s)
   let mut end = chars.length()
   if end == 0 {
@@ -18,7 +19,14 @@ pub fn parse_dms(input : String, is_lat : Bool) -> Double? {
   }
   let mut sign = 1.0
   let last = chars[end - 1]
-  if last == 'N' || last == 'S' || last == 'E' || last == 'W' {
+  // Preserve the conventional lowercase seconds unit in a d/m/s chain before
+  // case-folding directions. "51d30m26.5s" is not a south coordinate.
+  let original = chars_of(source)
+  let seconds_unit = original[end - 1] == 's' &&
+    (s.contains("D") || s.contains("M"))
+  let hemisphere = !seconds_unit &&
+    (last == 'N' || last == 'S' || last == 'E' || last == 'W')
+  if hemisphere {
     if is_lat && (last == 'E' || last == 'W') {
       return None
     }
@@ -35,10 +43,18 @@ pub fn parse_dms(input : String, is_lat : Bool) -> Double? {
     start = start + 1
   }
   if start < end && (chars[start] == '-' || chars[start] == '+') {
+    // A leading sign is an alternative to a hemisphere, not a second sign
+    // multiplier. In particular "-51S" must never silently become north.
+    if hemisphere {
+      return None
+    }
     if chars[start] == '-' {
       sign = -sign
     }
     start = start + 1
+  }
+  if !dms_units_in_order(chars, start, end) {
+    return None
   }
   let values = number_tokens(chars, start, end)
   if values.length() == 0 || values.length() > 3 {
@@ -73,9 +89,53 @@ fn is_space_char(c : Char) -> Bool {
 }
 
 ///|
+/// The numeric fields are positional degrees, minutes, seconds. Explicit
+/// units must agree with that order and attach once to the preceding field;
+/// they are not arbitrary separators that can relabel minutes as degrees.
+fn dms_units_in_order(chars : Array[Char], start : Int32, end : Int32) -> Bool {
+  let mut fields = 0
+  let mut in_number = false
+  let mut has_unit = false
+  for i = start; i < end; i = i + 1 {
+    let c = chars[i]
+    if is_number_char(c) {
+      if !in_number {
+        fields = fields + 1
+        has_unit = false
+      }
+      in_number = true
+      continue
+    }
+    in_number = false
+    let unit = if c == 'D' || c.to_int() == 0x00B0 {
+      0
+    } else if c == 'M' || c == '\'' || c.to_int() == 0x2032 {
+      1
+    } else if c == 'S' || c == '"' || c.to_int() == 0x2033 {
+      2
+    } else {
+      -1
+    }
+    if unit >= 0 {
+      if has_unit || fields == 0 || unit != fields - 1 {
+        return false
+      }
+      has_unit = true
+    } else if !is_separator(c) {
+      return false
+    }
+  }
+  true
+}
+
+///|
 /// Split a run of characters into numeric tokens, treating the usual degree
 /// symbols as separators. Returns the parsed values.
-fn number_tokens(chars : Array[Char], start : Int, end : Int) -> Array[Double] {
+fn number_tokens(
+  chars : Array[Char],
+  start : Int32,
+  end : Int32,
+) -> Array[Double] {
   let out : Array[Double] = []
   let mut token : Array[Char] = []
   let mut i = start

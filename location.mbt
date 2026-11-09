@@ -93,7 +93,8 @@ fn point_location(
   crs : String?,
   uncertainty_m : Double?,
 ) -> Location? {
-  if uncertainty_m is Some(u) && (!is_finite(u) || u < 0.0) {
+  if uncertainty_m is Some(u) &&
+    (!is_finite(u) || u < 0.0 || !is_finite(2.0 * u)) {
     return None
   }
   match uncertainty_m {
@@ -227,8 +228,10 @@ pub fn Location::to_cell(
         Some(u) => {
           let sum = u + center_shift_bound(self.point, target.point)
           let propagated = sum + sum * 1.0e-12 + 1.0e-9
-          if !is_finite(propagated) {
-            None // No finite bound is representable; never claim zero.
+          if !is_finite(propagated) || !is_finite(2.0 * propagated) {
+            // Reject the conversion explicitly. A known input bound must not
+            // become an apparently ordinary target with unknown accuracy.
+            return None
           } else {
             let radius = target.cell_radius_m.unwrap()
             Some(if propagated > radius { propagated } else { radius })
@@ -379,26 +382,22 @@ fn box_contains(outer : BoundingBox, inner : BoundingBox) -> Bool {
   if inner.south() < outer.south() - eps || inner.north() > outer.north() + eps {
     return false
   }
-  let ow = outer.west()
-  let oe = outer.east()
-  let iw = inner.west()
-  let ie = inner.east()
-  let outer_cross = ow > oe
-  let inner_cross = iw > ie
-  if !inner_cross {
-    if !outer_cross {
-      iw >= ow - eps && ie <= oe + eps
-    } else {
-      (iw >= ow - eps && ie <= 180.0 + eps) ||
-      (iw >= -180.0 - eps && ie <= oe + eps)
-    }
-  } else if !outer_cross {
-    // A non-crossing outer box can contain a crossing inner box only if it
-    // spans the whole longitude range.
-    ow <= -180.0 + eps && oe >= 180.0 - eps
-  } else {
-    iw >= ow - eps && ie <= oe + eps
+  // Compare directed circular spans from the outer west edge. This handles
+  // both crossing boxes and the two names of the inclusive date-line edge.
+  if outer.width() >= 360.0 {
+    return true
   }
+  if inner.width() >= 360.0 {
+    return false
+  }
+  let mut offset = normalize_lng(inner.west() - outer.west())
+  if offset < 0.0 {
+    offset = offset + 360.0
+  }
+  if offset > 360.0 - eps {
+    offset = 0.0
+  }
+  offset <= outer.width() + eps && inner.width() <= outer.width() - offset + eps
 }
 
 ///|

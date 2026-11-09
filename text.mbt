@@ -78,7 +78,7 @@ pub fn char_str(c : Char) -> String {
 
 ///|
 /// The index of `needle` in `chars`, or -1.
-pub fn index_of(chars : Array[Char], needle : Char) -> Int {
+pub fn index_of(chars : Array[Char], needle : Char) -> Int32 {
   let mut i = 0
   while i < chars.length() {
     if chars[i] == needle {
@@ -115,7 +115,7 @@ fn is_space(c : Char) -> Bool {
 
 ///|
 /// The digit value of an ASCII character, or `None`.
-pub fn digit_value(c : Char) -> Int? {
+pub fn digit_value(c : Char) -> Int32? {
   if c >= '0' && c <= '9' {
     Some(c.to_int() - 48)
   } else {
@@ -128,33 +128,24 @@ pub fn digit_value(c : Char) -> Int? {
 /// Coordinate text never needs an exponent, and refusing one keeps the parser
 /// total and predictable.
 pub fn parse_decimal(text : String) -> Double? {
-  let chars = chars_of(trim_ascii(text))
+  let source = trim_ascii(text)
+  let chars = chars_of(source)
   let n = chars.length()
   if n == 0 {
     return None
   }
   let mut i = 0
-  let mut sign = 1.0
   if chars[i] == '-' || chars[i] == '+' {
-    if chars[i] == '-' {
-      sign = -1.0
-    }
     i = i + 1
   }
-  let mut int_part = 0.0
   let mut digits = 0
-  while i < n && digit_value(chars[i]) is Some(d) {
-    int_part = int_part * 10.0 + d.to_double()
+  while i < n && digit_value(chars[i]) is Some(_) {
     digits = digits + 1
     i = i + 1
   }
-  let mut frac = 0.0
-  let mut factor = 0.1
   if i < n && chars[i] == '.' {
     i = i + 1
-    while i < n && digit_value(chars[i]) is Some(d) {
-      frac = frac + d.to_double() * factor
-      factor = factor / 10.0
+    while i < n && digit_value(chars[i]) is Some(_) {
       digits = digits + 1
       i = i + 1
     }
@@ -162,7 +153,16 @@ pub fn parse_decimal(text : String) -> Double? {
   if digits == 0 || i != n {
     return None
   }
-  Some(sign * (int_part + frac))
+  // Validate the deliberately small grammar above, then use the core's
+  // correctly rounded conversion. Summing digit * 0.1^n accumulates error and
+  // can move a textual coordinate across an OLC cell boundary. Catching the
+  // conversion's range error preserves this API's total Option contract.
+  let value = @string.parse_double(source[:]) catch { _ => return None }
+  if is_finite(value) {
+    Some(value)
+  } else {
+    None
+  }
 }
 
 ///|

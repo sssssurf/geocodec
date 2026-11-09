@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-07T03:36:16.715Z",
+  "module": "sssssurf/geocodec",
+  "version": "0.6.0",
+  "source": "Mooncakes registry dependency in a separate module; no local path override",
+  "status": "passed",
+  "resolvedVersion": "0.6.0",
+  "output": [
+    "unknown_is_none: true",
+    "chained_unknown_is_none: true",
+    "chained_URI_omits_u: true",
+    "explicit_zero: true",
+    "unknown_CRS_rejected: true",
+    "tiny_u_preserved: true",
+    "fine_grid_keeps_40m_bound: true",
+    "grid_radius_below_1cm: true",
+    "plus_boundary: 8QGFJP22+",
+    "plus_west_neighbor: 8QGFJM2X+",
+    "plus_south_neighbor: 8QGFHPX2+"
+  ]
+}

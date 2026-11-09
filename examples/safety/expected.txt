@@ -9,3 +9,7 @@ grid_radius_below_1cm: true
 plus_boundary: 8QGFJP22+
 plus_west_neighbor: 8QGFJM2X+
 plus_south_neighbor: 8QGFHPX2+
+text_pluscode: 6F9952W3+C6222
+date_line_alias: true
+DMS_seconds_positive: true
+unique_cover_budget: true

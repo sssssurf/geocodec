@@ -100,3 +100,12 @@ reference-language runtime is required by those tests. The separate registry
 consumer runs the public safety example, including the boundary and its two
 lower neighbors. Results: docs/verification-results.json and
 docs/published-consumer-results.json. Official acceptance status is separate.
+
+
+## November9 input-chain audit (0.7.0)
+
+The previous direct-Double vector checks did not exercise text ingestion. The
+same302 encoding blocks now also assert278 applicable decimal text paths and
+256 valid geo URI paths. Core/string correctly rounded conversion replaces the
+hand-accumulated fractional parser. These are extra entry assertions, not766
+new independent vectors. See 完整复核.md for additional geometry/budget fixes.

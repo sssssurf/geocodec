@@ -131,7 +131,8 @@ pub fn BoundingBox::contains(self : BoundingBox, point : LatLng) -> Bool {
   }
   let lng = point.lng()
   if self.west <= self.east {
-    lng >= self.west - eps && lng <= self.east + eps
+    (lng >= self.west - eps && lng <= self.east + eps) ||
+    (lng == -180.0 && self.east == 180.0)
   } else {
     lng >= self.west - eps || lng <= self.east + eps
   }
@@ -166,7 +167,9 @@ pub fn BoundingBox::intersects(self : BoundingBox, other : BoundingBox) -> Bool 
 /// Whether a longitude falls inside a box's longitude span.
 fn lng_in_range(lng : Double, box : BoundingBox) -> Bool {
   if box.west <= box.east {
-    lng >= box.west && lng <= box.east
+    (lng >= box.west && lng <= box.east) ||
+    (lng == -180.0 && box.east == 180.0) ||
+    (lng == 180.0 && box.west == -180.0)
   } else {
     lng >= box.west || lng <= box.east
   }

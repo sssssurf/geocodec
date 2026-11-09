@@ -101,3 +101,12 @@ WGS84 采用 a=6378137 m、1/f=298.257223563，令 e²=f(2-f)。
 验证入口：`moon test --target js`、`moon run --target js examples/safety`、
 `node scripts/check-semantics.mjs`。后者验证真实 JSON、转换输出、外部包正向访问，
 以及外部伪造 Location/GeoUri 必须编译失败。四目标结果见 verification-results.json。
+
+
+## 0.7.0 finite-value contract
+
+Low-level GeoUri can preserve a finite stated u whose diameter cannot be
+represented. Unified Location rejects that input when2*u is nonfinite; a
+known-bound conversion that cannot keep finite propagated quantities rejects
+the whole conversion. It never changes a known bound to None merely on overflow.
+Date-line aliases are handled consistently in notation geometry queries.

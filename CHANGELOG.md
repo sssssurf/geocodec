@@ -4,6 +4,17 @@ All notable changes to this project are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.7.0] - 2026-11-09
+
+- Use correctly rounded text conversion and exercise real decimal/geo URI entry
+  paths for applicable original OLC vectors, preserving all766 published rows.
+- Fix Int32 cover-budget overflow, overlapping date-line cover segments, and
+  consistent ±180 containment/intersection in both box and location APIs.
+- Reject conflicting/misordered DMS units and direction signs; distinguish seconds s.
+- Reject nonfinite derived uncertainty or propagation atomically rather than
+  silently converting a known bound to unknown.
+- Full audit release: 850 tests and independent package-consumer checks.
+
 ## [0.6.0] - 2026-11-07
 
 - Fix (40.6,129.7), length 8: 8QGFJP22+ replaces the incorrect prior cell.
