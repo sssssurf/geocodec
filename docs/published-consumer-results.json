@@ -1,6 +1,37 @@
 {
+  "date": "2026-11-09T08:40:48.781Z",
   "module": "sssssurf/geocodec",
   "version": "0.7.0",
-  "status": "pending final CI and publication verification",
-  "note": "Post-publication record is recorded on GitHub main. Prior release evidence is under docs/history."
+  "source": "Mooncakes registry dependency in a separate module; no local path override",
+  "status": "passed",
+  "resolvedVersion": "0.7.0",
+  "output": [
+    "unknown_is_none: true",
+    "chained_unknown_is_none: true",
+    "chained_URI_omits_u: true",
+    "explicit_zero: true",
+    "unknown_CRS_rejected: true",
+    "tiny_u_preserved: true",
+    "fine_grid_keeps_40m_bound: true",
+    "grid_radius_below_1cm: true",
+    "plus_boundary: 8QGFJP22+",
+    "plus_west_neighbor: 8QGFJM2X+",
+    "plus_south_neighbor: 8QGFHPX2+",
+    "text_pluscode: 6F9952W3+C6222",
+    "date_line_alias: true",
+    "DMS_seconds_positive: true",
+    "unique_cover_budget: true"
+  ],
+  "installedDependency": {
+    "name": "sssssurf/geocodec",
+    "version": "0.7.0",
+    "source": {
+      "kind": "registry"
+    },
+    "workspace_member": false
+  },
+  "releaseCodeCommit": "f86543884a5f507604744fd8f34b4951161de8e3",
+  "releaseCodeCi": "https://github.com/sssssurf/geocodec/actions/runs/42586467011",
+  "releaseCodeCiStatus": "success",
+  "compiledSourceSha256": "c00149750c3322b151368ce2238303b74af4182a807c50b3c7a18d45f7a08826"
 }
